@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "prepare:frames": "npm install --no-save --package-lock=false sharp && node tools/generate-mobile-frames.mjs",
+    "predev": "npm run prepare:frames",
     "dev": "vite --host 127.0.0.1",
+    "prebuild": "npm run prepare:frames",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1"
   },

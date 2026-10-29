@@ -1,4 +1,4 @@
-/** Per-device canvas and decoded-frame budgets. */
+/** Small, device-appropriate budgets for scroll-scrubbed frames. */
 export class PerformanceController {
   public static isMobile(): boolean {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -6,10 +6,7 @@ export class PerformanceController {
   }
 
   public static getOptimalCacheSize(): number {
-    // Mobile bitmaps are downscaled before they enter cache, allowing a wider
-    // look-ahead window. Full 4K bitmaps are expensive on ultrawide desktops.
-    if (this.isMobile()) return 24;
-    return window.innerWidth >= 2560 ? 6 : 12;
+    return this.isMobile() ? 14 : 10;
   }
 
   public static getDevicePixelRatioCap(): number {
@@ -19,9 +16,6 @@ export class PerformanceController {
 
   public static getFrameDecodeWidth(canvasPixelWidth: number): number {
     if (this.isMobile()) return 640;
-
-    const target = Math.max(1280, Math.ceil(canvasPixelWidth * 1.5));
-    // The desktop source sequence is 3840×2160; never decode above source size.
-    return Math.min(3840, target);
+    return Math.min(1600, Math.max(960, canvasPixelWidth));
   }
 }

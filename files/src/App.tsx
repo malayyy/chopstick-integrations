@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
+import { FrameRenderer } from './FrameRenderer';
+import { PerformanceController } from './PerformanceController';
+import { ScrollController } from './ScrollController';
+import { Timeline } from './Timeline';
 
 const services = [
   ['01', 'CRM & sales systems', 'A clearer view of every lead, conversation, and next step.'],
@@ -9,6 +13,12 @@ const services = [
 ];
 
 export default function App() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [introStarted, setIntroStarted] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
+  const [logoDocked, setLogoDocked] = useState(false);
+
   useEffect(() => {
     if (
       !('IntersectionObserver' in window) ||
@@ -17,8 +27,8 @@ export default function App() {
 
     const targets = Array.from(document.querySelectorAll<HTMLElement>('.reveal-on-scroll'));
     if (!targets.length) return;
-
     document.documentElement.classList.add('has-scroll-reveal');
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -35,6 +45,76 @@ export default function App() {
     };
   }, []);
 
+  // Progressive 300-frame scrubbing: load only the target and nearby frames.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const track = trackRef.current;
+    if (!canvas || !track) return;
+
+    const renderer = new FrameRenderer(
+      canvas,
+      Timeline.TOTAL_FRAMES,
+      PerformanceController.getOptimalCacheSize(),
+    );
+
+    let rafId: number | null = null;
+    let latestFrame = 1;
+    let didStart = false;
+    let didComplete = false;
+    let dockTimer: number | null = null;
+
+    const onProgress = (progress: number) => {
+      latestFrame = Timeline.getState(progress).targetFrame;
+
+      const hasStarted = progress > 0.015;
+      if (hasStarted !== didStart) {
+        didStart = hasStarted;
+        setIntroStarted(hasStarted);
+      }
+
+      const complete = progress >= 0.999;
+      if (complete !== didComplete) {
+        didComplete = complete;
+        setIntroComplete(complete);
+        if (dockTimer !== null) {
+          window.clearTimeout(dockTimer);
+          dockTimer = null;
+        }
+        if (complete) {
+          dockTimer = window.setTimeout(() => {
+            setLogoDocked(true);
+            dockTimer = null;
+          }, 480);
+        } else {
+          setLogoDocked(false);
+        }
+      }
+
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        renderer.render(latestFrame);
+      });
+    };
+
+    const scrollController = new ScrollController({ onProgress }, track);
+    const onResize = () => {
+      renderer.resize();
+      onProgress(scrollController.getProgress());
+    };
+
+    window.addEventListener('resize', onResize, { passive: true });
+    window.visualViewport?.addEventListener('resize', onResize, { passive: true });
+    return () => {
+      scrollController.destroy();
+      window.removeEventListener('resize', onResize);
+      window.visualViewport?.removeEventListener('resize', onResize);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+      if (dockTimer !== null) window.clearTimeout(dockTimer);
+      renderer.destroy();
+    };
+  }, []);
+
   return (
     <main className="site-shell" id="top">
       <div
@@ -42,11 +122,28 @@ export default function App() {
         style={{ backgroundImage: `url("${ambientImage}")` }}
         aria-hidden="true"
       />
+      <canvas
+        ref={canvasRef}
+        className={`composition-canvas${introComplete ? ' is-complete' : ''}`}
+        aria-label="300-frame Chopstick Integrations reveal controlled by scrolling"
+      />
+      <div ref={trackRef} className="scroll-track" aria-hidden="true" />
 
-      <header className="site-header">
-        <a className="header-brand" href="#top" aria-label="Chopstick Integrations home">
-          <img src={logoImage} alt="Chopstick Integrations" />
-        </a>
+      <div className={`scroll-hint${introStarted ? ' is-hidden' : ''}`} aria-hidden="true">
+        <span className="scroll-mouse"><i /></span>
+        <span>SCROLL TO CONNECT</span>
+        <b>↓</b>
+      </div>
+
+      <a
+        className={`brand-lockup${introComplete ? ' is-visible' : ''}${logoDocked ? ' is-docked' : ''}`}
+        href="#top"
+        aria-label="Chopstick Integrations home"
+      >
+        <img src={logoImage} alt="" draggable={false} />
+      </a>
+
+      <header className={`site-header${introComplete ? ' is-visible' : ''}`}>
         <nav aria-label="Main navigation">
           <a href="#what-we-do">What we do</a>
           <a href="#journey">Our journey</a>
@@ -64,7 +161,7 @@ export default function App() {
             and build systems that give your team room to move.
           </p>
           <a className="primary-link" href="#what-we-do">
-            Scroll to explore <span aria-hidden="true">↓</span>
+            Explore what we build <span aria-hidden="true">↓</span>
           </a>
         </div>
         <div className="hero-footer reveal-on-scroll" aria-hidden="true">
@@ -120,8 +217,8 @@ export default function App() {
           <p className="section-copy">
             Tell us what's disconnected, repetitive, or getting in your team's way.
           </p>
-          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
-            Find us on GitHub <span aria-hidden="true">↗</span>
+          <a className="primary-link" href="mailto:hello@chopstickintegrations.com">
+            Start a conversation <span aria-hidden="true">↗</span>
           </a>
         </div>
         <footer className="site-footer reveal-on-scroll">

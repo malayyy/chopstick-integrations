@@ -19,7 +19,7 @@ export class FrameRenderer {
   private readonly maskCtx: CanvasRenderingContext2D;
   private readonly totalFrames: number;
   private readonly maxCacheSize: number;
-  private readonly maxConcurrentLoads = PerformanceController.isMobile() ? 8 : 6;
+  private readonly maxConcurrentLoads = PerformanceController.isMobile() ? 5 : 4;
 
   private cache = new Map<number, FrameAsset>();
   private inFlight = new Map<number, { token: symbol; priority: boolean }>();
@@ -51,10 +51,10 @@ export class FrameRenderer {
 
   private frameUrl(index: number): string {
     if (getPreloadedFrameUrl(index)) return getPreloadedFrameUrl(index)!;
-    const filename = `ezgif-frame-${String(index).padStart(3, '0')}`;
+    const filename = `ezgif-frame-${String(index).padStart(3, '0')}.webp`;
     return PerformanceController.isMobile()
-      ? `/frames-mobile/${filename}.webp`
-      : `/${filename}.jpg`;
+      ? `/frames-mobile/${filename}`
+      : `/frames-desktop/${filename}`;
   }
 
   private isBitmap(asset: FrameAsset): asset is ImageBitmap {
@@ -80,30 +80,37 @@ export class FrameRenderer {
     const predecoded = getPredecodedFrameBitmap(index);
     if (predecoded) return predecoded;
 
-    const blob = getPreloadedFrameBlob(index);
-
+    const src = this.frameUrl(index);
+    const preloadedBlob = getPreloadedFrameBlob(index);
     const width = this.decodeWidth();
     const height = Math.round(width * 9 / 16);
 
-    if (blob && typeof createImageBitmap === 'function') {
+    if (typeof createImageBitmap === 'function') {
       try {
-        // Mobile WebPs are already 640×360. Avoid an unnecessary resize step.
-        if (PerformanceController.isMobile()) return await createImageBitmap(blob);
-        return await createImageBitmap(blob, {
-          resizeWidth: width,
-          resizeHeight: height,
-          resizeQuality: 'high',
+        // Fetch just the requested compressed WebP, resize before decode,
+        // and keep only a small decoded neighbourhood in memory.
+        const blob = preloadedBlob ?? await fetch(src, { cache: 'force-cache' }).then((response) => {
+          if (!response.ok) throw new Error(`Frame ${index} returned HTTP ${response.status}`);
+          return response.blob();
         });
+
+        try {
+          return await createImageBitmap(blob, {
+            resizeWidth: width,
+            resizeHeight: height,
+            resizeQuality: 'high',
+          });
+        } catch {
+          // Fallback for browser engines that don't support resize options.
+          return await createImageBitmap(blob);
+        }
       } catch (error) {
-        // Older WebKit builds may reject resize options; retain a compatible path.
-        console.warn('Resized frame decode unavailable; using image fallback.', error);
+        console.warn('Optimized frame decode unavailable; falling back to an image element.', error);
       }
     }
 
     const image = new Image();
     image.decoding = 'async';
-    const src = this.frameUrl(index);
-
     if (typeof image.decode === 'function') {
       image.src = src;
       await image.decode();
@@ -211,7 +218,7 @@ export class FrameRenderer {
 
   private scheduleNeighborhood(center: number): void {
     const mobile = PerformanceController.isMobile();
-    const radius = mobile ? 14 : (window.innerWidth >= 2560 ? 6 : 8);
+    const radius = mobile ? 9 : (window.innerWidth >= 2560 ? 5 : 6);
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
