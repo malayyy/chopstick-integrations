@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Chopstick Integrations</title>
+  <desc id="desc">Glossy crimson wordmark with two crossing chopsticks.</desc>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0.12" y2="1">
+      <stop offset="0" stop-color="#fff8f4"/>
+      <stop offset=".16" stop-color="#efc6bf"/>
+      <stop offset=".32" stop-color="#ff4d50"/>
+      <stop offset=".52" stop-color="#7a101a"/>
+      <stop offset=".7" stop-color="#ffd9cc"/>
+      <stop offset=".86" stop-color="#b31d29"/>
+      <stop offset="1" stop-color="#f8a29a"/>
+    </linearGradient>
+    <linearGradient id="stick" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4b060d"/>
+      <stop offset=".18" stop-color="#ff3b43"/>
+      <stop offset=".34" stop-color="#ffd7cb"/>
+      <stop offset=".48" stop-color="#e31c2b"/>
+      <stop offset=".72" stop-color="#6b080f"/>
+      <stop offset="1" stop-color="#ff7771"/>
+    </linearGradient>
+    <linearGradient id="subtitle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff1e9"/>
+      <stop offset=".5" stop-color="#c8b4af"/>
+      <stop offset="1" stop-color="#e9444b"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-35%" width="160%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 .35 0 .12 0 0 0 0 0 .10 0 0 0 0 0 .5 0" result="redglow"/>
+      <feMerge><feMergeNode in="redglow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="-20%" y="-25%" width="140%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur"/>
+      <feOffset dy="3" result="offset"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".75"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#glow)" opacity=".98">
+    <g fill="none" stroke="#f43a43" stroke-width="2" opacity=".7">
+      <path d="M245 102l-12 -19 22 10 7 -23 12 28"/>
+      <path d="M830 105l16 -24 6 20 19 -14 -4 29"/>
+      <path d="M1010 195l18 -12 -3 20 20 3 -17 10"/>
+      <path d="M168 205l-20 -8 6 18 -21 7 24 1"/>
+    </g>
+    <g fill="url(#metal)" stroke="#ff7970" stroke-width="1.6" filter="url(#shadow)">
+      <text x="600" y="203" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="145" font-weight="600" letter-spacing="3">CHOPSTICK</text>
+    </g>
+    <g stroke="url(#stick)" stroke-linecap="round" fill="none">
+      <path d="M392 331L555 33" stroke-width="18"/>
+      <path d="M433 335L596 58" stroke-width="17"/>
+      <path d="M392 331L555 33" stroke="#ffded3" stroke-width="2.8" opacity=".95"/>
+      <path d="M433 335L596 58" stroke="#ffb8ad" stroke-width="2.4" opacity=".9"/>
+    </g>
+    <g fill="#ff5c61" stroke="#ffd8ce" stroke-width="1.2" opacity=".95">
+      <path d="M202 242l13 -19 7 20 -13 9z"/>
+      <path d="M754 91l10 -16 7 18 -10 7z"/>
+      <path d="M932 224l15 -9 -1 17 -13 2z"/>
+      <path d="M291 285l8 -12 5 15 -11 3z"/>
+      <path d="M655 88l5 -12 9 11 -7 7z"/>
+    </g>
+    <g fill="none" stroke="#ffdad2" stroke-width="2" opacity=".78">
+      <path d="M76 131l8 8 8 -8"/>
+      <path d="M1090 136l9 10 10 -9"/>
+      <path d="M692 232l6 7 7 -7"/>
+      <path d="M270 78l4 6 6 -5"/>
+    </g>
+  </g>
+  <text x="622" y="279" text-anchor="middle" fill="url(#subtitle)" font-family="Georgia, 'Times New Roman', serif" font-size="43" letter-spacing="20">INTEGRATIONS</text>
+  <path d="M360 301h114M726 301h114" stroke="#e62c37" stroke-width="1" opacity=".55"/>
+</svg>
