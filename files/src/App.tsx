@@ -1,341 +1,108 @@
-import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
-import { FrameRenderer } from './FrameRenderer';
-import { preloadFrameSequence, predecodeFrameSequence } from './FrameAssets';
-import { PerformanceController } from './PerformanceController';
-import { ScrollController } from './ScrollController';
-import { Timeline } from './Timeline';
+
+const services = [
+  ['01', 'CRM & sales systems', 'A clearer view of every lead, conversation, and next step.'],
+  ['02', 'Workflow automation', 'Less repetitive work. More time for the work that matters.'],
+  ['03', 'Integrations & data', 'The tools you already use, finally working together.'],
+];
 
 export default function App() {
-  const compositionRef = useRef<HTMLCanvasElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [introComplete, setIntroComplete] = useState(false);
-  const [logoDocked, setLogoDocked] = useState(false);
-  const [assetsReady, setAssetsReady] = useState(false);
-  const [preloadProgress, setPreloadProgress] = useState(0);
-  const [preloadFailed, setPreloadFailed] = useState(false);
-  const [preloadAttempt, setPreloadAttempt] = useState(0);
-
-  // Download the complete frame sequence before revealing the site. Keep the
-  // compressed blobs ready for scroll scrubbing; decode only the active cache.
-  useEffect(() => {
-    let cancelled = false;
-    const controller = new AbortController();
-    const totalFrames = Timeline.TOTAL_FRAMES;
-    const mobile = PerformanceController.isMobile();
-    const concurrency = mobile ? 4 : 10;
-    setAssetsReady(false);
-    setPreloadProgress(0);
-    setPreloadFailed(false);
-
-    const loadStaticImage = async (src: string) => {
-      const image = new Image();
-      image.decoding = 'async';
-      image.src = src;
-      if (typeof image.decode === 'function') {
-        await image.decode();
-      } else {
-        await new Promise<void>((resolve, reject) => {
-          image.onload = () => resolve();
-          image.onerror = () => reject(new Error('Static image failed to load'));
-        });
-      }
-    };
-
-    const preloadAll = async () => {
-      try {
-        const [failedFrames] = await Promise.all([
-          preloadFrameSequence({
-            totalFrames,
-            concurrency,
-            signal: controller.signal,
-            useMobileFrames: mobile,
-            onProgress: (completed, total) => {
-              if (!cancelled && total > 0) {
-                const phaseProgress = mobile && typeof createImageBitmap === 'function'
-                  ? 0.5 * (completed / total)
-                  : completed / total;
-                setPreloadProgress(phaseProgress);
-              }
-            },
-          }),
-          loadStaticImage(ambientImage),
-          loadStaticImage(logoImage),
-        ]);
-        if (cancelled) return;
-        if (failedFrames.length > 0) {
-          console.error('Frames that failed to preload:', failedFrames);
-          setPreloadFailed(true);
-          return;
-        }
-
-        // Finish mobile decoding behind the loader. These source WebPs are
-        // 400×225, so retaining the 300 bitmaps costs roughly 100 MB rather
-        // than decoding hundreds of full-resolution 4K JPEGs on demand.
-        if (mobile && typeof createImageBitmap === 'function') {
-          const decodeFailures = await predecodeFrameSequence({
-            totalFrames,
-            concurrency: 2,
-            signal: controller.signal,
-            onProgress: (completed, total) => {
-              if (!cancelled && total > 0) {
-                setPreloadProgress(0.5 + 0.5 * (completed / total));
-              }
-            },
-          });
-          if (cancelled) return;
-          if (decodeFailures.length > 0) {
-            console.error('Frames that failed to decode:', decodeFailures);
-            setPreloadFailed(true);
-            return;
-          }
-        }
-
-        setPreloadProgress(1);
-        setAssetsReady(true);
-      } catch (error) {
-        if (cancelled || controller.signal.aborted) return;
-        controller.abort();
-        console.error('The cinematic experience could not finish preloading.', error);
-        setPreloadFailed(true);
-      }
-    };
-
-    void preloadAll();
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [preloadAttempt]);
-
-  // Keep the document still behind the loader so scroll progress always starts at zero.
-  useEffect(() => {
-    if (assetsReady) return;
-    const root = document.documentElement;
-    const body = document.body;
-    const previousRootOverflow = root.style.overflow;
-    const previousBodyOverflow = body.style.overflow;
-    root.style.overflow = 'hidden';
-    body.style.overflow = 'hidden';
-    return () => {
-      root.style.overflow = previousRootOverflow;
-      body.style.overflow = previousBodyOverflow;
-    };
-  }, [assetsReady]);
-
-  useEffect(() => {
-    if (!assetsReady) return;
-    const canvas = compositionRef.current;
-    const track = trackRef.current;
-    if (!canvas || !track) return;
-
-    const renderer = new FrameRenderer(
-      canvas,
-      Timeline.TOTAL_FRAMES,
-      PerformanceController.getOptimalCacheSize(),
-    );
-
-    let rafId: number | null = null;
-    let latestFrame = 1;
-    let phaseComplete = false;
-    let dockTimer: number | null = null;
-
-    const updateEndPhase = (complete: boolean) => {
-      if (complete === phaseComplete) return;
-      phaseComplete = complete;
-      setIntroComplete(complete);
-
-      if (dockTimer !== null) {
-        window.clearTimeout(dockTimer);
-        dockTimer = null;
-      }
-
-      if (complete) {
-        // The logo fades in first; then hold it centered for ~500 ms before docking.
-        dockTimer = window.setTimeout(() => {
-          setLogoDocked(true);
-          dockTimer = null;
-        }, 900);
-      } else {
-        setLogoDocked(false);
-      }
-    };
-
-    const requestRender = (progress: number) => {
-      latestFrame = Timeline.getState(progress).targetFrame;
-      updateEndPhase(progress >= 0.9999);
-
-      // Mobile frames are fully predecoded before the loader exits. Draw the
-      // requested bitmap immediately on scroll rather than queueing a second
-      // RAF, which can be coalesced/throttled by mobile WebKit during touch scroll.
-      if (PerformanceController.isMobile()) {
-        if (rafId !== null) {
-          window.cancelAnimationFrame(rafId);
-          rafId = null;
-        }
-        renderer.render(latestFrame);
-        return;
-      }
-
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        renderer.render(latestFrame);
-      });
-    };
-
-    const scrollController = new ScrollController({ onProgress: requestRender }, track);
-
-    const handleResize = () => {
-      renderer.resize();
-      requestRender(scrollController.getProgress());
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-    window.addEventListener('pageshow', handleResize);
-    window.visualViewport?.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      scrollController.destroy();
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('pageshow', handleResize);
-      window.visualViewport?.removeEventListener('resize', handleResize);
-      if (rafId !== null) window.cancelAnimationFrame(rafId);
-      if (dockTimer !== null) window.clearTimeout(dockTimer);
-      renderer.destroy();
-    };
-  }, [assetsReady]);
-
   return (
-    <main className="site-shell" aria-label="Chopstick Integrations" aria-busy={!assetsReady}>
+    <main className="site-shell" id="top">
       <div
         className="ambient-background"
         style={{ backgroundImage: `url("${ambientImage}")` }}
         aria-hidden="true"
       />
-      <div className="ambient-particles" aria-hidden="true" />
 
-      <canvas
-        ref={compositionRef}
-        className={`composition-canvas${introComplete ? ' is-complete' : ''}`}
-        aria-label="Cinematic Chopstick Integrations reveal. Scroll to move through the sequence."
-      />
-
-      <div ref={trackRef} className="scroll-track" aria-hidden="true" />
-
-      <img
-        src={logoImage}
-        alt="Chopstick Integrations"
-        className={`brand-lockup${introComplete ? ' is-visible' : ''}${logoDocked ? ' is-docked' : ''}`}
-        draggable={false}
-      />
-
-      <header className={`site-header${logoDocked ? ' is-visible' : ''}`}>
+      <header className="site-header">
+        <a className="header-brand" href="#top" aria-label="Chopstick Integrations home">
+          <img src={logoImage} alt="Chopstick Integrations" />
+        </a>
         <nav aria-label="Main navigation">
-          <a href="#capabilities">Capabilities</a>
-          <a href="#contact">Contact <span aria-hidden="true">↗</span></a>
+          <a href="#what-we-do">What we do</a>
+          <a href="#journey">Our journey</a>
+          <a className="nav-contact" href="#contact">Let's talk <span aria-hidden="true">↗</span></a>
         </nav>
       </header>
 
-      <div className={`homepage${logoDocked ? ' is-visible' : ''}`}>
-        <section className="home-hero" id="home">
+      <section className="hero full-screen" aria-labelledby="hero-title">
+        <div className="hero-content">
           <p className="eyebrow"><span /> INTEGRATIONS · AUTOMATION · SYSTEMS</p>
-          <h1>
-            Make your systems
-            <br />
-            work <em>together.</em>
-          </h1>
+          <img className="hero-logo" src={logoImage} alt="Chopstick Integrations" />
+          <h1 id="hero-title">Different tools.<br /><em>One connected system.</em></h1>
           <p className="hero-description">
             We connect the tools your business relies on, automate the busywork,
-            and build digital systems that give your team room to move.
+            and build systems that give your team room to move.
           </p>
-          <div className="hero-actions">
-            <a className="primary-link" href="#capabilities">
-              Explore what we build <span aria-hidden="true">↘</span>
-            </a>
-            <a className="secondary-link" href="#contact">
-              Start a conversation <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-          <div className="hero-index" aria-hidden="true">
-            <span>CHOPSTICK INTEGRATIONS</span>
-            <span>BUILT TO CONNECT <i>—</i> 01 / 03</span>
-          </div>
-        </section>
-
-        <section className="capabilities" id="capabilities">
-          <div className="section-intro">
-            <p className="eyebrow"><span /> WHAT WE CONNECT</p>
-            <h2>Less busywork.<br /><em>Better flow.</em></h2>
-          </div>
-          <div className="capability-list">
-            <div><span>01</span><p>CRM & sales systems</p><b>↗</b></div>
-            <div><span>02</span><p>Workflow automation</p><b>↗</b></div>
-            <div><span>03</span><p>Integrations & data</p><b>↗</b></div>
-            <div><span>04</span><p>Custom digital tools</p><b>↗</b></div>
-          </div>
-        </section>
-
-        <section className="contact-section" id="contact">
-          <p className="eyebrow"><span /> HAVE A SYSTEM TO CONNECT?</p>
-          <h2>Let's make it <em>flow.</em></h2>
-          <p>Tell us what's disconnected, repetitive, or getting in your team's way.</p>
-          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
-            Explore the build <span aria-hidden="true">↗</span>
+          <a className="primary-link" href="#what-we-do">
+            Scroll to explore <span aria-hidden="true">↓</span>
           </a>
-        </section>
+        </div>
+        <div className="hero-footer" aria-hidden="true">
+          <span>BUILT TO CONNECT</span>
+          <span>01 — 03</span>
+        </div>
+      </section>
 
+      <section className="content-section services-section full-screen" id="what-we-do">
+        <div className="section-inner services-layout">
+          <div className="section-heading">
+            <p className="eyebrow"><span /> WHAT WE DO</p>
+            <h2>Less busywork.<br /><em>Better flow.</em></h2>
+            <p className="section-copy">
+              Practical digital systems that reduce friction and make everyday work feel easier.
+            </p>
+          </div>
+          <div className="service-list">
+            {services.map(([number, title, description]) => (
+              <article className="service-row" key={number}>
+                <span className="service-number">{number}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </div>
+                <span className="service-arrow" aria-hidden="true">↗</span>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="content-section journey-section full-screen" id="journey">
+        <div className="section-inner journey-content">
+          <p className="eyebrow"><span /> OUR JOURNEY</p>
+          <h2>Good systems should feel <em>simple.</em></h2>
+          <p className="journey-copy">
+            Chopstick started with one idea: technology should connect the dots,
+            not create more work. We bring disconnected tools, messy processes,
+            and manual tasks into one smoother way of working.
+          </p>
+          <div className="journey-note">
+            <span className="note-line" />
+            <span>Thoughtfully connected. Built around your business.</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="content-section contact-section full-screen" id="contact">
+        <div className="section-inner contact-content">
+          <p className="eyebrow"><span /> HAVE SOMETHING TO CONNECT?</p>
+          <h2>Let's make it<br /><em>flow.</em></h2>
+          <p className="section-copy">
+            Tell us what's disconnected, repetitive, or getting in your team's way.
+          </p>
+          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
+            Find us on GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
         <footer className="site-footer">
           <span>CHOPSTICK INTEGRATIONS</span>
-          <span>Different tools. One connected system.</span>
+          <a href="#top">BACK TO TOP ↑</a>
+          <span>DIFFERENT TOOLS. ONE CONNECTED SYSTEM.</span>
         </footer>
-      </div>
-
-      {!assetsReady && (
-        <section className="preloader-overlay" role="status" aria-live="polite" aria-label="Preparing the cinematic experience">
-          <div className="preloader-content">
-            <div className="preloader-emblem" aria-hidden="true">
-              <span className="preloader-orbit preloader-orbit--outer" />
-              <span className="preloader-orbit preloader-orbit--inner" />
-              <span className="preloader-chopstick preloader-chopstick--one" />
-              <span className="preloader-chopstick preloader-chopstick--two" />
-              <span className="preloader-flare" />
-              <span className="preloader-spark preloader-spark--one" />
-              <span className="preloader-spark preloader-spark--two" />
-            </div>
-
-            <p className="preloader-kicker"><span /> CHOPSTICK INTEGRATIONS</p>
-            <h1 className="preloader-title">
-              Great things<br />
-              <em>take time.</em>
-            </h1>
-            <p className="preloader-copy">
-              Setting every frame into place. Your experience is worth the wait.
-            </p>
-
-            {preloadFailed ? (
-              <div className="preloader-error">
-                <p>A few frames did not arrive. Let's give them another shot.</p>
-                <button type="button" onClick={() => setPreloadAttempt((attempt) => attempt + 1)}>
-                  Retry loading <span aria-hidden="true">↻</span>
-                </button>
-              </div>
-            ) : (
-              <div className="preloader-progress" aria-label={`${Math.floor(preloadProgress * Timeline.TOTAL_FRAMES)} of ${Timeline.TOTAL_FRAMES} frames loaded`}>
-                <div className="preloader-progress-meta">
-                  <span>PREPARING THE REVEAL</span>
-                  <span>{String(Math.floor(preloadProgress * Timeline.TOTAL_FRAMES)).padStart(3, '0')} / {Timeline.TOTAL_FRAMES}</span>
-                </div>
-                <div className="preloader-progress-track">
-                  <span style={{ width: `${Math.min(100, preloadProgress * 100)}%` }} />
-                </div>
-                <p className="preloader-footnote">Please wait while the cinematic frames load</p>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      </section>
     </main>
   );
 }
