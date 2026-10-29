@@ -154,10 +154,12 @@ def main(zip_path: Path) -> None:
                 filename = f"ezgif-frame-{idx:03d}.webp"
                 desktop_path = DESKTOP_OUT / filename
                 mobile_path = MOBILE_OUT / filename
-                desktop.save(desktop_path, "WEBP", quality=DESKTOP_QUALITY, method=6)
-                mobile.save(mobile_path, "WEBP", quality=MOBILE_QUALITY, method=6)
+                desktop.save(desktop_path, "WEBP", quality=DESKTOP_QUALITY, method=4)
+                mobile.save(mobile_path, "WEBP", quality=MOBILE_QUALITY, method=4)
                 desktop_sizes.append(desktop_path.stat().st_size)
                 mobile_sizes.append(mobile_path.stat().st_size)
+                if idx % 50 == 0 or idx == EXPECTED_FRAMES:
+                    print(f'Converted HD frames: {idx}/{EXPECTED_FRAMES}', flush=True)
 
     # Validate exactly 300 outputs before reporting success.
     output_pattern = re.compile(r"^ezgif-frame-\d{3}\.webp$")

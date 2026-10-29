@@ -23,7 +23,7 @@ if (existsSync(hdManifestPath)) {
   const mobileCount = mobileNames.filter((name) => outputFramePattern.test(name)).length;
   const desktopCount = desktopNames.filter((name) => outputFramePattern.test(name)).length;
   if (mobileCount !== 300 || desktopCount !== 300) {
-    throw new Error(\`HD frame manifest exists but optimized assets are incomplete (mobile=\${mobileCount}, desktop=\${desktopCount}).\`);
+    throw new Error('HD frame manifest exists but optimized assets are incomplete (mobile=' + mobileCount + ', desktop=' + desktopCount + ').');
   }
   console.log('Using 300 imported HD-PNG-derived desktop/mobile frames; skipped legacy JPEG re-export.');
   process.exit(0);
