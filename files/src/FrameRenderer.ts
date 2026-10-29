@@ -183,15 +183,10 @@ export class FrameRenderer {
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
-    // Cancel outdated queued/in-flight work so the most recently requested frame wins.
-    for (const [index] of this.inFlight) {
-      if (index === center || Math.abs(index - center) <= radius) continue;
-      this.inFlight.delete(index);
-      this.activeLoads = Math.max(0, this.activeLoads - 1);
-    }
-
+    // Do not cancel in-flight decodes on every scroll event. On mobile WebKit
+    // that repeatedly discards work before it completes and makes the sequence
+    // look frozen during continuous scrolling. Let them finish and populate cache.
     this.queue = this.queue.filter((index) => Math.abs(index - center) <= radius);
-    // Load the target first, then work outward in both directions.
     for (let distance = 1; distance <= radius; distance += 1) {
       const forward = center + distance;
       const backward = center - distance;
@@ -234,7 +229,9 @@ export class FrameRenderer {
 
     this.enqueue(index, true);
     this.scheduleNeighborhood(index);
-    if (this.renderedFrame < 0) this.drawNearestAvailable();
+    // Keep the visual responding while the exact target bitmap is decoding.
+    // The nearest ready frame is preferable to leaving an old frame frozen.
+    if (this.cache.size > 0) this.drawNearestAvailable();
     return false;
   }
 
@@ -252,7 +249,9 @@ export class FrameRenderer {
         nearestDistance = distance;
       }
     }
-    if (nearestIndex !== null) this.draw(nearestIndex, true);
+    if (nearestIndex !== null && nearestIndex !== this.renderedFrame) {
+      this.draw(nearestIndex, true);
+    }
   }
 
   private draw(index: number, force = false): void {
