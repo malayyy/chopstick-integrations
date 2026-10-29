@@ -89,10 +89,14 @@ export class FrameRenderer {
       try {
         // Fetch just the requested compressed WebP, resize before decode,
         // and keep only a small decoded neighbourhood in memory.
-        const blob = preloadedBlob ?? await fetch(src, { cache: 'force-cache' }).then((response) => {
+        let blob: Blob;
+        if (preloadedBlob) {
+          blob = preloadedBlob;
+        } else {
+          const response = await fetch(src, { cache: 'force-cache' });
           if (!response.ok) throw new Error(`Frame ${index} returned HTTP ${response.status}`);
-          return response.blob();
-        });
+          blob = await response.blob();
+        }
 
         try {
           return await createImageBitmap(blob, {
