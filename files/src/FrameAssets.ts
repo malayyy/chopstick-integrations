@@ -58,6 +58,11 @@ export async function preloadFrameSequence({
             if (!response.ok) {
               throw new Error(`Frame ${frame} returned HTTP ${response.status}`);
             }
+            const contentType = response.headers.get('content-type') || '';
+            const expectedType = useMobileFrames ? 'image/webp' : 'image/jpeg';
+            if (!contentType.toLowerCase().includes(expectedType)) {
+              throw new Error(`Frame ${frame} returned unexpected content type: ${contentType || 'unknown'}`);
+            }
 
             const blob = await response.blob();
             if (signal.aborted) return;
