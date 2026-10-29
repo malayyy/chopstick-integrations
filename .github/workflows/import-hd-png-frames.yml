@@ -1,0 +1,66 @@
+name: Import HD PNG frames for preview
+
+on:
+  push:
+    branches:
+      - hd-frames/use-hd-pngs
+
+permissions:
+  contents: write
+
+jobs:
+  import-hd-frames:
+    if: ${{ !contains(github.event.head_commit.message, '[hd-frames-generated]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out isolated HD-frame branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download the shared Google Drive ZIP
+        env:
+          DRIVE_FILE_ID: 1gbCtbjbtWJANIDF_d-Xcgg9suoibJ1An
+        run: |
+          python -m pip install --upgrade "gdown==5.2.0" "Pillow>=10,<13"
+          gdown --fuzzy "https://drive.google.com/file/d/$DRIVE_FILE_ID/view?usp=sharing" --output /tmp/chopstick-hd-png-frames.zip
+          test -s /tmp/chopstick-hd-png-frames.zip
+          ls -lh /tmp/chopstick-hd-png-frames.zip
+
+      - name: Audit HD PNGs and create responsive WebP assets
+        run: |
+          python .github/scripts/process_hd_png_frames.py /tmp/chopstick-hd-png-frames.zip
+          du -sh files/public/frames-desktop files/public/frames-mobile
+          cat files/public/hd-frames-manifest.json
+
+      - name: Build and type-check with the imported HD frames
+        working-directory: files
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish the frame audit as a downloadable artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chopstick-hd-frame-audit
+          path: hd-frame-audit/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Commit optimized assets to this preview branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add files/tools/generate-mobile-frames.mjs
+          git add -f files/public/frames-desktop files/public/frames-mobile
+          git add files/public/hd-frames-manifest.json
+          git diff --cached --quiet && { echo "No generated HD assets to commit"; exit 1; }
+          git commit -m "Import HD PNG frames [hd-frames-generated]"
+          git push origin "HEAD:$GITHUB_REF_NAME"
