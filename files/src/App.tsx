@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
 import { FrameRenderer } from './FrameRenderer';
-import { preloadFrameSequence, predecodeFrameSequence } from './FrameAssets';
+import { preloadFrameSequence } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
 import { ScrollController } from './ScrollController';
 import { Timeline } from './Timeline';
@@ -24,7 +24,6 @@ export default function App() {
     const controller = new AbortController();
     const totalFrames = Timeline.TOTAL_FRAMES;
     const mobile = PerformanceController.isMobile();
-    const narrowPhone = window.matchMedia('(max-width: 500px)').matches;
     const concurrency = mobile ? 4 : 10;
     setAssetsReady(false);
     setPreloadProgress(0);
@@ -51,14 +50,9 @@ export default function App() {
             totalFrames,
             concurrency,
             signal: controller.signal,
+            useMobileFrames: mobile,
             onProgress: (completed, total) => {
-              if (!cancelled && total > 0) {
-                // Reserve the second half of the meter for mobile pre-decoding.
-                const phaseProgress = narrowPhone && typeof createImageBitmap === 'function'
-                  ? 0.5 * (completed / total)
-                  : completed / total;
-                setPreloadProgress(phaseProgress);
-              }
+              if (!cancelled && total > 0) setPreloadProgress(completed / total);
             },
           }),
           loadStaticImage(ambientImage),
@@ -69,30 +63,6 @@ export default function App() {
           console.error('Frames that failed to preload:', failedFrames);
           setPreloadFailed(true);
           return;
-        }
-
-        // On narrow phones, decode the whole sequence at an iPhone-sized
-        // resolution while the branded loader is still visible. This avoids
-        // 4K JPEG decodes during touch scrolling, where WebKit can lag badly.
-        if (narrowPhone && typeof createImageBitmap === 'function') {
-          const decodeWidth = 320;
-          const decodeFailures = await predecodeFrameSequence({
-            totalFrames,
-            concurrency: 1,
-            decodeWidth,
-            signal: controller.signal,
-            onProgress: (completed, total) => {
-              if (!cancelled && total > 0) {
-                setPreloadProgress(0.5 + 0.5 * (completed / total));
-              }
-            },
-          });
-          if (cancelled) return;
-          if (decodeFailures.length > 0) {
-            console.error('Frames that failed to pre-decode:', decodeFailures);
-            setPreloadFailed(true);
-            return;
-          }
         }
 
         setPreloadProgress(1);
