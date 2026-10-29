@@ -163,6 +163,13 @@ export class FrameRenderer {
 
   private pumpQueue(): void {
     while (!this.destroyed && this.activeLoads < this.maxConcurrentLoads && this.queue.length > 0) {
+      const nextIndex = this.queue[0]!;
+      const nextIsPriority = this.priorityQueue.has(nextIndex) || nextIndex === this.desiredFrame;
+      // Reserve decoding capacity for the current scroll target. Background
+      // look-ahead frames must not occupy every slot during rapid touch scrolling.
+      const reservedSlots = PerformanceController.isMobile() ? 3 : 1;
+      if (!nextIsPriority && this.activeLoads >= this.maxConcurrentLoads - reservedSlots) break;
+
       const index = this.queue.shift()!;
       const isPriority = this.priorityQueue.has(index) || index === this.desiredFrame;
       this.priorityQueue.delete(index);
