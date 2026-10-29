@@ -17,7 +17,7 @@ export class ScrollController {
       if (this.destroyed) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
       const trackStart = this.track.getBoundingClientRect().top + scrollTop;
-      const scrollDistance = Math.max(1, this.track.offsetHeight);
+      const scrollDistance = Math.max(1, this.track.offsetHeight - window.innerHeight);
       const progress = Math.max(0, Math.min(1, (scrollTop - trackStart) / scrollDistance));
       this.onProgress(progress);
     };
