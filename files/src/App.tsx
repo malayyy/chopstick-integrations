@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
 
@@ -8,6 +9,32 @@ const services = [
 ];
 
 export default function App() {
+  useEffect(() => {
+    if (
+      !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) return;
+
+    const targets = Array.from(document.querySelectorAll<HTMLElement>('.reveal-on-scroll'));
+    if (!targets.length) return;
+
+    document.documentElement.classList.add('has-scroll-reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    targets.forEach((target) => observer.observe(target));
+    return () => {
+      observer.disconnect();
+      document.documentElement.classList.remove('has-scroll-reveal');
+    };
+  }, []);
+
   return (
     <main className="site-shell" id="top">
       <div
@@ -28,7 +55,7 @@ export default function App() {
       </header>
 
       <section className="hero full-screen" aria-labelledby="hero-title">
-        <div className="hero-content">
+        <div className="hero-content reveal-on-scroll">
           <p className="eyebrow"><span /> INTEGRATIONS · AUTOMATION · SYSTEMS</p>
           <img className="hero-logo" src={logoImage} alt="Chopstick Integrations" />
           <h1 id="hero-title">Different tools.<br /><em>One connected system.</em></h1>
@@ -40,7 +67,7 @@ export default function App() {
             Scroll to explore <span aria-hidden="true">↓</span>
           </a>
         </div>
-        <div className="hero-footer" aria-hidden="true">
+        <div className="hero-footer reveal-on-scroll" aria-hidden="true">
           <span>BUILT TO CONNECT</span>
           <span>01 — 03</span>
         </div>
@@ -48,7 +75,7 @@ export default function App() {
 
       <section className="content-section services-section full-screen" id="what-we-do">
         <div className="section-inner services-layout">
-          <div className="section-heading">
+          <div className="section-heading reveal-on-scroll">
             <p className="eyebrow"><span /> WHAT WE DO</p>
             <h2>Less busywork.<br /><em>Better flow.</em></h2>
             <p className="section-copy">
@@ -57,7 +84,7 @@ export default function App() {
           </div>
           <div className="service-list">
             {services.map(([number, title, description]) => (
-              <article className="service-row" key={number}>
+              <article className="service-row reveal-on-scroll" key={number}>
                 <span className="service-number">{number}</span>
                 <div>
                   <h3>{title}</h3>
@@ -71,7 +98,7 @@ export default function App() {
       </section>
 
       <section className="content-section journey-section full-screen" id="journey">
-        <div className="section-inner journey-content">
+        <div className="section-inner journey-content reveal-on-scroll">
           <p className="eyebrow"><span /> OUR JOURNEY</p>
           <h2>Good systems should feel <em>simple.</em></h2>
           <p className="journey-copy">
@@ -87,7 +114,7 @@ export default function App() {
       </section>
 
       <section className="content-section contact-section full-screen" id="contact">
-        <div className="section-inner contact-content">
+        <div className="section-inner contact-content reveal-on-scroll">
           <p className="eyebrow"><span /> HAVE SOMETHING TO CONNECT?</p>
           <h2>Let's make it<br /><em>flow.</em></h2>
           <p className="section-copy">
@@ -97,7 +124,7 @@ export default function App() {
             Find us on GitHub <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <footer className="site-footer">
+        <footer className="site-footer reveal-on-scroll">
           <span>CHOPSTICK INTEGRATIONS</span>
           <a href="#top">BACK TO TOP ↑</a>
           <span>DIFFERENT TOOLS. ONE CONNECTED SYSTEM.</span>
