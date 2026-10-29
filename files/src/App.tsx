@@ -39,11 +39,11 @@ export default function App() {
       }
 
       if (complete) {
-        // Let the centered logo resolve before it docks into the site header.
+        // The logo fades in first; then hold it centered for ~500 ms before docking.
         dockTimer = window.setTimeout(() => {
           setLogoDocked(true);
           dockTimer = null;
-        }, 500);
+        }, 900);
       } else {
         setLogoDocked(false);
       }
@@ -109,9 +109,7 @@ export default function App() {
       <header className={`site-header${logoDocked ? ' is-visible' : ''}`}>
         <nav aria-label="Main navigation">
           <a href="#capabilities">Capabilities</a>
-          <a href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
-            Build log <span aria-hidden="true">↗</span>
-          </a>
+          <a href="#contact">Contact <span aria-hidden="true">↗</span></a>
         </nav>
       </header>
 
@@ -131,8 +129,8 @@ export default function App() {
             <a className="primary-link" href="#capabilities">
               Explore what we build <span aria-hidden="true">↘</span>
             </a>
-            <a className="secondary-link" href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
-              Follow the build <span aria-hidden="true">↗</span>
+            <a className="secondary-link" href="#contact">
+              Start a conversation <span aria-hidden="true">↗</span>
             </a>
           </div>
           <div className="hero-index" aria-hidden="true">
@@ -152,6 +150,15 @@ export default function App() {
             <div><span>03</span><p>Integrations & data</p><b>↗</b></div>
             <div><span>04</span><p>Custom digital tools</p><b>↗</b></div>
           </div>
+        </section>
+
+        <section className="contact-section" id="contact">
+          <p className="eyebrow"><span /> HAVE A SYSTEM TO CONNECT?</p>
+          <h2>Let's make it <em>flow.</em></h2>
+          <p>Tell us what's disconnected, repetitive, or getting in your team's way.</p>
+          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations/issues/new" target="_blank" rel="noreferrer">
+            Start a conversation <span aria-hidden="true">↗</span>
+          </a>
         </section>
 
         <footer className="site-footer">
