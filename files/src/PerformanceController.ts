@@ -6,9 +6,10 @@ export class PerformanceController {
   }
 
   public static getOptimalCacheSize(): number {
-    // ImageBitmaps are decoded to viewport-scale sizes, so a wider cache is
-    // inexpensive enough to keep nearby scroll frames ready on mobile.
-    return this.isMobile() ? 10 : 12;
+    // Mobile bitmaps are downscaled before they enter cache, allowing a wider
+    // look-ahead window. Full 4K bitmaps are expensive on ultrawide desktops.
+    if (this.isMobile()) return 24;
+    return window.innerWidth >= 2560 ? 6 : 12;
   }
 
   public static getDevicePixelRatioCap(): number {
