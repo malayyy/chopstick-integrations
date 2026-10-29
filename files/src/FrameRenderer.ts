@@ -7,7 +7,7 @@
  * appear frozen in mobile WebKit.
  */
 
-import { getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
+import { getPredecodedFrameBitmap, isSharedPredecodedBitmap, getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
 
 type FrameAsset = ImageBitmap | HTMLImageElement;
@@ -63,6 +63,7 @@ export class FrameRenderer {
 
   private releaseAsset(asset: FrameAsset): void {
     if (this.isBitmap(asset)) {
+      if (isSharedPredecodedBitmap(asset)) return;
       asset.close();
       return;
     }
@@ -76,6 +77,9 @@ export class FrameRenderer {
   }
 
   private async loadFrameAsset(index: number): Promise<FrameAsset> {
+    const predecoded = getPredecodedFrameBitmap(index);
+    if (predecoded) return predecoded;
+
     const blob = getPreloadedFrameBlob(index);
 
     const width = this.decodeWidth();
@@ -247,6 +251,15 @@ export class FrameRenderer {
       this.maskKey = '';
     }
 
+    const predecoded = PerformanceController.isMobile()
+      ? getPredecodedFrameBitmap(this.desiredFrame)
+      : undefined;
+    if (predecoded) {
+      this.drawFrame(predecoded);
+      this.renderedFrame = this.desiredFrame;
+      return;
+    }
+
     const visible = this.cache.get(this.desiredFrame);
     if (visible) this.draw(this.desiredFrame, true);
     else this.enqueue(this.desiredFrame, true);
@@ -260,6 +273,20 @@ export class FrameRenderer {
       if (previousTarget) previousTarget.priority = false;
     }
     this.desiredFrame = index;
+
+    // Mobile frames are already decoded and retained during the loader. Draw
+    // them synchronously so scroll input never waits on an image decode queue.
+    const predecoded = PerformanceController.isMobile()
+      ? getPredecodedFrameBitmap(index)
+      : undefined;
+    if (predecoded) {
+      if (force || index !== this.renderedFrame) {
+        this.drawFrame(predecoded);
+        this.renderedFrame = index;
+      }
+      return true;
+    }
+
     const asset = this.touchCache(index);
 
     if (asset) {
