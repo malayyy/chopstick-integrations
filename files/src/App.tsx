@@ -75,10 +75,10 @@ export default function App() {
         // resolution while the branded loader is still visible. This avoids
         // 4K JPEG decodes during touch scrolling, where WebKit can lag badly.
         if (narrowPhone && typeof createImageBitmap === 'function') {
-          const decodeWidth = 560;
+          const decodeWidth = 448;
           const decodeFailures = await predecodeFrameSequence({
             totalFrames,
-            concurrency: 4,
+            concurrency: 2,
             decodeWidth,
             signal: controller.signal,
             onProgress: (completed, total) => {
