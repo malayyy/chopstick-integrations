@@ -499,3 +499,296 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Branded first-load gate: keep the sequence and page hidden until every asset is ready. */
+.preloader-overlay {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 28px 22px;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 39%, rgba(100, 8, 17, 0.32) 0%, rgba(23, 2, 5, 0.14) 31%, transparent 62%),
+    linear-gradient(180deg, rgba(3, 1, 2, 0.86), rgba(3, 1, 2, 0.96));
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+.preloader-overlay::before,
+.preloader-overlay::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+.preloader-overlay::before {
+  width: min(110vw, 980px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(246, 55, 64, 0.07);
+  border-radius: 50%;
+  box-shadow: 0 0 90px rgba(120, 8, 20, 0.12), inset 0 0 90px rgba(120, 8, 20, 0.08);
+  animation: loader-breathe 6s ease-in-out infinite alternate;
+}
+.preloader-overlay::after {
+  inset: 0;
+  opacity: 0.32;
+  background-image:
+    radial-gradient(circle at 18% 27%, rgba(255, 76, 78, .9) 0 1px, transparent 2px),
+    radial-gradient(circle at 77% 21%, rgba(255, 45, 58, .8) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 84% 72%, rgba(255, 76, 78, .65) 0 1px, transparent 2px),
+    radial-gradient(circle at 13% 76%, rgba(255, 45, 58, .7) 0 1px, transparent 2px);
+  animation: loader-embers 18s linear infinite alternate;
+}
+.preloader-content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: min(100%, 440px);
+  padding: 8px 0;
+  text-align: center;
+}
+.preloader-emblem {
+  position: relative;
+  display: grid;
+  width: 220px;
+  height: 174px;
+  margin: 0 auto 15px;
+  place-items: center;
+  isolation: isolate;
+}
+.preloader-orbit {
+  position: absolute;
+  display: block;
+  border: 1px solid rgba(245, 62, 70, 0.22);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.preloader-orbit--outer {
+  width: 158px;
+  height: 158px;
+  border-style: dashed;
+  animation: loader-orbit 24s linear infinite;
+}
+.preloader-orbit--inner {
+  width: 111px;
+  height: 111px;
+  border-color: rgba(255, 175, 167, 0.16);
+  box-shadow: 0 0 36px rgba(240, 34, 48, 0.08);
+  animation: loader-orbit-reverse 16s linear infinite;
+}
+.preloader-chopstick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 184px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent 0%, #621016 12%, #c82731 29%, #ffe2d7 49%, #ee454b 58%, #670b14 88%, transparent 100%);
+  box-shadow: 0 0 7px rgba(248, 49, 57, 0.6), 0 0 24px rgba(232, 21, 34, 0.28);
+  transform-origin: center;
+}
+.preloader-chopstick::before,
+.preloader-chopstick::after {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border: 1px solid rgba(255, 211, 196, 0.75);
+  border-radius: 50%;
+  content: "";
+  transform: translateY(-50%);
+}
+.preloader-chopstick::before { left: 15%; }
+.preloader-chopstick::after { right: 15%; }
+.preloader-chopstick--one {
+  transform: translate(-50%, -50%) rotate(-43deg);
+  animation: loader-stick-one 4.4s ease-in-out infinite;
+}
+.preloader-chopstick--two {
+  height: 3px;
+  transform: translate(-50%, -50%) rotate(-43deg) translateY(11px);
+  animation: loader-stick-two 4.4s ease-in-out infinite;
+}
+.preloader-flare {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 107, 108, 0.5);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 78, 80, 0.42), rgba(123, 8, 18, 0.05) 62%, transparent 72%);
+  box-shadow: 0 0 27px rgba(253, 33, 46, 0.55);
+  transform: translate(-50%, -50%);
+  animation: loader-flare 2.6s ease-in-out infinite;
+}
+.preloader-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffbdb1;
+  box-shadow: 0 0 8px 2px rgba(255, 54, 64, 0.78);
+}
+.preloader-spark--one {
+  top: 36px;
+  right: 41px;
+  animation: loader-spark 2.3s ease-in-out infinite;
+}
+.preloader-spark--two {
+  bottom: 38px;
+  left: 43px;
+  animation: loader-spark 2.8s ease-in-out infinite reverse;
+}
+.preloader-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: rgba(249, 224, 219, 0.63);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.23em;
+}
+.preloader-kicker > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f23a44;
+  box-shadow: 0 0 12px rgba(242, 58, 68, 0.85);
+}
+.preloader-title {
+  margin: 0;
+  color: #fbf4f0;
+  font-size: clamp(43px, 7vw, 62px);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+.preloader-title em {
+  color: #f04a51;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.055em;
+}
+.preloader-copy {
+  max-width: 330px;
+  margin: 18px auto 30px;
+  color: rgba(247, 233, 229, 0.6);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.preloader-progress {
+  width: min(100%, 350px);
+  text-align: left;
+}
+.preloader-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 11px;
+  color: rgba(248, 222, 218, 0.68);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+}
+.preloader-progress-meta span:last-child {
+  color: #fff1ed;
+  font-variant-numeric: tabular-nums;
+}
+.preloader-progress-track {
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
+}
+.preloader-progress-track > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #710d17, #ec303b 55%, #ffd0c5);
+  box-shadow: 0 0 12px rgba(241, 43, 54, 0.85);
+  transition: width 180ms ease-out;
+}
+.preloader-footnote {
+  margin: 11px 0 0;
+  color: rgba(248, 223, 219, 0.35);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.preloader-error {
+  width: min(100%, 350px);
+  color: rgba(248, 223, 219, 0.75);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.preloader-error button {
+  margin-top: 10px;
+  padding: 12px 17px;
+  border: 1px solid rgba(247, 74, 82, 0.58);
+  border-radius: 999px;
+  background: rgba(123, 13, 24, 0.34);
+  color: #fff4f0;
+  font: inherit;
+  cursor: pointer;
+}
+.preloader-error button span {
+  margin-left: 8px;
+  color: #ff7478;
+}
+@keyframes loader-orbit { to { transform: rotate(360deg); } }
+@keyframes loader-orbit-reverse { to { transform: rotate(-360deg); } }
+@keyframes loader-flare {
+  0%, 100% { opacity: .45; transform: translate(-50%, -50%) scale(.82); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.14); }
+}
+@keyframes loader-stick-one {
+  0%, 100% { margin-left: -3px; }
+  50% { margin-left: 3px; }
+}
+@keyframes loader-stick-two {
+  0%, 100% { margin-left: 3px; }
+  50% { margin-left: -3px; }
+}
+@keyframes loader-spark {
+  0%, 100% { opacity: .25; transform: scale(.7); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+@keyframes loader-breathe {
+  from { transform: scale(.92); opacity: .35; }
+  to { transform: scale(1.05); opacity: .85; }
+}
+@keyframes loader-embers {
+  from { transform: translate3d(-.5%, .3%, 0); }
+  to { transform: translate3d(.5%, -.3%, 0); }
+}
+
+@media (max-width: 600px) {
+  .preloader-emblem { width: 190px; height: 152px; margin-bottom: 14px; }
+  .preloader-orbit--outer { width: 138px; height: 138px; }
+  .preloader-orbit--inner { width: 97px; height: 97px; }
+  .preloader-chopstick { width: 162px; }
+  .preloader-copy { margin-bottom: 26px; font-size: 12px; }
+  .preloader-kicker { font-size: 8px; letter-spacing: .18em; }
+}
+@media (max-height: 720px) {
+  .preloader-emblem { height: 132px; margin-bottom: 8px; transform: scale(.82); }
+  .preloader-copy { margin-top: 12px; margin-bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader-overlay::before,
+  .preloader-overlay::after,
+  .preloader-orbit,
+  .preloader-chopstick,
+  .preloader-flare,
+  .preloader-spark {
+    animation: none !important;
+  }
+}
