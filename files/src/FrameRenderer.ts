@@ -22,9 +22,10 @@ export class FrameRenderer {
   private readonly maxConcurrentLoads = 4;
 
   private cache = new Map<number, FrameAsset>();
-  private inFlight = new Map<number, symbol>();
+  private inFlight = new Map<number, { token: symbol; priority: boolean }>();
   private failed = new Set<number>();
   private queue: number[] = [];
+  private priorityQueue = new Set<number>();
   private activeLoads = 0;
   private desiredFrame = 1;
   private renderedFrame = -1;
@@ -127,34 +128,47 @@ export class FrameRenderer {
 
   private enqueue(index: number, priority = false): void {
     if (this.destroyed || index < 1 || index > this.totalFrames) return;
-    if (this.cache.has(index) || this.inFlight.has(index) || this.failed.has(index)) return;
+    if (this.cache.has(index) || this.failed.has(index)) return;
+
+    const active = this.inFlight.get(index);
+    if (active) {
+      if (priority) active.priority = true;
+      return;
+    }
 
     const queuedAt = this.queue.indexOf(index);
     if (queuedAt >= 0) {
       if (priority) {
         this.queue.splice(queuedAt, 1);
         this.queue.unshift(index);
+        this.priorityQueue.add(index);
       }
       return;
     }
 
-    if (priority) this.queue.unshift(index);
-    else this.queue.push(index);
+    if (priority) {
+      this.queue.unshift(index);
+      this.priorityQueue.add(index);
+    } else {
+      this.queue.push(index);
+    }
     this.pumpQueue();
   }
 
   private pumpQueue(): void {
     while (!this.destroyed && this.activeLoads < this.maxConcurrentLoads && this.queue.length > 0) {
       const index = this.queue.shift()!;
+      const isPriority = this.priorityQueue.has(index) || index === this.desiredFrame;
+      this.priorityQueue.delete(index);
       if (this.cache.has(index) || this.inFlight.has(index) || this.failed.has(index)) continue;
 
-      const token = Symbol(`frame-${index}`);
-      this.inFlight.set(index, token);
+      const entry = { token: Symbol(`frame-${index}`), priority: isPriority };
+      this.inFlight.set(index, entry);
       this.activeLoads += 1;
 
       void this.loadFrameAsset(index).then((asset) => {
-        // If scroll moved on while decode was running, dispose of the stale bitmap.
-        if (this.destroyed || this.inFlight.get(index) !== token) {
+        // If destroyed or deliberately cancelled, dispose the stale bitmap.
+        if (this.destroyed || this.inFlight.get(index) !== entry) {
           this.releaseAsset(asset);
           return;
         }
@@ -167,7 +181,7 @@ export class FrameRenderer {
         if (index === this.desiredFrame) this.draw(index, true);
         this.pumpQueue();
       }).catch((error: unknown) => {
-        if (this.inFlight.get(index) !== token) return;
+        if (this.inFlight.get(index) !== entry) return;
         this.inFlight.delete(index);
         this.activeLoads = Math.max(0, this.activeLoads - 1);
         this.failed.add(index);
@@ -183,10 +197,19 @@ export class FrameRenderer {
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
-    // Do not cancel in-flight decodes on every scroll event. On mobile WebKit
-    // that repeatedly discards work before it completes and makes the sequence
-    // look frozen during continuous scrolling. Let them finish and populate cache.
-    this.queue = this.queue.filter((index) => Math.abs(index - center) <= radius);
+    // Keep active target decodes alive, but cancel stale prefetches. This leaves
+    // capacity for the newest requested frame during continuous touch scrolling.
+    for (const [index, entry] of this.inFlight) {
+      if (entry.priority || Math.abs(index - center) <= radius) continue;
+      this.inFlight.delete(index);
+      this.activeLoads = Math.max(0, this.activeLoads - 1);
+    }
+
+    this.queue = this.queue.filter((index) => {
+      const keep = Math.abs(index - center) <= radius;
+      if (!keep) this.priorityQueue.delete(index);
+      return keep;
+    });
     for (let distance = 1; distance <= radius; distance += 1) {
       const forward = center + distance;
       const backward = center - distance;
@@ -331,6 +354,7 @@ export class FrameRenderer {
   public destroy(): void {
     this.destroyed = true;
     this.queue = [];
+    this.priorityQueue.clear();
 
     for (const asset of this.cache.values()) this.releaseAsset(asset);
     this.inFlight.clear();
