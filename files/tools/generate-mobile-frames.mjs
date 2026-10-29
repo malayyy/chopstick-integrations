@@ -1,4 +1,5 @@
 import { mkdir, readdir, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -9,6 +10,24 @@ const sourceDir = resolve(repoRoot, 'frames');
 const mobileOutputDir = resolve(scriptDir, '../public/frames-mobile');
 const desktopOutputDir = resolve(scriptDir, '../public/frames-desktop');
 const framePattern = /^ezgif-frame-(\d{3})\.jpg$/;
+const hdManifestPath = resolve(scriptDir, '../public/hd-frames-manifest.json');
+const outputFramePattern = /^ezgif-frame-\d{3}\.webp$/;
+
+// On branches with imported HD-PNG-derived WebP frames, use those audited assets
+// instead of regenerating from the older JPEG sequence during Vercel's prebuild.
+if (existsSync(hdManifestPath)) {
+  const [mobileNames, desktopNames] = await Promise.all([
+    readdir(mobileOutputDir),
+    readdir(desktopOutputDir),
+  ]);
+  const mobileCount = mobileNames.filter((name) => outputFramePattern.test(name)).length;
+  const desktopCount = desktopNames.filter((name) => outputFramePattern.test(name)).length;
+  if (mobileCount !== 300 || desktopCount !== 300) {
+    throw new Error(\`HD frame manifest exists but optimized assets are incomplete (mobile=\${mobileCount}, desktop=\${desktopCount}).\`);
+  }
+  console.log('Using 300 imported HD-PNG-derived desktop/mobile frames; skipped legacy JPEG re-export.');
+  process.exit(0);
+}
 
 const names = (await readdir(sourceDir))
   .filter((name) => framePattern.test(name))
