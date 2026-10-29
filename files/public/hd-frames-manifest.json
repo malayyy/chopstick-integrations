@@ -1,0 +1,34 @@
+{
+  "source": "Google Drive shared HD PNG frame ZIP",
+  "source_drive_file_id": "1gbCtbjbtWJANIDF_d-Xcgg9suoibJ1An",
+  "frame_count": 300,
+  "frame_indices": [
+    1,
+    300
+  ],
+  "source_dimensions": [
+    "3840x2160"
+  ],
+  "source_zip_bytes": 576079749,
+  "source_png_total_bytes": 580628001,
+  "source_png_average_bytes": 1935427,
+  "desktop": {
+    "directory": "frames-desktop",
+    "frame_count": 300,
+    "max_width": 2560,
+    "quality": 90,
+    "total_bytes": 29180480,
+    "average_bytes_per_frame": 97268
+  },
+  "mobile": {
+    "directory": "frames-mobile",
+    "frame_count": 300,
+    "max_width": 960,
+    "quality": 86,
+    "total_bytes": 7387238,
+    "average_bytes_per_frame": 24624
+  },
+  "preserve_source_aspect_ratio": true,
+  "upscale_source": false,
+  "note": "WebP delivery assets were generated from supplied PNGs. No AI enhancement was applied."
+}
