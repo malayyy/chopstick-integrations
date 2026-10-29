@@ -7,7 +7,7 @@
  * appear frozen in mobile WebKit.
  */
 
-import { getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
+import { getPredecodedFrameBitmap, isSharedPredecodedBitmap, getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
 
 type FrameAsset = ImageBitmap | HTMLImageElement;
@@ -60,6 +60,9 @@ export class FrameRenderer {
 
   private releaseAsset(asset: FrameAsset): void {
     if (this.isBitmap(asset)) {
+      // These bitmaps are shared across the complete mobile sequence. The
+      // renderer cache may evict its reference but must not close the source.
+      if (isSharedPredecodedBitmap(asset)) return;
       asset.close();
       return;
     }
@@ -73,6 +76,9 @@ export class FrameRenderer {
   }
 
   private async loadFrameAsset(index: number): Promise<FrameAsset> {
+    const predecoded = getPredecodedFrameBitmap(index);
+    if (predecoded) return predecoded;
+
     const blob = getPreloadedFrameBlob(index);
     const width = this.decodeWidth();
     const height = Math.round(width * 9 / 16);
