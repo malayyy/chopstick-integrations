@@ -119,8 +119,8 @@ a {
   position: relative;
   z-index: 2;
   width: 100%;
-  height: 360svh;
-  min-height: 360vh;
+  height: 320svh;
+  min-height: 320vh;
   pointer-events: none;
   background: transparent;
 }
@@ -138,6 +138,7 @@ a {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.96);
   transform-origin: top left;
+  mix-blend-mode: screen;
   filter: drop-shadow(0 0 28px rgba(225, 28, 40, 0.1));
   transition:
     opacity 360ms ease,
@@ -213,8 +214,8 @@ a {
   position: relative;
   z-index: 3;
   width: 100%;
-  min-height: 160svh;
-  margin-top: -100svh;
+  min-height: 200svh;
+  margin-top: 0;
   padding: 0 var(--page-gutter);
   opacity: 0;
   transform: translateY(14px);
@@ -402,6 +403,38 @@ a {
   font-weight: 400;
 }
 
+
+.contact-section {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 55svh;
+  max-width: 900px;
+  padding: 10vh 0 12vh;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.contact-section h2 {
+  margin: 0;
+  color: #f9f4f1;
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 520;
+  letter-spacing: -0.078em;
+  line-height: 0.96;
+}
+.contact-section h2 em {
+  color: #ef3942;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+.contact-section > p:not(.eyebrow) {
+  max-width: 540px;
+  margin: 22px 0 26px;
+  color: rgba(246, 237, 234, 0.72);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.7;
+}
+
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -436,13 +469,13 @@ a {
 }
 
 @media (max-width: 600px) {
-  .scroll-track { height: 300svh; min-height: 300vh; }
+  .scroll-track { height: 400svh; min-height: 400vh; }
   .brand-lockup { width: 86vw; max-height: 34vh; }
   .brand-lockup.is-docked { top: 17px; left: 17px; width: 126px; }
   .site-header { min-height: 66px; padding-left: 150px; }
   .site-header nav { gap: 14px; }
   .site-header nav a { font-size: 9px; letter-spacing: 0.04em; }
-  .homepage { min-height: 155svh; }
+  .homepage { min-height: 200svh; }
   .home-hero { padding: 104px 0 100px; }
   .home-hero h1 { font-size: clamp(3rem, 13vw, 5.5rem); line-height: 0.96; }
   .hero-description { max-width: 440px; font-size: 15px; line-height: 1.65; }
