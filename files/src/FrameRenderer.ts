@@ -242,6 +242,10 @@ export class FrameRenderer {
   public render(frameIndex: number, force = false): boolean {
     if (this.destroyed) return false;
     const index = Math.max(1, Math.min(this.totalFrames, Math.round(frameIndex)));
+    if (index !== this.desiredFrame) {
+      const previousTarget = this.inFlight.get(this.desiredFrame);
+      if (previousTarget) previousTarget.priority = false;
+    }
     this.desiredFrame = index;
     const asset = this.touchCache(index);
 
