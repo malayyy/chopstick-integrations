@@ -165,8 +165,20 @@ export default function App() {
     const requestRender = (progress: number) => {
       latestFrame = Timeline.getState(progress).targetFrame;
       updateEndPhase(progress >= 0.9999);
-      if (rafId !== null) return;
 
+      // Mobile frames are fully predecoded before the loader exits. Draw the
+      // requested bitmap immediately on scroll rather than queueing a second
+      // RAF, which can be coalesced/throttled by mobile WebKit during touch scroll.
+      if (PerformanceController.isMobile()) {
+        if (rafId !== null) {
+          window.cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        renderer.render(latestFrame);
+        return;
+      }
+
+      if (rafId !== null) return;
       rafId = window.requestAnimationFrame(() => {
         rafId = null;
         renderer.render(latestFrame);
