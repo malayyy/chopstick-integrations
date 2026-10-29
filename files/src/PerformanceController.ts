@@ -23,4 +23,5 @@ export class PerformanceController {
     const target = Math.max(1280, Math.ceil(canvasPixelWidth * 1.5));
     // The desktop source sequence is 3840×2160; never decode above source size.
     return Math.min(3840, target);
-  }}
+  }
+}
