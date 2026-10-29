@@ -156,8 +156,8 @@ export default function App() {
           <p className="eyebrow"><span /> HAVE A SYSTEM TO CONNECT?</p>
           <h2>Let's make it <em>flow.</em></h2>
           <p>Tell us what's disconnected, repetitive, or getting in your team's way.</p>
-          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations/issues/new" target="_blank" rel="noreferrer">
-            Start a conversation <span aria-hidden="true">↗</span>
+          <a className="primary-link" href="https://github.com/malayyy/chopstick-integrations" target="_blank" rel="noreferrer">
+            Explore the build <span aria-hidden="true">↗</span>
           </a>
         </section>
 
