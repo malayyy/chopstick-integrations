@@ -19,7 +19,7 @@ export class FrameRenderer {
   private readonly maskCtx: CanvasRenderingContext2D;
   private readonly totalFrames: number;
   private readonly maxCacheSize: number;
-  private readonly maxConcurrentLoads = 4;
+  private readonly maxConcurrentLoads = PerformanceController.isMobile() ? 8 : 6;
 
   private cache = new Map<number, FrameAsset>();
   private inFlight = new Map<number, { token: symbol; priority: boolean }>();
@@ -193,7 +193,8 @@ export class FrameRenderer {
   }
 
   private scheduleNeighborhood(center: number): void {
-    const radius = PerformanceController.isMobile() ? 6 : 8;
+    const mobile = PerformanceController.isMobile();
+    const radius = mobile ? 14 : (window.innerWidth >= 2560 ? 6 : 8);
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
