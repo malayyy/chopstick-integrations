@@ -78,28 +78,13 @@ export class FrameRenderer {
   private async loadFrameAsset(index: number): Promise<FrameAsset> {
     const blob = getPreloadedFrameBlob(index);
 
-    // Mobile WebP assets are already 640×360. Let WebKit's native image
-    // decoder handle them instead of creating another bitmap for each frame.
-    if (PerformanceController.isMobile() && blob) {
-      const image = new Image();
-      image.decoding = 'async';
-      image.src = this.frameUrl(index);
-      if (typeof image.decode === 'function') {
-        await image.decode();
-      } else {
-        await new Promise<void>((resolve, reject) => {
-          image.onload = () => resolve();
-          image.onerror = () => reject(new Error(`Frame ${index} failed to decode`));
-        });
-      }
-      return image;
-    }
-
     const width = this.decodeWidth();
     const height = Math.round(width * 9 / 16);
 
     if (blob && typeof createImageBitmap === 'function') {
       try {
+        // Mobile WebPs are already 640×360. Avoid an unnecessary resize step.
+        if (PerformanceController.isMobile()) return await createImageBitmap(blob);
         return await createImageBitmap(blob, {
           resizeWidth: width,
           resizeHeight: height,
