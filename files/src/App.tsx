@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
 import { FrameRenderer } from './FrameRenderer';
-import { preloadFrameSequence } from './FrameAssets';
+import { preloadFrameSequence, predecodeFrameSequence } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
 import { ScrollController } from './ScrollController';
 import { Timeline } from './Timeline';
@@ -52,7 +52,12 @@ export default function App() {
             signal: controller.signal,
             useMobileFrames: mobile,
             onProgress: (completed, total) => {
-              if (!cancelled && total > 0) setPreloadProgress(completed / total);
+              if (!cancelled && total > 0) {
+                const phaseProgress = mobile && typeof createImageBitmap === 'function'
+                  ? 0.5 * (completed / total)
+                  : completed / total;
+                setPreloadProgress(phaseProgress);
+              }
             },
           }),
           loadStaticImage(ambientImage),
@@ -63,6 +68,28 @@ export default function App() {
           console.error('Frames that failed to preload:', failedFrames);
           setPreloadFailed(true);
           return;
+        }
+
+        // Finish mobile decoding behind the loader. These source WebPs are
+        // 400×225, so retaining the 300 bitmaps costs roughly 100 MB rather
+        // than decoding hundreds of full-resolution 4K JPEGs on demand.
+        if (mobile && typeof createImageBitmap === 'function') {
+          const decodeFailures = await predecodeFrameSequence({
+            totalFrames,
+            concurrency: 2,
+            signal: controller.signal,
+            onProgress: (completed, total) => {
+              if (!cancelled && total > 0) {
+                setPreloadProgress(0.5 + 0.5 * (completed / total));
+              }
+            },
+          });
+          if (cancelled) return;
+          if (decodeFailures.length > 0) {
+            console.error('Frames that failed to decode:', decodeFailures);
+            setPreloadFailed(true);
+            return;
+          }
         }
 
         setPreloadProgress(1);
