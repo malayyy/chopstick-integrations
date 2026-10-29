@@ -1,4 +1,4 @@
-/** Small, bounded quality settings for desktop and mobile browser memory budgets. */
+/** Conservative per-device budgets for decoded 4K frame memory. */
 export class PerformanceController {
   public static isMobile(): boolean {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -6,7 +6,8 @@ export class PerformanceController {
   }
 
   public static getOptimalCacheSize(): number {
-    return this.isMobile() ? 22 : 42;
+    // 4K RGBA frames are expensive after decoding; keep the active window small.
+    return this.isMobile() ? 4 : 8;
   }
 
   public static getDevicePixelRatioCap(): number {

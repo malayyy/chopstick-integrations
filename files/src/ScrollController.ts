@@ -1,4 +1,4 @@
-/** Native scroll controller. Scroll position is the single source of truth. */
+/** Native scroll controller scoped to the intro track. */
 export interface ScrollControllerOptions {
   onProgress: (progress: number) => void;
 }
@@ -6,15 +6,19 @@ export interface ScrollControllerOptions {
 export class ScrollController {
   private destroyed = false;
   private readonly onProgress: (progress: number) => void;
+  private readonly track: HTMLElement;
   private readonly onScroll: () => void;
 
-  constructor(options: ScrollControllerOptions) {
+  constructor(options: ScrollControllerOptions, track: HTMLElement) {
     this.onProgress = options.onProgress;
+    this.track = track;
+
     this.onScroll = () => {
       if (this.destroyed) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      const progress = maxScroll === 0 ? 0 : Math.max(0, Math.min(1, scrollTop / maxScroll));
+      const trackStart = this.track.getBoundingClientRect().top + scrollTop;
+      const scrollDistance = Math.max(1, this.track.offsetHeight - window.innerHeight);
+      const progress = Math.max(0, Math.min(1, (scrollTop - trackStart) / scrollDistance));
       this.onProgress(progress);
     };
 
@@ -25,9 +29,10 @@ export class ScrollController {
   }
 
   public getProgress(): number {
-    const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-    return maxScroll === 0 ? 0 : Math.max(0, Math.min(1, scrollTop / maxScroll));
+    const trackStart = this.track.getBoundingClientRect().top + scrollTop;
+    const scrollDistance = Math.max(1, this.track.offsetHeight - window.innerHeight);
+    return Math.max(0, Math.min(1, (scrollTop - trackStart) / scrollDistance));
   }
 
   public destroy(): void {
