@@ -39,20 +39,21 @@ async function worker() {
 
     await Promise.all([
       sharp(sourcePath, { failOn: 'error', limitInputPixels: 20_000_000 })
-        .resize({ width: 800, height: 450, fit: 'fill', withoutEnlargement: true })
-        .webp({ quality: 78, effort: 4, smartSubsample: true })
+        .resize({ width: 960, height: 540, fit: 'fill', withoutEnlargement: true })
+        .webp({ quality: 84, effort: 4, smartSubsample: true })
         .toFile(resolve(mobileOutputDir, outputName)),
       sharp(sourcePath, { failOn: 'error', limitInputPixels: 20_000_000 })
-        .resize({ width: 1600, height: 900, fit: 'fill', withoutEnlargement: true })
-        .webp({ quality: 80, effort: 4, smartSubsample: true })
+        .resize({ width: 2560, height: 1440, fit: 'fill', withoutEnlargement: true })
+        .webp({ quality: 88, effort: 4, smartSubsample: true })
         .toFile(resolve(desktopOutputDir, outputName)),
     ]);
 
     completed += 1;
     if (completed % 50 === 0 || completed === names.length) {
-      console.log(`Prepared optimized frames: ${completed}/300`);
+      console.log(`Prepared high-quality frames: ${completed}/300`);
     }
   }
 }
+
 await Promise.all(Array.from({ length: concurrency }, () => worker()));
-console.log('Generated 300 mobile (800×450) and 300 desktop (1600×900) WebP frames.');
+console.log('Generated 300 mobile (960×540, quality 84) and 300 desktop (2560×1440, quality 88) WebP frames.');
