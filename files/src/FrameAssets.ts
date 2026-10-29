@@ -1,10 +1,15 @@
 /**
- * Preloads the complete cinematic sequence into browser-managed Blob URLs.
- * Compressed frame bytes stay available for scrubbing, while FrameRenderer
- * decodes only its small active cache instead of keeping 300 decoded 4K images.
+ * Fetch and retain the compressed frames before the intro is shown.
+ * The renderer can create viewport-sized ImageBitmaps from the original blobs,
+ * avoiding full 4K decoded images on phones.
  */
 
+const frameBlobs = new Map<number, Blob>();
 const frameObjectUrls = new Map<number, string>();
+
+export function getPreloadedFrameBlob(index: number): Blob | undefined {
+  return frameBlobs.get(index);
+}
 
 export function getPreloadedFrameUrl(index: number): string | undefined {
   return frameObjectUrls.get(index);
@@ -33,7 +38,7 @@ export async function preloadFrameSequence({
       nextFrame += 1;
       if (frame > totalFrames) return;
 
-      let succeeded = frameObjectUrls.has(frame);
+      let succeeded = frameBlobs.has(frame);
       if (!succeeded) {
         for (let attempt = 0; attempt < 3 && !signal.aborted; attempt += 1) {
           try {
@@ -49,10 +54,10 @@ export async function preloadFrameSequence({
             const blob = await response.blob();
             if (signal.aborted) return;
 
-            const objectUrl = URL.createObjectURL(blob);
+            frameBlobs.set(frame, blob);
             const previousUrl = frameObjectUrls.get(frame);
             if (previousUrl) URL.revokeObjectURL(previousUrl);
-            frameObjectUrls.set(frame, objectUrl);
+            frameObjectUrls.set(frame, URL.createObjectURL(blob));
             succeeded = true;
             break;
           } catch (error) {
@@ -75,8 +80,9 @@ export async function preloadFrameSequence({
   return failures;
 }
 
-/** Release retained compressed blobs when deliberately leaving the experience. */
+/** Release retained blobs if the cinematic experience is deliberately torn down. */
 export function releasePreloadedFrameSequence(): void {
   for (const objectUrl of frameObjectUrls.values()) URL.revokeObjectURL(objectUrl);
   frameObjectUrls.clear();
+  frameBlobs.clear();
 }
