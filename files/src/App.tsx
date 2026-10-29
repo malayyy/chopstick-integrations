@@ -11,8 +11,121 @@ export default function App() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [introComplete, setIntroComplete] = useState(false);
   const [logoDocked, setLogoDocked] = useState(false);
+  const [assetsReady, setAssetsReady] = useState(false);
+  const [preloadProgress, setPreloadProgress] = useState(0);
+  const [preloadFailed, setPreloadFailed] = useState(false);
+  const [preloadAttempt, setPreloadAttempt] = useState(0);
+
+  // Download the complete frame sequence before revealing the site. This is a
+  // network preload only: decoded 4K frames are NOT all retained in RAM.
+  useEffect(() => {
+    let cancelled = false;
+    const controller = new AbortController();
+    const totalFrames = Timeline.TOTAL_FRAMES;
+    const mobile = PerformanceController.isMobile();
+    const concurrency = mobile ? 4 : 10;
+    let nextFrame = 1;
+    let completedFrames = 0;
+    const failedFrames: number[] = [];
+
+    setAssetsReady(false);
+    setPreloadProgress(0);
+    setPreloadFailed(false);
+
+    const loadStaticImage = async (src: string) => {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = src;
+      if (typeof image.decode === 'function') {
+        await image.decode();
+      } else {
+        await new Promise<void>((resolve, reject) => {
+          image.onload = () => resolve();
+          image.onerror = () => reject(new Error('Static image failed to load'));
+        });
+      }
+    };
+
+    const loadFrame = async (frame: number) => {
+      const url = `/ezgif-frame-${String(frame).padStart(3, '0')}.jpg`;
+      let lastError: unknown;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        if (cancelled) return;
+        try {
+          const response = await fetch(url, {
+            cache: 'force-cache',
+            signal: controller.signal,
+          });
+          if (!response.ok) throw new Error(`Frame ${frame} returned HTTP ${response.status}`);
+          // Consume the body so the browser completes the transfer and can cache it.
+          await response.arrayBuffer();
+          return;
+        } catch (error) {
+          if (cancelled || controller.signal.aborted) return;
+          lastError = error;
+        }
+      }
+      failedFrames.push(frame);
+      if (lastError) console.error('Unable to preload animation frame', frame, lastError);
+    };
+
+    const worker = async () => {
+      while (!cancelled) {
+        const frame = nextFrame;
+        nextFrame += 1;
+        if (frame > totalFrames) return;
+        await loadFrame(frame);
+        if (cancelled) return;
+        completedFrames += 1;
+        setPreloadProgress(completedFrames / totalFrames);
+      }
+    };
+
+    const preloadAll = async () => {
+      try {
+        await Promise.all([
+          loadStaticImage(ambientImage),
+          loadStaticImage(logoImage),
+          ...Array.from({ length: concurrency }, () => worker()),
+        ]);
+        if (cancelled) return;
+        if (failedFrames.length > 0) {
+          setPreloadFailed(true);
+          return;
+        }
+        setPreloadProgress(1);
+        setAssetsReady(true);
+      } catch (error) {
+        if (cancelled || controller.signal.aborted) return;
+        console.error('The cinematic experience could not finish preloading.', error);
+        setPreloadFailed(true);
+      }
+    };
+
+    void preloadAll();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [preloadAttempt]);
+
+  // Keep the document still behind the loader so scroll progress always starts at zero.
+  useEffect(() => {
+    if (assetsReady) return;
+    const root = document.documentElement;
+    const body = document.body;
+    const previousRootOverflow = root.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    root.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    return () => {
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyOverflow;
+    };
+  }, [assetsReady]);
 
   useEffect(() => {
+    if (!assetsReady) return;
     const canvas = compositionRef.current;
     const track = trackRef.current;
     if (!canvas || !track) return;
@@ -80,10 +193,10 @@ export default function App() {
       if (dockTimer !== null) window.clearTimeout(dockTimer);
       renderer.destroy();
     };
-  }, []);
+  }, [assetsReady]);
 
   return (
-    <main className="site-shell" aria-label="Chopstick Integrations">
+    <main className="site-shell" aria-label="Chopstick Integrations" aria-busy={!assetsReady}>
       <div
         className="ambient-background"
         style={{ backgroundImage: `url("${ambientImage}")` }}
@@ -166,6 +279,51 @@ export default function App() {
           <span>Different tools. One connected system.</span>
         </footer>
       </div>
+
+      {!assetsReady && (
+        <section className="preloader-overlay" role="status" aria-live="polite" aria-label="Preparing the cinematic experience">
+          <div className="preloader-content">
+            <div className="preloader-emblem" aria-hidden="true">
+              <span className="preloader-orbit preloader-orbit--outer" />
+              <span className="preloader-orbit preloader-orbit--inner" />
+              <span className="preloader-chopstick preloader-chopstick--one" />
+              <span className="preloader-chopstick preloader-chopstick--two" />
+              <span className="preloader-flare" />
+              <span className="preloader-spark preloader-spark--one" />
+              <span className="preloader-spark preloader-spark--two" />
+            </div>
+
+            <p className="preloader-kicker"><span /> CHOPSTICK INTEGRATIONS</p>
+            <h1 className="preloader-title">
+              Great things<br />
+              <em>take time.</em>
+            </h1>
+            <p className="preloader-copy">
+              Setting every frame into place. Your experience is worth the wait.
+            </p>
+
+            {preloadFailed ? (
+              <div className="preloader-error">
+                <p>A few frames did not arrive. Let's give them another shot.</p>
+                <button type="button" onClick={() => setPreloadAttempt((attempt) => attempt + 1)}>
+                  Retry loading <span aria-hidden="true">↻</span>
+                </button>
+              </div>
+            ) : (
+              <div className="preloader-progress" aria-label={`${Math.floor(preloadProgress * Timeline.TOTAL_FRAMES)} of ${Timeline.TOTAL_FRAMES} frames loaded`}>
+                <div className="preloader-progress-meta">
+                  <span>PREPARING THE REVEAL</span>
+                  <span>{String(Math.floor(preloadProgress * Timeline.TOTAL_FRAMES)).padStart(3, '0')} / {Timeline.TOTAL_FRAMES}</span>
+                </div>
+                <div className="preloader-progress-track">
+                  <span style={{ width: `${Math.min(100, preloadProgress * 100)}%` }} />
+                </div>
+                <p className="preloader-footnote">Please wait while the cinematic frames load</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
