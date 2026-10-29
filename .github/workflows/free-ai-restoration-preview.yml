@@ -41,7 +41,7 @@ jobs:
           mim install mmengine==0.10.5
           mim install mmcv==2.1.0
           git clone --depth 1 --branch v1.2.0 https://github.com/open-mmlab/mmagic.git /tmp/mmagic-src
-          python -m pip install -v -e /tmp/mmagic-src
+          python -m pip install --no-build-isolation -v -e /tmp/mmagic-src
 
       - name: Prepare a 2-second test segment
         run: |
