@@ -1,0 +1,77 @@
+name: Free AI video restoration preview
+
+on:
+  push:
+    branches:
+      - ai-restore/temporal-preview
+
+permissions:
+  contents: read
+
+jobs:
+  restore-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Verify source clip
+        run: |
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate,nb_frames -show_entries format=duration,size -of default=noprint_wrappers=1 files/source/hero-scrub-original.mp4
+
+      - name: Install CPU PyTorch
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install OpenMMLab inference dependencies
+        run: |
+          python -m pip install openmim
+          mim install mmengine==0.10.5
+          mim install mmcv==2.1.0
+          git clone --depth 1 --branch v1.2.0 https://github.com/open-mmlab/mmagic.git /tmp/mmagic-src
+          python -m pip install -v -e /tmp/mmagic-src
+
+      - name: Prepare a 2-second test segment
+        run: |
+          mkdir -p results
+          ffmpeg -hide_banner -y -ss 4.5 -i files/source/hero-scrub-original.mp4 -t 2 -vf "scale=640:360:flags=lanczos" -r 30 -an -c:v libx264 -preset ultrafast -crf 0 /tmp/chopstick-segment-640x360.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate,nb_frames -show_entries format=duration -of default=noprint_wrappers=1 /tmp/chopstick-segment-640x360.mp4
+
+      - name: Run free temporal AI super-resolution on the test segment
+        run: |
+          cd /tmp/mmagic-src
+          python demo/mmagic_inference_demo.py --model-name basicvsr --video /tmp/chopstick-segment-640x360.mp4 --result-out-dir "$GITHUB_WORKSPACE/results/basicvsr-ai-preview.mp4" --device cpu
+
+      - name: Build matched-size comparison
+        run: |
+          ffmpeg -hide_banner -y -ss 5.5 -i files/source/hero-scrub-original.mp4 -frames:v 1 -vf "scale=1280:720:flags=lanczos" -q:v 2 results/original-at-display-size.jpg
+          ffmpeg -hide_banner -y -i results/basicvsr-ai-preview.mp4 -vf "select='eq(n,30)',scale=1280:720:flags=lanczos" -frames:v 1 -q:v 2 results/ai-at-display-size.jpg
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          from pathlib import Path
+          original = Image.open('results/original-at-display-size.jpg').convert('RGB')
+          ai = Image.open('results/ai-at-display-size.jpg').convert('RGB')
+          canvas = Image.new('RGB', (2560, 770), '#111111')
+          draw = ImageDraw.Draw(canvas)
+          draw.text((24, 14), 'ORIGINAL SOURCE — DISPLAYED AT 1280×720', fill='white')
+          draw.text((1304, 14), 'FREE TEMPORAL AI RESTORATION — SAME DISPLAY SIZE', fill='white')
+          canvas.paste(original, (0, 50))
+          canvas.paste(ai, (1280, 50))
+          canvas.save('results/ai-restoration-comparison.jpg', quality=92, subsampling=0)
+          PY
+
+      - name: Upload preview artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chopstick-free-ai-restoration-preview
+          path: results/
+          if-no-files-found: error
+          retention-days: 7
