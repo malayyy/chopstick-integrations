@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Verify source clip
         run: |
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate,nb_frames -show_entries format=duration,size -of default=noprint_wrappers=1 files/source/hero-scrub-original.mp4
