@@ -1,7 +1,6 @@
 /**
- * Download all required frame assets before showing the intro. On phones the
- * compressed 400×225 WebP frames are decoded during the loader and held as
- * ImageBitmaps, so scroll events never have to wait for image decoding.
+ * Preloaded compressed frame assets for scroll-controlled animation.
+ * The renderer selects the desktop or mobile WebP variant for each frame.
  */
 
 const frameBlobs = new Map<number, Blob>();
@@ -34,10 +33,10 @@ export interface FramePreloadOptions {
 }
 
 function getFramePath(index: number, useMobileFrames: boolean): string {
-  const filename = `ezgif-frame-${String(index).padStart(3, '0')}`;
+  const filename = `ezgif-frame-${String(index).padStart(3, '0')}.webp`;
   return useMobileFrames
-    ? `/frames-mobile/${filename}.webp`
-    : `/${filename}.jpg`;
+    ? `/frames-mobile/${filename}`
+    : `/frames-desktop/${filename}`;
 }
 
 export async function preloadFrameSequence({
@@ -53,30 +52,26 @@ export async function preloadFrameSequence({
 
   const worker = async (): Promise<void> => {
     while (!signal.aborted) {
-      const frame = nextFrame;
-      nextFrame += 1;
+      const frame = nextFrame++;
       if (frame > totalFrames) return;
 
       let succeeded = frameBlobs.has(frame) || predecodedFrames.has(frame);
       if (!succeeded) {
         for (let attempt = 0; attempt < 3 && !signal.aborted; attempt += 1) {
           try {
-            const response = await fetch(getFramePath(frame, useMobileFrames), {
-              cache: 'force-cache',
-              signal,
-            });
-            if (!response.ok) {
-              throw new Error(`Frame ${frame} returned HTTP ${response.status}`);
-            }
+            const expectedType = 'image/webp';
+            const filename = `ezgif-frame-${String(frame).padStart(3, '0')}.webp`;
+            const path = useMobileFrames
+              ? `/frames-mobile/${filename}`
+              : `/frames-desktop/${filename}`;
+            const response = await fetch(path, { cache: 'force-cache', signal });
+            if (!response.ok) throw new Error(`Frame ${frame} returned HTTP ${response.status}`);
             const contentType = response.headers.get('content-type') || '';
-            const expectedType = useMobileFrames ? 'image/webp' : 'image/jpeg';
             if (!contentType.toLowerCase().includes(expectedType)) {
               throw new Error(`Frame ${frame} returned unexpected content type: ${contentType || 'unknown'}`);
             }
-
             const blob = await response.blob();
             if (signal.aborted) return;
-
             frameBlobs.set(frame, blob);
             const previousUrl = frameObjectUrls.get(frame);
             if (previousUrl) URL.revokeObjectURL(previousUrl);
@@ -89,15 +84,13 @@ export async function preloadFrameSequence({
           }
         }
       }
-
       if (!succeeded) failures.push(frame);
       completed += 1;
       onProgress(completed, totalFrames);
     }
   };
 
-  const workerCount = Math.max(1, Math.min(concurrency, totalFrames));
-  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, totalFrames)) }, () => worker()));
   return failures;
 }
 
@@ -120,44 +113,36 @@ export async function predecodeFrameSequence({
 
   const worker = async (): Promise<void> => {
     while (!signal.aborted) {
-      const frame = nextFrame;
-      nextFrame += 1;
+      const frame = nextFrame++;
       if (frame > totalFrames) return;
-
       if (!predecodedFrames.has(frame)) {
         const blob = frameBlobs.get(frame);
         if (!blob || typeof createImageBitmap !== 'function') {
           failures.push(frame);
         } else {
           try {
-            // Source files are already phone-sized WebP; decode at native size.
             const bitmap = await createImageBitmap(blob);
             if (signal.aborted) {
               bitmap.close();
               return;
             }
-
             predecodedFrames.set(frame, bitmap);
             sharedBitmaps.add(bitmap);
             frameBlobs.delete(frame);
-
             const objectUrl = frameObjectUrls.get(frame);
             if (objectUrl) URL.revokeObjectURL(objectUrl);
             frameObjectUrls.delete(frame);
           } catch (error) {
-            console.error('Unable to pre-decode mobile frame', frame, error);
+            console.error('Unable to pre-decode animation frame', frame, error);
             failures.push(frame);
           }
         }
       }
-
       completed += 1;
       onProgress(completed, totalFrames);
     }
   };
-
-  const workerCount = Math.max(1, Math.min(concurrency, totalFrames));
-  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, totalFrames)) }, () => worker()));
   return failures;
 }
 
