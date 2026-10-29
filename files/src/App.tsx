@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
 import logoImage from './assets/chopstick-logo.webp';
 import { FrameRenderer } from './FrameRenderer';
+import { preloadFrameSequence } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
 import { ScrollController } from './ScrollController';
 import { Timeline } from './Timeline';
@@ -24,10 +25,6 @@ export default function App() {
     const totalFrames = Timeline.TOTAL_FRAMES;
     const mobile = PerformanceController.isMobile();
     const concurrency = mobile ? 4 : 10;
-    let nextFrame = 1;
-    let completedFrames = 0;
-    const failedFrames: number[] = [];
-
     setAssetsReady(false);
     setPreloadProgress(0);
     setPreloadFailed(false);
@@ -46,50 +43,23 @@ export default function App() {
       }
     };
 
-    const loadFrame = async (frame: number) => {
-      const url = `/ezgif-frame-${String(frame).padStart(3, '0')}.jpg`;
-      let lastError: unknown;
-      for (let attempt = 0; attempt < 3; attempt += 1) {
-        if (cancelled) return;
-        try {
-          const response = await fetch(url, {
-            cache: 'force-cache',
-            signal: controller.signal,
-          });
-          if (!response.ok) throw new Error(`Frame ${frame} returned HTTP ${response.status}`);
-          // Consume the body so the browser completes the transfer and can cache it.
-          await response.arrayBuffer();
-          return;
-        } catch (error) {
-          if (cancelled || controller.signal.aborted) return;
-          lastError = error;
-        }
-      }
-      failedFrames.push(frame);
-      if (lastError) console.error('Unable to preload animation frame', frame, lastError);
-    };
-
-    const worker = async () => {
-      while (!cancelled) {
-        const frame = nextFrame;
-        nextFrame += 1;
-        if (frame > totalFrames) return;
-        await loadFrame(frame);
-        if (cancelled) return;
-        completedFrames += 1;
-        setPreloadProgress(completedFrames / totalFrames);
-      }
-    };
-
     const preloadAll = async () => {
       try {
-        await Promise.all([
+        const [failedFrames] = await Promise.all([
+          preloadFrameSequence({
+            totalFrames,
+            concurrency,
+            signal: controller.signal,
+            onProgress: (completed, total) => {
+              if (!cancelled && total > 0) setPreloadProgress(completed / total);
+            },
+          }),
           loadStaticImage(ambientImage),
           loadStaticImage(logoImage),
-          ...Array.from({ length: concurrency }, () => worker()),
         ]);
         if (cancelled) return;
         if (failedFrames.length > 0) {
+          console.error('Frames that failed to preload:', failedFrames);
           setPreloadFailed(true);
           return;
         }
