@@ -17,8 +17,8 @@ export default function App() {
   const [preloadFailed, setPreloadFailed] = useState(false);
   const [preloadAttempt, setPreloadAttempt] = useState(0);
 
-  // Download the complete frame sequence before revealing the site. This is a
-  // network preload only: decoded 4K frames are NOT all retained in RAM.
+  // Download the complete frame sequence before revealing the site. Keep the
+  // compressed blobs ready for scroll scrubbing; decode only the active cache.
   useEffect(() => {
     let cancelled = false;
     const controller = new AbortController();
@@ -67,6 +67,7 @@ export default function App() {
         setAssetsReady(true);
       } catch (error) {
         if (cancelled || controller.signal.aborted) return;
+        controller.abort();
         console.error('The cinematic experience could not finish preloading.', error);
         setPreloadFailed(true);
       }
