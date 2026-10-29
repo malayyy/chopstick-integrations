@@ -382,7 +382,7 @@ export class FrameRenderer {
     const width = this.canvas.width;
     const height = this.canvas.height;
     const { width: imageWidth, height: imageHeight } = this.assetDimensions(asset);
-    const scale = Math.max(width / imageWidth, height / imageHeight);
+    const scale = Math.min(width / imageWidth, height / imageHeight);
     const drawWidth = imageWidth * scale;
     const drawHeight = imageHeight * scale;
     const drawX = (width - drawWidth) / 2;
