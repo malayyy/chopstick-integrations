@@ -8,7 +8,7 @@ const repoRoot = resolve(scriptDir, '../..');
 const sourceDir = resolve(repoRoot, 'frames');
 const outputDir = resolve(scriptDir, '../public/frames-mobile');
 const framePattern = /^ezgif-frame-(\d{3})\.jpg$/;
-const outputWidth = 640;
+const outputWidth = 400;
 const quality = 76;
 
 const names = (await readdir(sourceDir))
@@ -35,7 +35,7 @@ async function worker() {
     const outputPath = resolve(outputDir, outputName);
 
     await sharp(sourcePath, { failOn: 'error', limitInputPixels: 20_000_000 })
-      .resize({ width: outputWidth, height: 360, fit: 'fill', withoutEnlargement: true })
+      .resize({ width: outputWidth, height: 225, fit: 'fill', withoutEnlargement: true })
       .webp({ quality, effort: 4, smartSubsample: true })
       .toFile(outputPath);
 
@@ -47,4 +47,4 @@ async function worker() {
 }
 
 await Promise.all(Array.from({ length: concurrency }, () => worker()));
-console.log(`Generated ${completed} mobile WebP frames (640×360 max) in ${outputDir}`);
+console.log(`Generated ${completed} mobile WebP frames (400×225 max) in ${outputDir}`);
