@@ -1,12 +1,16 @@
 /**
- * Responsive image-sequence renderer.
- * The transparent canvas is layered over the independently animated ambient
- * background. A soft alpha feather removes the hard 16:9 frame boundary while
- * keeping the complete source composition visible (no stretch or crop).
+ * Responsive scroll-sequence renderer.
+ *
+ * All compressed frames are preloaded before the intro appears. On mobile,
+ * decode each JPEG into a viewport-sized ImageBitmap rather than a full 4K
+ * bitmap; this avoids the heavy decode/cache bottleneck that makes scrubbing
+ * appear frozen in mobile WebKit.
  */
 
+import { getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
 import { PerformanceController } from './PerformanceController';
-import { getPreloadedFrameUrl } from './FrameAssets';
+
+type FrameAsset = ImageBitmap | HTMLImageElement;
 
 export class FrameRenderer {
   private readonly canvas: HTMLCanvasElement;
@@ -17,8 +21,8 @@ export class FrameRenderer {
   private readonly maxCacheSize: number;
   private readonly maxConcurrentLoads = 4;
 
-  private cache = new Map<number, HTMLImageElement>();
-  private inFlight = new Map<number, HTMLImageElement>();
+  private cache = new Map<number, FrameAsset>();
+  private inFlight = new Map<number, symbol>();
   private failed = new Set<number>();
   private queue: number[] = [];
   private activeLoads = 0;
@@ -27,14 +31,14 @@ export class FrameRenderer {
   private destroyed = false;
   private maskKey = '';
 
-  constructor(canvas: HTMLCanvasElement, totalFrames = 300, maxCacheSize = 8) {
+  constructor(canvas: HTMLCanvasElement, totalFrames = 300, maxCacheSize = 10) {
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
     if (!ctx) throw new Error('This browser could not create a 2D canvas context.');
 
     this.canvas = canvas;
     this.ctx = ctx;
     this.totalFrames = totalFrames;
-    this.maxCacheSize = Math.max(4, maxCacheSize);
+    this.maxCacheSize = Math.max(6, maxCacheSize);
     this.maskCanvas = document.createElement('canvas');
     const maskCtx = this.maskCanvas.getContext('2d', { alpha: true });
     if (!maskCtx) throw new Error('This browser could not create the composition mask.');
@@ -49,21 +53,75 @@ export class FrameRenderer {
       ?? `/ezgif-frame-${String(index).padStart(3, '0')}.jpg`;
   }
 
-  private touchCache(index: number): HTMLImageElement | undefined {
-    const image = this.cache.get(index);
-    if (!image) return undefined;
-    this.cache.delete(index);
-    this.cache.set(index, image);
+  private isBitmap(asset: FrameAsset): asset is ImageBitmap {
+    return typeof ImageBitmap !== 'undefined' && asset instanceof ImageBitmap;
+  }
+
+  private releaseAsset(asset: FrameAsset): void {
+    if (this.isBitmap(asset)) {
+      asset.close();
+      return;
+    }
+    asset.onload = null;
+    asset.onerror = null;
+    asset.src = '';
+  }
+
+  private decodeWidth(): number {
+    return PerformanceController.getFrameDecodeWidth(this.canvas.width);
+  }
+
+  private async loadFrameAsset(index: number): Promise<FrameAsset> {
+    const blob = getPreloadedFrameBlob(index);
+    const width = this.decodeWidth();
+    const height = Math.round(width * 9 / 16);
+
+    if (blob && typeof createImageBitmap === 'function') {
+      try {
+        return await createImageBitmap(blob, {
+          resizeWidth: width,
+          resizeHeight: height,
+          resizeQuality: 'high',
+        });
+      } catch (error) {
+        // Older WebKit builds may reject resize options; retain a compatible path.
+        console.warn('Resized frame decode unavailable; using image fallback.', error);
+      }
+    }
+
+    const image = new Image();
+    image.decoding = 'async';
+    const src = this.frameUrl(index);
+
+    if (typeof image.decode === 'function') {
+      image.src = src;
+      await image.decode();
+      return image;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error(`Frame ${index} failed to decode`));
+      image.src = src;
+    });
     return image;
+  }
+
+  private touchCache(index: number): FrameAsset | undefined {
+    const asset = this.cache.get(index);
+    if (!asset) return undefined;
+    this.cache.delete(index);
+    this.cache.set(index, asset);
+    return asset;
   }
 
   private evictIfNeeded(): void {
     while (this.cache.size > this.maxCacheSize) {
       const victim = [...this.cache.keys()].find((key) => key !== this.desiredFrame);
       if (victim === undefined) break;
-      const image = this.cache.get(victim);
+      const asset = this.cache.get(victim);
       this.cache.delete(victim);
-      if (image) image.src = '';
+      if (asset) this.releaseAsset(asset);
     }
   }
 
@@ -90,51 +148,50 @@ export class FrameRenderer {
       const index = this.queue.shift()!;
       if (this.cache.has(index) || this.inFlight.has(index) || this.failed.has(index)) continue;
 
-      const image = new Image();
-      image.decoding = 'async';
-      this.inFlight.set(index, image);
+      const token = Symbol(`frame-${index}`);
+      this.inFlight.set(index, token);
       this.activeLoads += 1;
 
-      image.onload = () => {
+      void this.loadFrameAsset(index).then((asset) => {
+        // If scroll moved on while decode was running, dispose of the stale bitmap.
+        if (this.destroyed || this.inFlight.get(index) !== token) {
+          this.releaseAsset(asset);
+          return;
+        }
+
         this.inFlight.delete(index);
         this.activeLoads = Math.max(0, this.activeLoads - 1);
-        if (this.destroyed) return;
-        this.cache.set(index, image);
+        this.cache.set(index, asset);
         this.evictIfNeeded();
-        // Never let a stale async load overwrite the currently requested frame.
+
         if (index === this.desiredFrame) this.draw(index, true);
         this.pumpQueue();
-      };
-
-      image.onerror = () => {
+      }).catch((error: unknown) => {
+        if (this.inFlight.get(index) !== token) return;
         this.inFlight.delete(index);
         this.activeLoads = Math.max(0, this.activeLoads - 1);
         this.failed.add(index);
+        console.error('Unable to decode animation frame', index, error);
         if (!this.destroyed && index === this.desiredFrame) this.drawNearestAvailable();
         this.pumpQueue();
-      };
-
-      image.src = this.frameUrl(index);
+      });
     }
   }
 
   private scheduleNeighborhood(center: number): void {
-    const radius = PerformanceController.isMobile() ? 3 : 6;
+    const radius = PerformanceController.isMobile() ? 6 : 8;
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
-    // Cancel obsolete in-flight prefetches. Otherwise rapid scrolling can leave
-    // old images occupying every slot while the requested frame waits.
-    for (const [index, image] of this.inFlight) {
+    // Cancel outdated queued/in-flight work so the most recently requested frame wins.
+    for (const [index] of this.inFlight) {
       if (index === center || Math.abs(index - center) <= radius) continue;
-      image.onload = null;
-      image.onerror = null;
-      image.src = '';
       this.inFlight.delete(index);
       this.activeLoads = Math.max(0, this.activeLoads - 1);
     }
 
     this.queue = this.queue.filter((index) => Math.abs(index - center) <= radius);
+    // Load the target first, then work outward in both directions.
     for (let distance = 1; distance <= radius; distance += 1) {
       const forward = center + distance;
       const backward = center - distance;
@@ -167,9 +224,9 @@ export class FrameRenderer {
     if (this.destroyed) return false;
     const index = Math.max(1, Math.min(this.totalFrames, Math.round(frameIndex)));
     this.desiredFrame = index;
-    const image = this.touchCache(index);
+    const asset = this.touchCache(index);
 
-    if (image && image.complete && image.naturalWidth > 0) {
+    if (asset) {
       if (force || index !== this.renderedFrame) this.draw(index, true);
       this.scheduleNeighborhood(index);
       return true;
@@ -186,8 +243,9 @@ export class FrameRenderer {
     let nearestIndex: number | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
 
-    for (const [index, image] of this.cache) {
-      if (!image.complete || image.naturalWidth === 0) continue;
+    for (const [index, asset] of this.cache) {
+      const hasPixels = this.isBitmap(asset) || (asset.complete && asset.naturalWidth > 0);
+      if (!hasPixels) continue;
       const distance = Math.abs(index - this.desiredFrame);
       if (distance < nearestDistance) {
         nearestIndex = index;
@@ -198,11 +256,18 @@ export class FrameRenderer {
   }
 
   private draw(index: number, force = false): void {
-    const image = this.cache.get(index);
-    if (!image || !image.complete || image.naturalWidth === 0) return;
+    const asset = this.cache.get(index);
+    if (!asset) return;
+    if (!this.isBitmap(asset) && (!asset.complete || asset.naturalWidth === 0)) return;
     if (!force && index === this.renderedFrame) return;
-    this.drawFrame(image);
+    this.drawFrame(asset);
     this.renderedFrame = index;
+  }
+
+  private assetDimensions(asset: FrameAsset): { width: number; height: number } {
+    return this.isBitmap(asset)
+      ? { width: asset.width, height: asset.height }
+      : { width: asset.naturalWidth, height: asset.naturalHeight };
   }
 
   private prepareFeatherMask(imageWidth: number, imageHeight: number): void {
@@ -239,14 +304,10 @@ export class FrameRenderer {
     this.maskKey = key;
   }
 
-  private drawFrame(image: HTMLImageElement): void {
+  private drawFrame(asset: FrameAsset): void {
     const width = this.canvas.width;
     const height = this.canvas.height;
-    const imageWidth = image.naturalWidth;
-    const imageHeight = image.naturalHeight;
-
-    // Keep the complete hand/chopstick composition visible; the ambient image
-    // fills the rest of tall or ultrawide viewports without introducing a box.
+    const { width: imageWidth, height: imageHeight } = this.assetDimensions(asset);
     const scale = Math.min(width / imageWidth, height / imageHeight);
     const drawWidth = imageWidth * scale;
     const drawHeight = imageHeight * scale;
@@ -256,10 +317,8 @@ export class FrameRenderer {
     this.ctx.clearRect(0, 0, width, height);
     this.ctx.imageSmoothingEnabled = true;
     this.ctx.imageSmoothingQuality = 'high';
-    this.ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+    this.ctx.drawImage(asset, drawX, drawY, drawWidth, drawHeight);
 
-    // Feather the actual source-frame bounds into the ambient layer to remove
-    // the obvious rectangular seam visible in the current desktop/mobile shots.
     this.prepareFeatherMask(imageWidth, imageHeight);
     this.ctx.globalCompositeOperation = 'destination-in';
     this.ctx.drawImage(this.maskCanvas, 0, 0, width, height);
@@ -274,17 +333,7 @@ export class FrameRenderer {
     this.destroyed = true;
     this.queue = [];
 
-    for (const image of this.inFlight.values()) {
-      image.onload = null;
-      image.onerror = null;
-      image.src = '';
-    }
-    for (const image of this.cache.values()) {
-      image.onload = null;
-      image.onerror = null;
-      image.src = '';
-    }
-
+    for (const asset of this.cache.values()) this.releaseAsset(asset);
     this.inFlight.clear();
     this.cache.clear();
     this.failed.clear();
