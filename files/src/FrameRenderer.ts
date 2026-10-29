@@ -6,6 +6,7 @@
  */
 
 import { PerformanceController } from './PerformanceController';
+import { getPreloadedFrameUrl } from './FrameAssets';
 
 export class FrameRenderer {
   private readonly canvas: HTMLCanvasElement;
@@ -44,7 +45,8 @@ export class FrameRenderer {
   }
 
   private frameUrl(index: number): string {
-    return `/ezgif-frame-${String(index).padStart(3, '0')}.jpg`;
+    return getPreloadedFrameUrl(index)
+      ?? `/ezgif-frame-${String(index).padStart(3, '0')}.jpg`;
   }
 
   private touchCache(index: number): HTMLImageElement | undefined {
