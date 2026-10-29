@@ -18,9 +18,9 @@ export class PerformanceController {
   }
 
   public static getFrameDecodeWidth(canvasPixelWidth: number): number {
-    const minimum = this.isMobile() ? 960 : 1280;
-    const target = Math.max(minimum, Math.ceil(canvasPixelWidth * 1.5));
-    // The source sequence is 3840×2160 (16:9). Never decode larger than source.
+    if (this.isMobile()) return 640;
+
+    const target = Math.max(1280, Math.ceil(canvasPixelWidth * 1.5));
+    // The desktop source sequence is 3840×2160; never decode above source size.
     return Math.min(3840, target);
-  }
-}
+  }}
