@@ -37,6 +37,7 @@ jobs:
 
       - name: Install OpenMMLab inference dependencies
         run: |
+          python -m pip install wheel 'numpy<2' 'opencv-python<4.12'
           python -m pip install openmim
           mim install mmengine==0.10.5
           mim install mmcv==2.1.0
