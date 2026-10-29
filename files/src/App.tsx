@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ambientImage from './assets/ambient.webp';
-import logoImage from './assets/chopstick-logo.webp';
+import logoImage from './assets/chopstick-wordmark.svg';
 import { FrameRenderer } from './FrameRenderer';
 import { PerformanceController } from './PerformanceController';
 import { ScrollController } from './ScrollController';

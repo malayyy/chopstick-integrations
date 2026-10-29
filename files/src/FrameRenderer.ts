@@ -1,7 +1,8 @@
 /**
- * Scroll-driven frame renderer.
- * The ambient atmosphere is a separate CSS layer, so it keeps moving while
- * the sharp image sequence stays locked to the user's scroll position.
+ * Responsive image-sequence renderer.
+ * The transparent canvas is layered over the independently animated ambient
+ * background. A soft alpha feather removes the hard 16:9 frame boundary while
+ * keeping the complete source composition visible (no stretch or crop).
  */
 
 import { PerformanceController } from './PerformanceController';
@@ -9,6 +10,8 @@ import { PerformanceController } from './PerformanceController';
 export class FrameRenderer {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly maskCanvas: HTMLCanvasElement;
+  private readonly maskCtx: CanvasRenderingContext2D;
   private readonly totalFrames: number;
   private readonly maxCacheSize: number;
   private readonly maxConcurrentLoads = 4;
@@ -21,15 +24,20 @@ export class FrameRenderer {
   private desiredFrame = 1;
   private renderedFrame = -1;
   private destroyed = false;
+  private maskKey = '';
 
-  constructor(canvas: HTMLCanvasElement, totalFrames = 300, maxCacheSize = 12) {
+  constructor(canvas: HTMLCanvasElement, totalFrames = 300, maxCacheSize = 8) {
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
     if (!ctx) throw new Error('This browser could not create a 2D canvas context.');
 
     this.canvas = canvas;
     this.ctx = ctx;
     this.totalFrames = totalFrames;
-    this.maxCacheSize = Math.max(5, maxCacheSize);
+    this.maxCacheSize = Math.max(4, maxCacheSize);
+    this.maskCanvas = document.createElement('canvas');
+    const maskCtx = this.maskCanvas.getContext('2d', { alpha: true });
+    if (!maskCtx) throw new Error('This browser could not create the composition mask.');
+    this.maskCtx = maskCtx;
 
     this.resize();
     this.render(1, true);
@@ -91,7 +99,7 @@ export class FrameRenderer {
         if (this.destroyed) return;
         this.cache.set(index, image);
         this.evictIfNeeded();
-        // A late request must never replace a newer frame target.
+        // Never let a stale async load overwrite the currently requested frame.
         if (index === this.desiredFrame) this.draw(index, true);
         this.pumpQueue();
       };
@@ -113,12 +121,25 @@ export class FrameRenderer {
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
-    // Drop stale prefetch requests so fast scrolling prioritizes nearby frames.
+    // Cancel obsolete in-flight prefetches. Otherwise rapid scrolling can leave
+    // old images occupying every slot while the requested frame waits.
+    for (const [index, image] of this.inFlight) {
+      if (index === center || Math.abs(index - center) <= radius) continue;
+      image.onload = null;
+      image.onerror = null;
+      image.src = '';
+      this.inFlight.delete(index);
+      this.activeLoads = Math.max(0, this.activeLoads - 1);
+    }
+
     this.queue = this.queue.filter((index) => Math.abs(index - center) <= radius);
     for (let distance = 1; distance <= radius; distance += 1) {
-      if (center + distance <= end) this.enqueue(center + distance);
-      if (center - distance >= start) this.enqueue(center - distance);
+      const forward = center + distance;
+      const backward = center - distance;
+      if (forward <= end) this.enqueue(forward);
+      if (backward >= start) this.enqueue(backward);
     }
+    this.pumpQueue();
   }
 
   public resize(): void {
@@ -126,13 +147,17 @@ export class FrameRenderer {
     const dpr = PerformanceController.getDevicePixelRatioCap();
     const width = Math.max(1, Math.round(window.innerWidth * dpr));
     const height = Math.max(1, Math.round(window.innerHeight * dpr));
-    if (this.canvas.width === width && this.canvas.height === height) return;
 
-    this.canvas.width = width;
-    this.canvas.height = height;
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.maskCanvas.width = Math.max(1, Math.ceil(width * 0.25));
+      this.maskCanvas.height = Math.max(1, Math.ceil(height * 0.25));
+      this.maskKey = '';
+    }
 
-    const current = this.cache.get(this.desiredFrame);
-    if (current) this.draw(this.desiredFrame, true);
+    const visible = this.cache.get(this.desiredFrame);
+    if (visible) this.draw(this.desiredFrame, true);
     else this.enqueue(this.desiredFrame, true);
   }
 
@@ -178,21 +203,65 @@ export class FrameRenderer {
     this.renderedFrame = index;
   }
 
+  private prepareFeatherMask(imageWidth: number, imageHeight: number): void {
+    const maskWidth = this.maskCanvas.width;
+    const maskHeight = this.maskCanvas.height;
+    const key = `${maskWidth}x${maskHeight}:${imageWidth}x${imageHeight}`;
+    if (key === this.maskKey) return;
+
+    const scale = Math.min(maskWidth / imageWidth, maskHeight / imageHeight);
+    const drawWidth = imageWidth * scale;
+    const drawHeight = imageHeight * scale;
+    const left = (maskWidth - drawWidth) / 2;
+    const top = (maskHeight - drawHeight) / 2;
+    const fadeX = Math.max(2, Math.min(26, drawWidth * 0.045));
+    const fadeY = Math.max(2, Math.min(22, drawHeight * 0.075));
+    const pixels = this.maskCtx.createImageData(maskWidth, maskHeight);
+
+    for (let y = 0; y < maskHeight; y += 1) {
+      for (let x = 0; x < maskWidth; x += 1) {
+        const offset = (y * maskWidth + x) * 4;
+        const edgeX = Math.min(x - left, left + drawWidth - x);
+        const edgeY = Math.min(y - top, top + drawHeight - y);
+        const inFrame = edgeX >= 0 && edgeY >= 0;
+        const alphaX = Math.max(0, Math.min(1, edgeX / fadeX));
+        const alphaY = Math.max(0, Math.min(1, edgeY / fadeY));
+        pixels.data[offset] = 255;
+        pixels.data[offset + 1] = 255;
+        pixels.data[offset + 2] = 255;
+        pixels.data[offset + 3] = inFrame ? Math.round(255 * Math.min(alphaX, alphaY)) : 0;
+      }
+    }
+
+    this.maskCtx.putImageData(pixels, 0, 0);
+    this.maskKey = key;
+  }
+
   private drawFrame(image: HTMLImageElement): void {
     const width = this.canvas.width;
     const height = this.canvas.height;
     const imageWidth = image.naturalWidth;
     const imageHeight = image.naturalHeight;
+
+    // Keep the complete hand/chopstick composition visible; the ambient image
+    // fills the rest of tall or ultrawide viewports without introducing a box.
     const scale = Math.min(width / imageWidth, height / imageHeight);
-    const drawWidth = Math.round(imageWidth * scale);
-    const drawHeight = Math.round(imageHeight * scale);
-    const drawX = Math.round((width - drawWidth) / 2);
-    const drawY = Math.round((height - drawHeight) / 2);
+    const drawWidth = imageWidth * scale;
+    const drawHeight = imageHeight * scale;
+    const drawX = (width - drawWidth) / 2;
+    const drawY = (height - drawHeight) / 2;
 
     this.ctx.clearRect(0, 0, width, height);
     this.ctx.imageSmoothingEnabled = true;
     this.ctx.imageSmoothingQuality = 'high';
     this.ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+
+    // Feather the actual source-frame bounds into the ambient layer to remove
+    // the obvious rectangular seam visible in the current desktop/mobile shots.
+    this.prepareFeatherMask(imageWidth, imageHeight);
+    this.ctx.globalCompositeOperation = 'destination-in';
+    this.ctx.drawImage(this.maskCanvas, 0, 0, width, height);
+    this.ctx.globalCompositeOperation = 'source-over';
   }
 
   public getRenderedFrame(): number {
@@ -217,6 +286,8 @@ export class FrameRenderer {
     this.inFlight.clear();
     this.cache.clear();
     this.failed.clear();
+    this.maskCanvas.width = 1;
+    this.maskCanvas.height = 1;
     this.canvas.width = 1;
     this.canvas.height = 1;
   }
