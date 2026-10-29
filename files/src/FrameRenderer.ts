@@ -121,6 +121,17 @@ export class FrameRenderer {
     const start = Math.max(1, center - radius);
     const end = Math.min(this.totalFrames, center + radius);
 
+    // Cancel obsolete in-flight prefetches. Otherwise rapid scrolling can leave
+    // old images occupying every slot while the requested frame waits.
+    for (const [index, image] of this.inFlight) {
+      if (index === center || Math.abs(index - center) <= radius) continue;
+      image.onload = null;
+      image.onerror = null;
+      image.src = '';
+      this.inFlight.delete(index);
+      this.activeLoads = Math.max(0, this.activeLoads - 1);
+    }
+
     this.queue = this.queue.filter((index) => Math.abs(index - center) <= radius);
     for (let distance = 1; distance <= radius; distance += 1) {
       const forward = center + distance;
@@ -128,6 +139,7 @@ export class FrameRenderer {
       if (forward <= end) this.enqueue(forward);
       if (backward >= start) this.enqueue(backward);
     }
+    this.pumpQueue();
   }
 
   public resize(): void {
