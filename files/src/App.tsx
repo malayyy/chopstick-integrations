@@ -5,14 +5,17 @@ import { ScrollController } from './ScrollController';
 import { Timeline } from './Timeline';
 
 export default function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const atmosphereRef = useRef<HTMLCanvasElement>(null);
+  const compositionRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const atmosphere = atmosphereRef.current;
+    const composition = compositionRef.current;
+    if (!atmosphere || !composition) return;
 
     const renderer = new FrameRenderer(
-      canvas,
+      atmosphere,
+      composition,
       Timeline.TOTAL_FRAMES,
       PerformanceController.getOptimalCacheSize(),
     );
@@ -38,11 +41,13 @@ export default function App() {
 
     window.addEventListener('resize', handleResize, { passive: true });
     window.addEventListener('pageshow', handleResize);
+    window.visualViewport?.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       scrollController.destroy();
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('pageshow', handleResize);
+      window.visualViewport?.removeEventListener('resize', handleResize);
       if (rafId !== null) window.cancelAnimationFrame(rafId);
       renderer.destroy();
     };
@@ -50,7 +55,12 @@ export default function App() {
 
   return (
     <main className="experience" aria-label="Chopstick Integrations cinematic reveal">
-      <canvas ref={canvasRef} className="composition-canvas" aria-label="Cinematic Chopstick Integrations animation" />
+      <canvas ref={atmosphereRef} className="atmosphere-canvas" aria-hidden="true" />
+      <canvas
+        ref={compositionRef}
+        className="composition-canvas"
+        aria-label="Chopstick Integrations cinematic animation. Scroll to move through the sequence."
+      />
       <div className="scroll-track" aria-hidden="true" />
     </main>
   );
