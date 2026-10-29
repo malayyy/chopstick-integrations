@@ -2,3 +2,4 @@
 /files/node_modules/
 /files/dist/
 /files/*.tsbuildinfo
+/files/public/frames-mobile/
