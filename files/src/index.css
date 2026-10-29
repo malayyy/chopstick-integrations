@@ -139,7 +139,7 @@ a {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.96);
   transform-origin: top left;
-  mix-blend-mode: normal;
+  mix-blend-mode: screen;
   filter: drop-shadow(0 0 22px rgba(225, 28, 40, 0.18));
   transition:
     opacity 360ms ease,
