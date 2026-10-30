@@ -1,10 +1,6 @@
 /**
- * Responsive scroll-sequence renderer.
- *
- * All compressed frames are preloaded before the intro appears. On mobile,
- * decode each JPEG into a viewport-sized ImageBitmap rather than a full 4K
- * bitmap; this avoids the heavy decode/cache bottleneck that makes scrubbing
- * appear frozen in mobile WebKit.
+ * Responsive scroll-sequence renderer. Desktop uses a higher-quality 4K WebP sequence;
+ * mobile keeps smaller decodes for smooth scrolling and bounded memory use.
  */
 
 import { getPredecodedFrameBitmap, isSharedPredecodedBitmap, getPreloadedFrameBlob, getPreloadedFrameUrl } from './FrameAssets';
