@@ -4,3 +4,4 @@ dist/
 *.tsbuildinfo
 hd-frames/
 frames/
+qa/

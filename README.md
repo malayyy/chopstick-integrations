@@ -29,8 +29,11 @@ npm run qa         # headless Chrome (CDP) QA battery: scrub states, portrait
 - `src/engine/FrameLoader.ts` — priority fetch: current-index window first
   (`±2/+5`), then nearest-first background expansion with bounded concurrency.
 - `src/engine/RenderEngine.ts` — 2D canvas blit (`alpha: false`,
-  `desynchronized: true`), DPR clamped to 2, portrait
-  action-crop → lockup-contain reframe easing at 82–98% progress.
+  `desynchronized: true`), DPR clamped to 2. Portrait viewports draw a
+  full-bleed, focal-anchored window (measured keyframes in
+  `src/utils/portrait.ts` + `src/utils/focal.ts`) that eases onto the
+  designed lockup framing over 80–94% progress, so the CHOPSTICK
+  INTEGRATIONS wordmark is never truncated mid-reveal.
 - `src/engine/ScrollManager.ts` — Lenis ↔ GSAP ticker wiring; ScrollTrigger is
   strictly a progress oracle (`pin: false`).
 - Logo handoff: fixed header fades in at 98% progress (no FLIP morph).

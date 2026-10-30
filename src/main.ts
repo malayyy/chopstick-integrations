@@ -5,9 +5,8 @@ import './components/Hero/hero.css'
 import './components/Navigation/navbar.css'
 
 import manifest from './assets/frame-manifest.json'
-import { REFRAME_START } from './utils/math'
+import { clamp, frameIndexForProgress, REFRAME_START } from './utils/math'
 import { detectEnv } from './utils/env'
-import { clamp, frameIndexForProgress } from './utils/math'
 import { initReveal } from './utils/reveal'
 import { FrameCache } from './engine/FrameCache'
 import { FrameLoader } from './engine/FrameLoader'
@@ -29,7 +28,7 @@ function run(): void {
   // ---------------------------------------------------------------
   if (env.reducedMotion) {
     stage.setReducedMotion()
-    stage.setPosterToFrame(TOTAL_FRAMES - 1)
+    stage.setPosterToFrame(TOTAL_FRAMES - 1, TOTAL_FRAMES)
     stage.setIntroProgress(1) // intro copy hidden under static lockup
     new Navbar().update(1)
     initReveal()
@@ -59,7 +58,7 @@ function run(): void {
   const initialIndex = frameIndexForProgress(initialProgress, TOTAL_FRAMES)
 
   // Poster must never flash frame 0 deep in the runway (QA-REL-01).
-  stage.setPosterToFrame(initialIndex)
+  stage.setPosterToFrame(initialIndex, TOTAL_FRAMES)
   const loaderStart = loader.start(initialIndex)
 
   // Resize: track the sticky stage's rendered box (dvh-safe) + DPR changes.

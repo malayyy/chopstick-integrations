@@ -4,14 +4,24 @@ export const clamp = (value: number, min: number, max: number): number =>
 /**
  * Portrait reframe band (RenderEngine + the main.ts tick gate share it —
  * single source of truth so the crop-easing gate never drifts from the
- * draw math). Below the band: 55% action crop on the hand/shatter. Above
- * the band's end: full `contain` lockup for the CHOPSTICK INTEGRATIONS type.
+ * draw math). Below the band: full-bleed, focal-anchored action crop.
+ * The band eases the window onto the designed lockup framing so the
+ * emerging CHOPSTICK INTEGRATIONS wordmark is never wider than the
+ * window; from the band's end the lockup holds.
  */
-export const REFRAME_START = 0.82
-export const REFRAME_END = 0.98
+export const REFRAME_START = 0.8
+export const REFRAME_END = 0.94
 
-/** Quadratic ease-out, used by the portrait action-crop → lockup reframe. */
+/** Quadratic ease-out, retained for beta-scroll comparisons. */
 export const easeOutQuad = (t: number): number => t * (2 - t)
+
+/**
+ * Symmetric quad ease-in-out for the Phase B reframe: the window leaves
+ * Phase A accelerating and settles onto the lockup decelerating, so the
+ * transition reads as a deliberate camera move rather than a snap.
+ */
+export const easeInOutQuad = (t: number): number =>
+  t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t)
 
 /** Progress [0..1] → frame index [0..N-1]. */
 export function frameIndexForProgress(progress: number, total: number): number {
