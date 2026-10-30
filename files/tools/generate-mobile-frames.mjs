@@ -8,7 +8,7 @@ const repoRoot = resolve(scriptDir, '../..');
 const sourceDir = resolve(repoRoot, 'frames');
 const mobileOutputDir = resolve(scriptDir, '../public/frames-mobile');
 const desktopOutputDir = resolve(scriptDir, '../public/frames-desktop');
-const framePattern = /^ezgif-frame-(\\d{3})\\.jpg$/;
+const framePattern = /^ezgif-frame-(\d{3})\.jpg$/;
 
 const names = (await readdir(sourceDir))
   .filter((name) => framePattern.test(name))
@@ -35,7 +35,7 @@ async function worker() {
   while (next < names.length) {
     const index = next++;
     const sourcePath = resolve(sourceDir, names[index]);
-    const outputName = names[index].replace(/\\.jpg$/i, '.webp');
+    const outputName = names[index].replace(/\.jpg$/i, '.webp');
 
     // The Git-tracked frames are already 3840×2160 exports. Keep desktop
     // output at 3840×2160 so a fullscreen 4K canvas does not upscale 2560px.
