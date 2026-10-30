@@ -1,0 +1,102 @@
+/* Hero runway + sticky stage — Revision 3.0 §5.1 (single-pinning model) */
+.hero-runway {
+  position: relative;
+  height: 400vh; /* 100dvh sticky screen + 300vh scroll travel */
+  background: var(--color-void);
+}
+
+.hero-runway.reduced {
+  height: 100dvh;
+}
+
+.hero-sticky-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100dvh; /* dvh kills mobile toolbar resize jumps */
+  overflow: hidden;
+  background: var(--color-void);
+  contain: layout paint size;
+}
+
+/* Static first-frame poster: immediate LCP paint, fades under the canvas */
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: opacity 0.35s ease;
+}
+
+.hero-sticky-stage.is-painted .hero-poster {
+  opacity: 0;
+}
+
+.hero-sticky-stage.reduced .hero-poster {
+  opacity: 1; /* reduced motion keeps the static lockup poster visible */
+}
+
+/* Reduced motion end-state must match the animated end-state: the full
+   lockup contained — a portrait `cover` poster would truncate the
+   CHOPSTICK INTEGRATIONS wordmark (non-negotiable №5). On landscape
+   16:9 viewports `contain` is pixel-identical to `cover`. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-poster {
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Radial edge feather into --color-void: commands §3.2 anti-seam blend */
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 62%, var(--color-void) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: clamp(10px, 1.6vh, 18px);
+  padding: 0 6vw;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.hero-headline {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(2rem, 5.6vw, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  text-shadow: 0 0 44px rgba(211, 16, 24, 0.25);
+}
+
+.hero-subline {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: var(--color-muted);
+}

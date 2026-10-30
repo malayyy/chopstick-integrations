@@ -1,9 +1,0 @@
-node_modules/
-dist/
-.DS_Store
-*.log
-*.tsbuildinfo
-
-# Generated optimized scroll-sequence frames
-public/frames-mobile/
-public/frames-desktop/
