@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>POC · The Vanishing Hand — Chopstick Integrations</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#030000" />
+    <!-- LCP: first-beat reference frame paints before any module graph loads -->
+    <link rel="preload" as="image" href="./ref/f_001.webp" fetchpriority="high" />
+    <style>
+      :root {
+        --bg: #030000;
+        --ink: #efe7e4;
+        --dim: #8a7f7c;
+        --ruby: #ff2038;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      body.reduced #poc-runway { height: 100dvh; }
+
+      /* ------------------------------------------------------------------ */
+      /* Runway + sticky stage (same structural pattern as production hero) */
+      /* ------------------------------------------------------------------ */
+      #poc-runway { height: 480vh; position: relative; }
+      .poc-stage {
+        position: sticky;
+        top: 0;
+        height: 100dvh;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      .poc-poster {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: 1;
+        transition: opacity .45s ease;
+      }
+      .poc-stage.is-painted .poc-poster { opacity: 0; }
+      .poc-poster{opacity:0!important;visibility:hidden!important;transition:none!important;}
+      .poc-poster.reduced-poster { object-fit: contain; }
+      #poc-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .poc-vignette {
+        position: absolute; inset: 0;
+        background: radial-gradient(120% 90% at 50% 42%, transparent 55%, rgba(2,0,0,.72) 100%);
+        pointer-events: none;
+      }
+      .poc-flash {
+        position: absolute; inset: 0;
+        background: radial-gradient(80% 60% at 50% 40%, rgba(255,84,96,.85), rgba(120,0,12,.25) 60%, transparent 100%);
+        mix-blend-mode: screen;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* HUD */
+      .poc-hud { position: fixed; left: 14px; bottom: 14px; z-index: 10;
+        display: flex; gap: 10px; align-items: center; font-size: 11px; letter-spacing: .08em; }
+      .poc-pill { border: 1px solid #3a2222; border-radius: 99px; padding: 3px 10px;
+        background: rgba(8,1,2,.55); color: #cfc4c0; backdrop-filter: blur(4px); white-space: nowrap; }
+      .poc-pill b { color: var(--ruby); font-weight: 600; }
+      .poc-tier { color: #9d908c; }
+
+      /* Reference strip (toggle: press D) */
+      .poc-refstrip {
+        position: fixed; right: 12px; bottom: 44px; z-index: 10;
+        display: none; gap: 6px; align-items: flex-end;
+      }
+      body.show-ref .poc-refstrip { display: flex; }
+      .poc-refstrip figure { width: 104px; }
+      .poc-refstrip img { width: 100%; display: block; border: 1px solid #3a2222; }
+      .poc-refstrip figcaption { font-size: 9px; color: #9d908c; padding-top: 2px; letter-spacing: .1em; }
+
+      /* Tail section proves the sticky release */
+      .poc-tail { padding: 18vh 24px 30vh; max-width: 720px; margin: 0 auto; }
+      .poc-tail h2 { font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 700;
+        font-size: clamp(24px, 4vw, 40px); letter-spacing: .01em; }
+      .poc-tail p { margin-top: 14px; color: var(--dim); font-size: 14px; line-height: 1.7; }
+      .poc-tail code { color: var(--ruby); }
+
+      .poc-hint { position: fixed; left: 50%; bottom: 78px; transform: translateX(-50%);
+        z-index: 10; color: #b9aca8; font-size: 11px; letter-spacing: .28em;
+        opacity: 1; transition: opacity .5s ease; }
+      @media (max-width: 640px) { .poc-hint { bottom: 66px; letter-spacing: .2em; } }
+    </style>
+  </head>
+  <body>
+    <section id="poc-runway" aria-label="PoC scroll runway">
+      <div class="poc-stage" id="poc-stage">
+        <img id="poc-poster" class="poc-poster" src="./ref/f_001.webp" alt="" decoding="async" />
+        <canvas id="poc-canvas" aria-hidden="true"></canvas>
+        <div class="poc-vignette" aria-hidden="true"></div>
+        <div class="poc-flash" id="poc-flash" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <main>
+      <section class="poc-tail">
+        <h2>The stage releases.</h2>
+        <p>
+          This tail proves the sticky stage releases into normal document flow after the
+          runway (production hero behaviour, kept intact for the PoC). Reference stills
+          live at <code>ref/</code> — press <code>D</code> to toggle the QC strip,
+          <code>F</code> to jump between frozen beats, <code>P</code> to save a screenshot
+          (desktop builds only).
+        </p>
+      </section>
+    </main>
+
+    <div class="poc-hud" aria-hidden="true">
+      <span class="poc-tier" id="poc-tier">…</span>
+      <span class="poc-pill">beat <b id="poc-beat">—</b></span>
+      <span class="poc-pill"><b id="poc-prog">0.00</b></span>
+      <span class="poc-pill" id="poc-fps">—</span>
+    </div>
+
+    <div class="poc-refstrip" id="poc-refstrip" aria-hidden="true">
+      <figure><img src="./ref/f_060.webp" alt="" /><figcaption>.20 ORNATE</figcaption></figure>
+      <figure><img src="./ref/f_200.webp" alt="" /><figcaption>.66 SCATTER</figcaption></figure>
+      <figure><img src="./ref/f_240.webp" alt="" /><figcaption>.79 REST</figcaption></figure>
+      <figure><img src="./ref/f_299.webp" alt="" /><figcaption>1.00 LOCKUP</figcaption></figure>
+    </div>
+
+    <script>window.hidePoster=function(d){document.getElementById("poc-poster").style.opacity=d>0.1?"0":"1"}</script><script type="module" src="./main.js"></script>
+
+    <div style="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:100;background:#080102c0;border:1px solid #3a2222;border-radius:8px;padding:8px 14px;color:#efe7e4;font-size:12px;font-family:monospace;letter-spacing:.08em;display:block;" aria-label="Manual progress slider"><label for="poc-slider">MANUAL PROGRESS: <input id="poc-slider" type="range" min="0" max="1" step="0.01" value="0" style="vertical-align:middle;width:180px;" oninput="if(window.setPocProgress)window.setPocProgress(parseFloat(this.value));document.getElementById('poc-val').textContent=this.value;document.getElementById('db-p').textContent=parseFloat(this.value).toFixed(2);document.getElementById('db-b').textContent='BEAT='+this.value;" /> <b id="poc-val">0.00</b></label></div>
+    </body>
+</html>
+<div id="poc-debug" aria-hidden="true" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;font:13px/1.35 monospace;background:#030000c0;border:1px solid #3a2222;border-radius:8px;padding:10px 18px;color:#efe7e4;letter-spacing:.08em;display:block;"><span>SCROLL <b id="db-p">0.00</b></span> | <span>BEAT <b id="db-b">—</b></span> | <span>TIER <b id="db-t">high</b></span> | <span>PORTRAIT <b id="db-pt">false</b></span></div>
