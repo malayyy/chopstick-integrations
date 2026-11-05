@@ -1,65 +1,282 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chopstick — Three.js Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="Chopstick Integrations — resilient connections across your enterprise ecosystem.">
+  <title>Chopstick Integrations — Precision Across Systems</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; width: 100%; height: 100%; background: #030303; overflow: hidden; }
-    #stage { width: 100%; height: 100%; }
-    #status { position: fixed; bottom: 24px; left: 24px; color: #e33b56; font: 12px monospace; background: #111d; padding: 14px; }
-    canvas { display: block; }
+    :root{color-scheme:dark;--bg:#050505;--ink:#f2efed;--muted:#9b9694;--red:#e13c55;--line:rgba(255,255,255,.12);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:auto;background:var(--bg)}body{margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit}
+    .topbar{position:fixed;z-index:20;inset:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,5vw,76px);border-bottom:1px solid transparent;transition:background .35s,border-color .35s,backdrop-filter .35s}
+    .topbar.scrolled{background:rgba(5,5,5,.78);border-color:var(--line);backdrop-filter:blur(18px)}
+    .wordmark{font-size:13px;letter-spacing:.22em;font-weight:700}.wordmark span{color:var(--red)}
+    .nav{display:flex;gap:clamp(16px,2.5vw,38px);align-items:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#c7c1bf}
+    .nav a{transition:color .2s}.nav a:hover{color:#fff}.nav .inquire{border:1px solid rgba(225,60,85,.65);padding:11px 16px;color:#fff}
+    #intro{height:430svh;position:relative;background:#030303}
+    #stage{height:100svh;position:sticky;top:0;overflow:hidden;background:#030303;isolation:isolate}
+    #stage canvas{display:block;width:100%;height:100%}
+    #stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 48%,rgba(0,0,0,.18)),linear-gradient(0deg,rgba(0,0,0,.34),transparent 25%,transparent 75%,rgba(0,0,0,.2))}
+    .intro-copy{position:absolute;z-index:2;left:clamp(24px,8vw,120px);bottom:clamp(70px,12vh,140px);max-width:670px;opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;pointer-events:none}
+    .intro-copy.visible{opacity:1;transform:translateY(0)}
+    .eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin:0 0 22px}
+    h1{font-size:clamp(38px,6.3vw,88px);line-height:.98;letter-spacing:-.055em;font-weight:500;margin:0 0 24px;max-width:850px}
+    .intro-copy p{max-width:520px;color:#c2bcba;font-size:clamp(14px,1.25vw,17px);line-height:1.7;margin:0 0 28px}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;pointer-events:auto}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1px solid rgba(255,255,255,.28);transition:background .25s,border-color .25s}
+    .button.primary{background:var(--red);border-color:var(--red);color:#fff}.button:hover{background:#fff;color:#080808;border-color:#fff}
+    .frame-status{position:absolute;z-index:3;right:clamp(20px,5vw,76px);bottom:28px;color:rgba(255,255,255,.54);font:10px ui-monospace,monospace;letter-spacing:.12em}
+    .loader{position:absolute;z-index:5;inset:0;display:grid;place-items:center;background:#030303;transition:opacity .6s,visibility .6s}
+    .loader.done{opacity:0;visibility:hidden}.loader-inner{text-align:center}.loader-mark{width:48px;height:48px;margin:0 auto 20px;position:relative}
+    .loader-mark:before,.loader-mark:after{content:"";position:absolute;top:4px;width:5px;height:40px;border-radius:5px;background:linear-gradient(#ff8795,#a10e2a);box-shadow:0 0 20px rgba(225,60,85,.5);transform:rotate(28deg)}
+    .loader-mark:before{left:15px}.loader-mark:after{right:15px;transform:rotate(28deg) translateY(4px)}
+    .loader-label{font:10px ui-monospace,monospace;letter-spacing:.22em;color:#a9a1a0}.loader-progress{width:180px;height:1px;background:#302326;margin:14px auto 0;overflow:hidden}.loader-progress i{display:block;width:0;height:100%;background:var(--red);transition:width .15s}
+    .section{padding:clamp(90px,13vw,180px) clamp(24px,9vw,140px);position:relative;border-top:1px solid var(--line)}
+    .section-kicker{font:10px ui-monospace,monospace;letter-spacing:.22em;color:var(--red);text-transform:uppercase;margin:0 0 24px}
+    .section h2{font-size:clamp(34px,5.2vw,72px);line-height:1.02;letter-spacing:-.05em;font-weight:450;max-width:900px;margin:0}
+    .section-intro{color:var(--muted);line-height:1.8;max-width:590px;font-size:15px;margin:28px 0 0}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);margin-top:70px;border:1px solid var(--line)}
+    .tile{background:#080808;padding:32px;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;transition:background .3s}
+    .tile:hover{background:#10090b}.tile-no{font:11px ui-monospace,monospace;color:var(--red)}.tile h3{font-size:22px;font-weight:500;letter-spacing:-.03em;margin:45px 0 12px}.tile p{font-size:13px;line-height:1.75;color:var(--muted);margin:0;max-width:300px}
+    .systems{display:flex;flex-wrap:wrap;gap:10px;margin-top:55px}.system{padding:13px 17px;border:1px solid var(--line);font-size:11px;letter-spacing:.1em;color:#c8c2c0}
+    .manifesto{background:radial-gradient(ellipse at 75% 40%,rgba(126,15,37,.16),transparent 45%),#080707}
+    .manifesto blockquote{margin:55px 0 0;padding:0;max-width:950px;font-size:clamp(28px,4.4vw,60px);line-height:1.12;letter-spacing:-.045em;color:#e9e4e2}
+    .contact{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}.contact h2{max-width:760px}.contact .button{flex-shrink:0}
+    footer{padding:30px clamp(24px,9vw,140px);display:flex;justify-content:space-between;gap:20px;color:#77716f;font:10px ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase}
+    @media(max-width:760px){.topbar{padding:17px 18px}.nav{gap:12px}.nav a:not(.inquire){display:none}.nav .inquire{padding:9px 12px}#intro{height:360svh}.intro-copy{left:22px;right:22px;bottom:80px}.intro-copy p{font-size:14px}.grid{grid-template-columns:1fr;margin-top:42px}.tile{min-height:190px;padding:25px}.tile h3{margin:28px 0 10px}.section{padding:90px 24px}.contact{align-items:flex-start;flex-direction:column}footer{padding:25px 24px;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.topbar,.intro-copy{transition:none}}
   </style>
 </head>
 <body>
-  <div id="stage"></div>
-  <div id="status">INITIALIZING WEBGL...</div>
+  <header class="topbar" id="topbar">
+    <a class="wordmark" href="#top" aria-label="Chopstick Integrations home">CHOPSTICK<span>.</span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#services">Services</a><a href="#architecture">Architecture</a><a href="#systems">Connected Systems</a><a href="#contact">Contact</a><a class="inquire" href="mailto:hello@chopstickintegrations.com">Inquire ↗</a>
+    </nav>
+  </header>
+
+  <section id="intro" aria-label="Cinematic brand introduction">
+    <div id="stage">
+      <div class="loader" id="loader"><div class="loader-inner"><div class="loader-mark"></div><div class="loader-label" id="loader-label">PREPARING THE EXPERIENCE · 0%</div><div class="loader-progress"><i id="loader-bar"></i></div></div></div>
+      <div class="intro-copy" id="intro-copy">
+        <p class="eyebrow">Systems, connected with intent.</p>
+        <h1>Unbreakable precision across your entire enterprise ecosystem.</h1>
+        <p>Build resilient, deterministic data pipelines across CRM, ERP, and mission-critical workflows.</p>
+        <div class="actions"><a class="button primary" href="#contact">Schedule Architecture Review ↗</a><a class="button" href="#services">Explore Core Services</a></div>
+      </div>
+      <div class="frame-status" id="frame-status">FRAME 001 / 300</div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section" id="services">
+      <p class="section-kicker">01 / What we build</p>
+      <h2>Complex systems. One deliberate flow.</h2>
+      <p class="section-intro">We connect the tools your business depends on, remove fragile handoffs, and build automation that behaves predictably as your operations grow.</p>
+      <div class="grid">
+        <article class="tile"><span class="tile-no">01 — INTEGRATION</span><div><h3>Connected infrastructure</h3><p>CRM, ERP, finance, support and operational platforms working as one system.</p></div></article>
+        <article class="tile"><span class="tile-no">02 — AUTOMATION</span><div><h3>Operational automation</h3><p>Reliable workflows that reduce manual work, missed follow-ups and duplicated effort.</p></div></article>
+        <article class="tile"><span class="tile-no">03 — INTELLIGENCE</span><div><h3>Data that moves with purpose</h3><p>Clean pipelines, useful reporting and decision-ready information across teams.</p></div></article>
+      </div>
+    </section>
+
+    <section class="section manifesto" id="architecture">
+      <p class="section-kicker">02 / Architecture first</p>
+      <h2>Built for the work behind the interface.</h2>
+      <p class="section-intro">Good automation is not a pile of disconnected triggers. It is a considered architecture: clear ownership, reliable data contracts, observable workflows and graceful failure paths.</p>
+      <blockquote>Less operational friction. More control over every connection that keeps your business moving.</blockquote>
+    </section>
+
+    <section class="section" id="systems">
+      <p class="section-kicker">03 / Connected systems</p>
+      <h2>Your ecosystem, working as one.</h2>
+      <p class="section-intro">We design integrations around the way your business actually operates, connecting the systems you already use and the workflows you need next.</p>
+      <div class="systems"><span class="system">Zoho</span><span class="system">Salesforce</span><span class="system">HubSpot</span><span class="system">ERP</span><span class="system">REST APIs</span><span class="system">Webhooks</span><span class="system">n8n</span><span class="system">Make</span><span class="system">Custom systems</span></div>
+    </section>
+
+    <section class="section" id="contact">
+      <p class="section-kicker">04 / Start a conversation</p>
+      <div class="contact"><div><h2>Make every system work harder together.</h2><p class="section-intro">Tell us where your operations are getting stuck. We'll help map a cleaner way forward.</p></div><a class="button primary" href="mailto:hello@chopstickintegrations.com?subject=Architecture%20Review">Schedule Architecture Review ↗</a></div>
+    </section>
+  </main>
+  <footer><span>© <span id="year"></span> Chopstick Integrations</span><span>Precision across systems.</span></footer>
+
   <script type="module">
     import * as THREE from 'three';
+
+    const FRAME_COUNT = 300;
+    const FRAME_PATH = (index) => `./frames/ezgif-frame-${String(index + 1).padStart(3, '0')}.png`;
+    const intro = document.querySelector('#intro');
     const stage = document.querySelector('#stage');
-    const status = document.querySelector('#status');
-    try {
-      const renderer = new THREE.WebGLRenderer({ antialias: false });
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
-      renderer.setSize(innerWidth, innerHeight);
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      stage.appendChild(renderer.domElement);
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color('#030303');
-      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-      camera.position.z = 2;
-      const geometry = new THREE.PlaneGeometry(1, 1);
-      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const plane = new THREE.Mesh(geometry, material);
-      plane.rotation.z = Math.PI;
-      scene.add(plane);
-      new THREE.TextureLoader().load('./frames/ezgif-frame-001.png', texture => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = false;
-        material.map = texture;
-        material.needsUpdate = true;
-        const resize = () => {
-          const w = stage.clientWidth;
-          const h = stage.clientHeight;
-          const imageAspect = texture.image.width / texture.image.height;
-          const viewportAspect = w / h;
-          renderer.setSize(w, h);
-          if (viewportAspect > imageAspect) plane.scale.set(imageAspect / viewportAspect, 1, 1);
-          else plane.scale.set(1, viewportAspect / imageAspect, 1);
-          renderer.render(scene, camera);
-        };
-        new ResizeObserver(resize).observe(stage);
-        window.addEventListener('resize', resize);
-        resize();
-        status.textContent = `PASS — ${texture.image.width} × ${texture.image.height} — rotated 180°`;
-      }, undefined, () => status.textContent = 'ERROR — FRAME NOT FOUND');
-    } catch (error) {
-      status.textContent = error.message;
-      console.error(error);
+    const loader = document.querySelector('#loader');
+    const loaderLabel = document.querySelector('#loader-label');
+    const loaderBar = document.querySelector('#loader-bar');
+    const frameStatus = document.querySelector('#frame-status');
+    const introCopy = document.querySelector('#intro-copy');
+    const topbar = document.querySelector('#topbar');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setClearColor(0x030303, 1);
+    stage.insertBefore(renderer.domElement, loader);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#030303');
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 10);
+    camera.position.z = 2;
+    const geometry = new THREE.PlaneGeometry(1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+    const plane = new THREE.Mesh(geometry, material);
+    plane.rotation.z = Math.PI;
+    scene.add(plane);
+
+    let activeTexture = null;
+    let activeIndex = -1;
+    let requestedIndex = -1;
+    let renderQueued = false;
+    let lastProgress = 0;
+    let disposed = false;
+    const bitmapCache = new Map();
+    const pending = new Map();
+    const MAX_BITMAPS = 5;
+
+    function resize() {
+      const width = stage.clientWidth || innerWidth;
+      const height = stage.clientHeight || innerHeight;
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+      renderer.setSize(width, height, false);
+      if (activeTexture?.image) {
+        const imageAspect = activeTexture.image.width / activeTexture.image.height;
+        const viewportAspect = width / height;
+        if (viewportAspect > imageAspect) plane.scale.set(imageAspect / viewportAspect, 1, 1);
+        else plane.scale.set(1, viewportAspect / imageAspect, 1);
+      }
+      renderer.render(scene, camera);
     }
+
+    function trimCache() {
+      while (bitmapCache.size > MAX_BITMAPS) {
+        const [key, bitmap] = bitmapCache.entries().next().value;
+        if (key === activeIndex || key === requestedIndex) {
+          bitmapCache.delete(key); bitmapCache.set(key, bitmap); continue;
+        }
+        bitmap.close?.(); bitmapCache.delete(key);
+      }
+    }
+
+    async function loadBitmap(index) {
+      if (bitmapCache.has(index)) return bitmapCache.get(index);
+      if (pending.has(index)) return pending.get(index);
+      const task = fetch(FRAME_PATH(index), { cache: 'force-cache' })
+        .then(response => { if (!response.ok) throw new Error(`Frame ${index + 1} returned ${response.status}`); return response.blob(); })
+        .then(blob => createImageBitmap(blob))
+        .then(bitmap => { if (disposed) { bitmap.close?.(); return null; } bitmapCache.set(index, bitmap); trimCache(); return bitmap; })
+        .finally(() => pending.delete(index));
+      pending.set(index, task);
+      return task;
+    }
+
+    function renderBitmap(bitmap, index) {
+      if (!bitmap || disposed) return;
+      const texture = new THREE.Texture(bitmap);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+      texture.needsUpdate = true;
+      material.map = texture;
+      material.needsUpdate = true;
+      const previous = activeTexture;
+      activeTexture = texture;
+      activeIndex = index;
+      if (previous) previous.dispose();
+      const imageAspect = bitmap.width / bitmap.height;
+      const viewportAspect = stage.clientWidth / stage.clientHeight;
+      if (viewportAspect > imageAspect) plane.scale.set(imageAspect / viewportAspect, 1, 1);
+      else plane.scale.set(1, viewportAspect / imageAspect, 1);
+      renderer.render(scene, camera);
+      frameStatus.textContent = `FRAME ${String(index + 1).padStart(3, '0')} / 300`;
+    }
+
+    async function showFrame(index) {
+      requestedIndex = Math.max(0, Math.min(FRAME_COUNT - 1, index));
+      try {
+        const bitmap = await loadBitmap(requestedIndex);
+        if (requestedIndex === index && bitmap) renderBitmap(bitmap, index);
+      } catch (error) {
+        frameStatus.textContent = 'FRAME LOAD ERROR';
+        console.error(error);
+      }
+      // Decode a small neighborhood in the current scroll direction, never all 300.
+      const direction = lastProgress >= progressForFrame(index) ? 1 : -1;
+      for (let offset = 1; offset <= 2; offset++) {
+        const neighbor = index + direction * offset;
+        if (neighbor >= 0 && neighbor < FRAME_COUNT) loadBitmap(neighbor).catch(() => {});
+      }
+    }
+
+    function progressForFrame(index) { return index / (FRAME_COUNT - 1); }
+    function queueFrame(index) {
+      if (renderQueued) return;
+      renderQueued = true;
+      requestAnimationFrame(() => { renderQueued = false; if (index !== activeIndex) showFrame(index); });
+    }
+
+    function updateScroll() {
+      const rect = intro.getBoundingClientRect();
+      const travel = Math.max(1, intro.offsetHeight - innerHeight);
+      const progress = Math.max(0, Math.min(1, -rect.top / travel));
+      lastProgress = progress;
+      const index = reducedMotion ? FRAME_COUNT - 1 : Math.round(progress * (FRAME_COUNT - 1));
+      if (index !== requestedIndex && !reducedMotion) queueFrame(index);
+      if (reducedMotion && activeIndex !== FRAME_COUNT - 1) queueFrame(FRAME_COUNT - 1);
+      introCopy.classList.toggle('visible', progress > .91);
+      topbar.classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(stage);
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('pageshow', () => { if (activeIndex < 0) queueFrame(0); });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) updateScroll(); });
+
+    document.querySelector('#year').textContent = new Date().getFullYear();
+    resize();
+    loadBitmap(0).then(bitmap => {
+      if (bitmap) renderBitmap(bitmap, 0);
+      loader.classList.add('done');
+      loaderBar.style.width = '100%';
+      loaderLabel.textContent = 'EXPERIENCE READY · 100%';
+      updateScroll();
+    }).catch(error => {
+      loaderLabel.textContent = 'FRAME LOAD FAILED';
+      console.error(error);
+    });
+
+    // Progressive loader feedback while the first original 4K frame decodes.
+    let loaderTick = 0;
+    const loaderTimer = setInterval(() => {
+      loaderTick = Math.min(92, loaderTick + 7);
+      loaderBar.style.width = loaderTick + '%';
+      loaderLabel.textContent = `PREPARING THE EXPERIENCE · ${loaderTick}%`;
+      if (loader.classList.contains('done')) clearInterval(loaderTimer);
+    }, 100);
+
+    window.addEventListener('pagehide', () => {
+      disposed = true;
+      clearInterval(loaderTimer);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('scroll', updateScroll);
+      activeTexture?.dispose();
+      material.dispose(); geometry.dispose(); renderer.dispose();
+      for (const bitmap of bitmapCache.values()) bitmap.close?.();
+      bitmapCache.clear();
+    }, { once: true });
   </script>
 </body>
 </html>
