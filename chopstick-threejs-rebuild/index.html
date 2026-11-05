@@ -1,44 +1,91 @@
-<!doctype html>
-<!--
-  Chopstick Integrations — isolated Three.js rebuild (branch: chopstick-threejs-rebuild)
-
-  This is a clean staging surface for rebuilding the cinematic scroll experience
-  from scratch. It is intentionally inert: no animation, no rendering, no
-  dependencies. The animation will be implemented in follow-up work.
-
-  frames/ contains all 300 ORIGINAL HD PNG frames (ezgif-frame-001.png …
-  ezgif-frame-300.png, 3840×2160), copied byte-for-byte — unmodified,
-  uncompressed, unrewarded-to-recompression, in original chronological order.
--->
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chopstick Integrations — Three.js Rebuild (staging)</title>
-    <style>
-      :root { color-scheme: dark; }
-      html, body { height: 100%; }
-      body {
-        margin: 0;
-        display: grid;
-        place-items: center;
-        background: #030303;
-        color: #e8e6e3;
-        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      }
-      main { padding: 2rem; max-width: 40rem; }
-      h1 { font-size: 1rem; font-weight: 500; letter-spacing: 0.08em; color: #dc2f4b; margin: 0 0 1rem; }
-      p  { font-size: 0.85rem; line-height: 1.6; color: #8a8783; margin: 0; }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>CHOPSTICK INTEGRATIONS — THREE.JS REBUILD</h1>
-      <p>
-        Isolated staging branch. No animation implemented yet.
-        <span id="frame-count">300</span>&nbsp;original HD frames are staged
-        under <code>frames/</code> awaiting the rebuild.
-      </p>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chopstick — Three.js Test</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; background: #030303; overflow: hidden; }
+    #stage { width: 100%; height: 100%; }
+    #status {
+      position: fixed; bottom: 24px; left: 24px;
+      color: #e33b56; font: 12px monospace;
+      background: #111d; padding: 14px;
+    }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <div id="status">INITIALIZING WEBGL...</div>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    const stage = document.querySelector('#stage');
+    const status = document.querySelector('#status');
+
+    try {
+      const renderer = new THREE.WebGLRenderer({ antialias: false });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      stage.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color('#030303');
+
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+      camera.position.z = 2;
+
+      const geometry = new THREE.PlaneGeometry(1, 1);
+      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+
+      new THREE.TextureLoader().load(
+        './frames/ezgif-frame-001.png',
+        texture => {
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.minFilter = THREE.LinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          texture.generateMipmaps = false;
+
+          material.map = texture;
+          material.needsUpdate = true;
+
+          const resize = () => {
+            const w = stage.clientWidth;
+            const h = stage.clientHeight;
+            const imageAspect = texture.image.width / texture.image.height;
+            const viewportAspect = w / h;
+
+            renderer.setSize(w, h);
+
+            if (viewportAspect > imageAspect) {
+              plane.scale.set(imageAspect / viewportAspect, 1, 1);
+            } else {
+              plane.scale.set(1, viewportAspect / imageAspect, 1);
+            }
+
+            renderer.render(scene, camera);
+          };
+
+          new ResizeObserver(resize).observe(stage);
+          window.addEventListener('resize', resize);
+          resize();
+
+          status.textContent =
+            `PASS — ${texture.image.width} × ${texture.image.height}`;
+        },
+        undefined,
+        () => status.textContent = 'ERROR — FRAME NOT FOUND'
+      );
+    } catch (error) {
+      status.textContent = error.message;
+      console.error(error);
+    }
+  </script>
+</body>
 </html>
