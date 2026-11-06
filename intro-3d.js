@@ -263,7 +263,7 @@ function pose(p, dt) {
     const split = smooth(0.56, 0.7, p) * (1 - smooth(0.78, 0.91, p));
     const rod = stick.userData.rod;
     const core = stick.userData.core;
-    stick.position.x = mix(0, 0.12, split) * (i ? -1 : 1);
+    stick.position.x = mix(5.5, 0, enter) + mix(0, 0.12, split) * (i ? -1 : 1);
     stick.rotation.z = (i ? -1 : 1) * (0.035 + 0.07 * tremor + split * 0.14);
     rod.scale.y = 1 - split * 0.06;
     core.visible = p < 0.55 || p > 0.91;
