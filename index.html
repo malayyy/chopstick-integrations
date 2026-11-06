@@ -1019,7 +1019,63 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   if (colorScheme) colorScheme.content = theme;
 })();
 </script>
-<style id="chopstick-content-refresh">#testimonials{padding:clamp(76px,10vw,140px) var(--space-1);background:var(--color-1);color:var(--color-2)}.testimonials__head{max-width:760px;margin:0 auto 48px}.testimonials__head>.m-text-6{color:#ef4963;letter-spacing:.18em;margin-bottom:18px}.testimonials__head>.m-text-5{color:var(--color-5);margin-top:22px}.testimonials__grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.testimonial{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;gap:20px;min-height:220px;background:rgba(255,255,255,.035)}.testimonial--verified{grid-column:1/-1;background:rgba(209,27,58,.08);border-color:rgba(209,27,58,.42)}.testimonial__meta,.testimonial__author{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.testimonial__source,.testimonial__pending{font:600 10px/1.4 var(--font-2);letter-spacing:.12em;color:#ef4963}.testimonial__rating{color:#ff6a35;letter-spacing:.08em}.testimonial__rating small{color:var(--color-2);font:600 12px var(--font-2);letter-spacing:0}.testimonial blockquote{max-width:900px;color:var(--color-2);font-style:italic;line-height:1.6}.testimonial__author{justify-content:flex-start}.testimonial__profile{color:#f06a7d;text-decoration:underline;text-underline-offset:3px}.testimonial__tags{color:var(--color-5)}.testimonial--placeholder{border-style:dashed;background:transparent}.testimonial--placeholder h3{font-size:clamp(20px,2.2vw,28px)}.testimonial--placeholder p{color:var(--color-5);line-height:1.6}#project-enquiry .m-field{width:100%;min-width:0;padding:13px 14px;border:1px solid color-mix(in srgb,var(--color-6) 32%,transparent);border-radius:8px;background:var(--color-2);color:var(--color-1);font:400 15px/1.4 var(--font-2)}#project-enquiry label{gap:8px!important;color:var(--color-6)!important}#project-enquiry textarea{resize:vertical}#project-enquiry .m-btn{justify-content:center;padding:14px 20px;border:0;border-radius:999px;background:#c8102e;color:#fff;cursor:pointer}#project-enquiry .contact__status{color:var(--color-6);line-height:1.5}#contact .contact__availability{margin-top:22px;color:var(--color-6)}@media(max-width:700px){.testimonials__grid{grid-template-columns:1fr}.testimonial--verified{grid-column:auto}}</style></head>
+<style id="chopstick-content-refresh">#testimonials{padding:clamp(76px,10vw,140px) var(--space-1);background:var(--color-1);color:var(--color-2)}.testimonials__head{max-width:760px;margin:0 auto 48px}.testimonials__head>.m-text-6{color:#ef4963;letter-spacing:.18em;margin-bottom:18px}.testimonials__head>.m-text-5{color:var(--color-5);margin-top:22px}.testimonials__grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.testimonial{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;gap:20px;min-height:220px;background:rgba(255,255,255,.035)}.testimonial--verified{grid-column:1/-1;background:rgba(209,27,58,.08);border-color:rgba(209,27,58,.42)}.testimonial__meta,.testimonial__author{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.testimonial__source,.testimonial__pending{font:600 10px/1.4 var(--font-2);letter-spacing:.12em;color:#ef4963}.testimonial__rating{color:#ff6a35;letter-spacing:.08em}.testimonial__rating small{color:var(--color-2);font:600 12px var(--font-2);letter-spacing:0}.testimonial blockquote{max-width:900px;color:var(--color-2);font-style:italic;line-height:1.6}.testimonial__author{justify-content:flex-start}.testimonial__profile{color:#f06a7d;text-decoration:underline;text-underline-offset:3px}.testimonial__tags{color:var(--color-5)}.testimonial--placeholder{border-style:dashed;background:transparent}.testimonial--placeholder h3{font-size:clamp(20px,2.2vw,28px)}.testimonial--placeholder p{color:var(--color-5);line-height:1.6}#project-enquiry .m-field{width:100%;min-width:0;padding:13px 14px;border:1px solid color-mix(in srgb,var(--color-6) 32%,transparent);border-radius:8px;background:var(--color-2);color:var(--color-1);font:400 15px/1.4 var(--font-2)}#project-enquiry label{gap:8px!important;color:var(--color-6)!important}#project-enquiry textarea{resize:vertical}#project-enquiry .m-btn{justify-content:center;padding:14px 20px;border:0;border-radius:999px;background:#c8102e;color:#fff;cursor:pointer}#project-enquiry .contact__status{color:var(--color-6);line-height:1.5}#contact .contact__availability{margin-top:22px;color:var(--color-6)}@media(max-width:700px){.testimonials__grid{grid-template-columns:1fr}.testimonial--verified{grid-column:auto}}</style><style id="chopstick-hero-preview-fix">
+/* Preview-only refinement: preserve the cinematic and original section structure. */
+#hero{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 68% 54% at 78% 24%, rgba(156,15,43,.22), transparent 72%),
+    radial-gradient(ellipse 48% 48% at 18% 82%, rgba(94,8,29,.18), transparent 74%),
+    radial-gradient(ellipse 32% 34% at 52% 58%, rgba(48,7,18,.22), transparent 78%),
+    var(--color-1);
+}
+#hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 42% 30% at 76% 62%, rgba(176,17,49,.10), transparent 75%),
+    linear-gradient(115deg, transparent 35%, rgba(120,8,32,.045) 58%, transparent 82%);
+  filter:blur(22px);
+}
+#hero .hero__intro{position:relative;z-index:1;max-width:min(36rem,52vw)}
+#hero .hero__title{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:100%;
+  font-size:clamp(64px,13vw,190px);
+  line-height:.88;
+  letter-spacing:-.075em;
+  white-space:nowrap;
+  overflow:visible;
+  padding-bottom:clamp(28px,5svh,56px);
+}
+#hero .hero__word{max-width:100%}
+#hero .hero__period{flex:0 0 auto}
+#hero .hero__stage{z-index:-1}
+@media (min-width:900px) and (orientation:landscape){
+  #hero{--ap:min(31vw,52svh)}
+  #hero .hero__title{font-size:clamp(110px,13vw,190px)}
+}
+@media (max-width:899px){
+  #hero{min-height:max(100svh,620px)}
+  #hero .hero__intro{max-width:min(34rem,88vw);padding-top:clamp(104px,16svh,150px)}
+  #hero .hero__title{font-size:clamp(54px,12.2vw,112px);letter-spacing:-.07em}
+}
+@media (max-width:420px){
+  #hero .hero__title{font-size:clamp(48px,11.7vw,76px)}
+}
+:root[data-theme="light"] #hero{
+  background:
+    radial-gradient(ellipse 68% 54% at 78% 24%, rgba(200,16,46,.10), transparent 72%),
+    radial-gradient(ellipse 48% 48% at 18% 82%, rgba(142,20,48,.07), transparent 74%),
+    var(--color-1);
+}
+</style>
+</head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
   <nav class="nav__links" aria-label="Main">
