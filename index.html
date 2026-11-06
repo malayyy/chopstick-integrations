@@ -416,6 +416,7 @@ const homepage = document.getElementById('home');
 let cinematicComplete = false;
 let curtainStarted = false;
 let curtainTimer = 0;
+let curtainTransitionHandler = null;
 let replayCinematic = null;
 
 addEventListener('wheel', (event) => {
@@ -440,6 +441,10 @@ function finishCurtain() {
   if (cinematicComplete) return;
   cinematicComplete = true;
   clearTimeout(curtainTimer);
+  if (curtainTransitionHandler) {
+    cinematicLayer.removeEventListener('transitionend', curtainTransitionHandler);
+    curtainTransitionHandler = null;
+  }
   cinematicLayer.hidden = true;
   track.hidden = true;
   homepage.classList.add('active');
@@ -453,12 +458,16 @@ function finishCurtain() {
 function beginCurtain() {
   if (curtainStarted || cinematicComplete) return;
   curtainStarted = true;
-  const onTransitionEnd = (event) => {
-    if (event.target === cinematicLayer && event.propertyName === 'transform') {
+  if (curtainTransitionHandler) {
+    cinematicLayer.removeEventListener('transitionend', curtainTransitionHandler);
+  }
+  curtainTransitionHandler = (event) => {
+    if (event.target === cinematicLayer && event.propertyName === 'transform' &&
+        cinematicLayer.classList.contains('curtain-open')) {
       finishCurtain();
     }
   };
-  cinematicLayer.addEventListener('transitionend', onTransitionEnd);
+  cinematicLayer.addEventListener('transitionend', curtainTransitionHandler);
   curtainTimer = setTimeout(finishCurtain, 1200);
   cinematicLayer.classList.add('curtain-open');
 }
