@@ -193,30 +193,24 @@
     line-height: 1.75;
   }
 
-  /* Minimal glass-chopstick loader + unmistakable scroll invitation. */
-  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
+  /* Custom Chopstick loader. The original template's site styling is untouched. */
+  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
-  #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font:italic 400 clamp(17px,2.1vw,22px)/1.45 Georgia,serif;letter-spacing:.01em;transition:opacity .35s ease,transform .35s ease}
-  #boot-quote.changing{opacity:0;transform:translateY(7px)}
-  #boot-quote-index{margin-top:8px;color:rgba(247,243,244,.3);font:500 9px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.24em;transition:opacity .3s ease}
-  #chopstick-loader{width:104px;height:58px;margin:26px 0 18px;overflow:visible;filter:drop-shadow(0 0 10px rgba(224,30,62,.3))}
-  #chopstick-loader .stick{transform-box:fill-box;transform-origin:8% 50%}
-  #chopstick-loader .stick.top{animation:chopstick-tap-top 1.35s cubic-bezier(.5,0,.25,1) infinite}
-  #chopstick-loader .stick.bottom{animation:chopstick-tap-bottom 1.35s cubic-bezier(.5,0,.25,1) infinite}
-  #chopstick-loader .glass{fill:rgba(255,255,255,.035);stroke:#f05a70;stroke-width:1.8}
-  #chopstick-loader .shine{fill:none;stroke:rgba(255,255,255,.8);stroke-width:.65;stroke-linecap:round}
-  #chopstick-loader .tap-flash{fill:#ff526d;filter:drop-shadow(0 0 5px #ff294e);transform-origin:center;animation:chopstick-flash 1.35s ease-out infinite}
-  @keyframes chopstick-tap-top{0%,100%{transform:translateY(-5px) rotate(-2deg)}44%,56%{transform:translateY(2px) rotate(0)}}
-  @keyframes chopstick-tap-bottom{0%,100%{transform:translateY(5px) rotate(2deg)}44%,56%{transform:translateY(-2px) rotate(0)}}
-  @keyframes chopstick-flash{0%,38%,100%{opacity:0;transform:scale(.35)}49%{opacity:1;transform:scale(1.2)}67%{opacity:0;transform:scale(2)}}
+  #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font:italic 400 clamp(17px,2.1vw,22px)/1.45 Georgia,serif;letter-spacing:.01em}
+  #chopstick-loader{display:block;width:min(220px,54vw);height:auto;margin:22px 0 20px;overflow:visible}
+  #chopstick-loader .bowl{transform-origin:190px 337px;animation:bowl-breathe 2.8s ease-in-out infinite}
+  #chopstick-loader .sticks{transform-origin:256px 256px;animation:sticks-float 2.8s ease-in-out infinite}
+  #chopstick-loader .shine{fill:none;stroke:rgba(255,255,255,.78);stroke-width:2.5;stroke-linecap:round}
   #boot-progress{color:#fff;font:300 23px/1 Georgia,serif;font-variant-numeric:tabular-nums;letter-spacing:.04em}
-  #boot-percent{min-width:54px}
-  #boot-state{margin-top:10px;color:rgba(247,243,244,.38);font:500 8px/1.4 ui-sans-serif,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;transition:opacity .3s ease}
-  #boot-instruction{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:38px;color:#fff;font:700 clamp(16px,2.5vw,25px)/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;opacity:0;transform:translateY(15px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
+  #boot-state{margin-top:12px;color:rgba(247,243,244,.48);font:500 9px/1.5 ui-sans-serif,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}
+  #boot-instruction{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;color:#fff;font:700 clamp(15px,2.2vw,21px)/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(15px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
   #boot-instruction .mobile{display:none}
   #boot-scroll-cue{width:22px;height:34px;border:1px solid rgba(255,255,255,.65);border-radius:12px;position:relative}
   #boot-scroll-cue:after{content:"";position:absolute;width:2px;height:7px;left:9px;top:6px;border-radius:2px;background:#ed3151;animation:scroll-cue 1.15s ease-in-out infinite}
   @keyframes scroll-cue{0%,100%{transform:translateY(0);opacity:1}75%{transform:translateY(10px);opacity:.15}}
+  @keyframes bowl-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+  @keyframes sticks-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
   #boot.ready #boot-instruction{opacity:1;transform:translateY(0)}
   #boot.ready #boot-quote,#boot.ready #boot-quote-index,#boot.ready #boot-state{opacity:0}
   #boot.ready #boot-progress{font-size:25px}
@@ -1238,14 +1232,23 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
     <div id="boot-content">
       <div id="boot-quote">“Great things take time. So does this website.”</div>
-      <div id="boot-quote-index">01 / 03</div>
-      <svg id="chopstick-loader" viewBox="0 0 120 64" fill="none" aria-hidden="true">
-        <g class="stick top"><rect class="glass" x="8" y="17" width="104" height="7" rx="3.5"/><path class="shine" d="M14 19.2H105"/></g>
-        <g class="stick bottom"><rect class="glass" x="8" y="40" width="104" height="7" rx="3.5"/><path class="shine" d="M14 42.2H105"/></g>
-        <circle class="tap-flash" cx="13" cy="32" r="3"/>
+      <svg id="chopstick-loader" viewBox="0 0 512 512" role="img" aria-label="Two crossed chopsticks above a red dipping bowl">
+        <g class="bowl">
+          <circle cx="190" cy="337" r="100" fill="#303030"/>
+          <circle cx="190" cy="337" r="72" fill="#bd292d"/>
+          <path class="shine" d="M137 325c3-18 13-33 27-42"/>
+        </g>
+        <g class="sticks">
+          <path d="M45 470 378 39Q385 30 393 38L405 49Q411 55 404 63L51 474Q42 480 45 470Z" fill="#ffb28f"/>
+          <path d="M73 480 450 60Q457 52 465 60L476 71Q482 78 474 86L79 484Q70 489 73 480Z" fill="#ffb28f"/>
+          <path d="M336 94 378 39Q385 30 393 38L405 49Q411 55 404 63L361 119Z" fill="#b9272c"/>
+          <path d="M397 121 450 60Q457 52 465 60L476 71Q482 78 474 86L420 147Z" fill="#b9272c"/>
+          <path d="m319 116 17 13-7 9-17-13Z M338 131l17 13-7 9-17-13Z" fill="#b9272c"/>
+          <path d="m380 146 17 14-7 9-17-14Z M399 162l17 14-7 9-17-14Z" fill="#b9272c"/>
+        </g>
       </svg>
-      <div id="boot-progress"><span id="boot-percent">1%</span></div>
-      <div id="boot-state">A little patience. A lot to explore.</div>
+      <div id="boot-progress"><span id="boot-percent">0%</span></div>
+      <div id="boot-state">Preparing the experience</div>
       <div id="boot-instruction"><span id="boot-scroll-cue" aria-hidden="true"></span><span class="desktop">SCROLL FOR THE EXPERIENCE</span><span class="mobile">SWIPE UP FOR THE EXPERIENCE</span></div>
     </div>
   </div>
@@ -1803,13 +1806,23 @@ void main(){
   /* ------------------------------ DECODER -------------------------------- */
   const decodeFailed = new Set();
 
+  const FRAME_CACHE_NAME = 'chopstick-film-frames-v2';
+
+  async function getFrameBlob(i) {
+    const url = new URL(frameUrl(i), location.href).href;
+    const cache = await caches.open(FRAME_CACHE_NAME);
+    const saved = await cache.match(url);
+    if (saved) return await saved.blob();
+    const response = await fetch(url, { cache: 'force-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status} for frame ${i + 1}`);
+    await cache.put(url, response.clone());
+    return await response.blob();
+  }
+
   async function decodeFrame(i) {
     if (textures.has(i) || glLost) return false;
     try {
-      const blob = await (await fetch(frameUrl(i))).blob();
-      /* A context loss during decode/decode-along is TRANSIENT: returning
-         false without touching decodeFailed, so the post-restore re-warm
-         picks the frame up again. */
+      const blob = await getFrameBlob(i);
       if (glLost) return false;
       const bitmap = await decodeBlob(blob, comp.uploadW);
       if (glLost) { bitmap.close(); return false; }
@@ -1817,11 +1830,51 @@ void main(){
       bitmap.close();
       return true;
     } catch (err) {
-      /* network/format failures are permanent for this session */
       decodeFailed.add(i);
       console.warn(`frame ${i + 1} unavailable:`, err && err.message);
       return false;
     }
+  }
+
+  async function preloadAllFrames(onProgress) {
+    if (!('caches' in window)) throw new Error('Browser cache storage is unavailable.');
+    const cache = await caches.open(FRAME_CACHE_NAME);
+    let completed = 0, next = 0, firstError = null;
+    const workers = Array.from({ length: 6 }, async () => {
+      while (true) {
+        const index = next++;
+        if (index >= CONFIG.FRAME_COUNT) return;
+        const url = new URL(frameUrl(index), location.href).href;
+        try {
+          let saved = await cache.match(url);
+          if (!saved) {
+            let lastError;
+            for (let attempt = 0; attempt < 3; attempt++) {
+              try {
+                const response = await fetch(url, { cache: 'force-cache' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                await cache.put(url, response.clone());
+                saved = response;
+                break;
+              } catch (error) {
+                lastError = error;
+                await new Promise(resolve => setTimeout(resolve, 350 * (attempt + 1)));
+              }
+            }
+            if (!saved) throw lastError || new Error('Frame download failed');
+          }
+          if (!saved.ok) throw new Error('Invalid cached frame');
+        } catch (error) {
+          firstError ||= new Error(`Frame ${index + 1}: ${error.message}`);
+        } finally {
+          completed++;
+          onProgress(completed, CONFIG.FRAME_COUNT);
+        }
+      }
+    });
+    await Promise.all(workers);
+    if (firstError) throw firstError;
+    try { await navigator.storage?.persist?.(); } catch {}
   }
 
   async function decodeBlob(blob, targetW) {
@@ -2102,27 +2155,36 @@ void main(){
     sizeTrack();
     refreshMaxScroll();
 
-    /* Boot ring: the first frames, decoded before the reveal. Lanes advance
-       by stride so the same frame is never decoded twice in parallel; the bar
-       counts a fixed total so it moves monotonically. */
-    const total = CONFIG.BOOT_RING + 1;
-    const bootLanes = CONFIG.PREFETCH_LANES + 1;
-    let ready = 0;
-
+    /* Prepare all 300 compressed frames before unlocking the scroll experience.
+       Keep only a rolling window decoded in GPU memory to protect mobile devices. */
     const bootPercent = document.getElementById('boot-percent');
-    const setProgress = () => {
-      const percent = Math.max(1, Math.round(ready / total * 100));
-      if (bootPercent) bootPercent.textContent = `${percent}%`;
-    };
+    const bootState = document.getElementById('boot-state');
+    if (bootState) bootState.textContent = 'Preparing the experience';
+    await preloadAllFrames((ready, total) => {
+      if (bootPercent) bootPercent.textContent = `${Math.round(ready / total * 100)}%`;
+    });
 
-    const loadLane = async (lane) => {
-      for (let i = lane; i < total; i += bootLanes) {
-        if (!textures.has(i)) await decodeFrame(i);
-        ready++;
-        setProgress();
+    /* Decode the opening scene before the user can start scrolling. */
+    if (bootState) bootState.textContent = 'Getting the first scene ready';
+    const openingFrames = Math.min(CONFIG.BOOT_RING + 1, CONFIG.FRAME_COUNT);
+    const openingLanes = Math.min(4, openingFrames);
+    await Promise.all(Array.from({ length: openingLanes }, async (_, lane) => {
+      for (let i = lane; i < openingFrames; i += openingLanes) {
+        if (!textures.has(i) && !await decodeFrame(i)) {
+          throw new Error(`Opening frame ${i + 1} could not be decoded.`);
+        }
       }
-    };
-    await Promise.all(Array.from({ length: bootLanes }, (_, l) => loadLane(l)));
+    }));
+    if (bootPercent) bootPercent.textContent = '100%';
+
+    /* Wait for page images and web fonts as well. */
+    if (bootState) bootState.textContent = 'Finishing the details';
+    const pageImages = [...document.images];
+    pageImages.forEach(img => { img.loading = 'eager'; });
+    await Promise.all([
+      document.fonts?.ready || Promise.resolve(),
+      ...pageImages.map(img => img.decode ? img.decode().catch(() => {}) : Promise.resolve())
+    ]);
 
     /* Reveal: canvas fades in over the black veil, then the veil removes. */
     canvas.style.opacity = '1';
@@ -2135,7 +2197,11 @@ void main(){
     prefetchPump();
   }
 
-  boot();
+  boot().catch((error) => {
+    console.error('[chopstick] experience preparation failed:', error);
+    const state = document.getElementById('boot-state');
+    if (state) state.textContent = 'Please refresh to try again';
+  });
 
   /* ------------------------------- DEBUG --------------------------------- */
   if (DEBUG) {
