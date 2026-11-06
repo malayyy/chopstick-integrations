@@ -1158,6 +1158,15 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 #footer .footer-site-logo{display:block;width:min(680px,88%);height:auto;max-height:190px;object-fit:contain;object-position:left center}
 #footer .poster-caption{margin:0}
 @media(max-width:640px){#navigation .nav__brand{width:142px;height:43px}#footer .footer-site-logo{width:100%;max-height:120px}}
+</style><style id="brand-mobile-performance">
+/* Transparent, tightly fitted brand mark; no pill, padding or decorative canvas. */
+#navigation .nav__brand{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important;margin:0!important;min-height:0!important;height:48px!important;width:clamp(156px,19vw,220px)!important;line-height:0!important}
+#navigation .nav__brand:hover,#navigation .nav__brand:focus-visible{background:transparent!important}
+#navigation .site-logo,#footer .footer-site-logo{background:transparent!important;display:block;object-fit:contain}
+#navigation .site-logo{width:100%;height:100%;object-position:left center}
+#footer .chopstick-poster{background:transparent!important;padding:0!important;border:0!important;box-shadow:none!important}
+@media(max-width:640px){#navigation{padding:10px 16px!important;gap:10px!important}#navigation .nav__brand{width:154px!important;height:46px!important}#navigation .nav__menu{min-width:42px;min-height:42px}#footer .footer-site-logo{width:min(100%,420px);max-height:96px}}
+@media(max-width:380px){#navigation .nav__brand{width:138px!important;height:42px!important}}
 </style></head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.svg" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1435,7 +1444,7 @@ const CONFIG = Object.freeze({
   SETTLE_EPSILON: 0.0008,       // frames; below this the engine stops drawing
 
   /* Loading */
-  BOOT_RING: 11,                // opening frames decoded before the film is revealed
+  BOOT_RING: 5,                 // six opening frames; the rest stream while scrolling
   PREFETCH_LANES: 3,            // concurrent out-of-boot decodes
   PREFETCH_AHEAD: 18,           // frames prefetched beyond the playhead (scroll direction)
   PREFETCH_BEHIND: 10,          // frames kept behind it (for immediate reversal)
