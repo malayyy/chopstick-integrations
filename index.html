@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#050206">
+<meta name="theme-color" content="#000000">
 <meta name="description" content="Chopstick Integrations connects strategy, technology, and operations to move businesses forward.">
 <title>CHOPSTICK — INTEGRATIONS</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050206'/%3E%3Cpath d='M14 50 46 18M22 52 50 26' stroke='%23c8102e' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -18,7 +18,7 @@
   html {
     margin: 0;
     padding: 0;
-    background: #050206;
+    background: #000000;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
   }
@@ -30,7 +30,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: #050206;
+    background: #000000;
   }
   body.cinematic-active { overscroll-behavior-y: none; }
 
@@ -39,7 +39,7 @@
     inset: 0;
     z-index: 2;
     overflow: hidden;
-    background: #050206;
+    background: #000000;
     transform: translateY(0);
     transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1);
     will-change: transform;
@@ -62,7 +62,7 @@
     z-index: -1;
     width: 100%;
     height: 300svh;                       /* replaced with an exact px height by JS */
-    background: #050206;
+    background: #000000;
   }
 
   /* Graceful path for browsers without WebGL2: a plain letterboxed <img>,
@@ -73,7 +73,7 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #050206;
+    background: #000000;
     opacity: 0;
     transition: opacity 0.9s ease;
     z-index: 1;
@@ -194,7 +194,7 @@
   }
 
   /* Minimal glass-chopstick loader + unmistakable scroll invitation. */
-  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#050206;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
+  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
   #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font:italic 400 clamp(17px,2.1vw,22px)/1.45 Georgia,serif;letter-spacing:.01em;transition:opacity .35s ease,transform .35s ease}
   #boot-quote.changing{opacity:0;transform:translateY(7px)}
@@ -672,7 +672,16 @@ void main(){
 
   vec3 col;
   if (insideX && insideY) {
-    col = texture(uTex, uv).rgb;
+    /* Feather the footage INTO the black stage at its own perimeter. This
+       removes the hard 16:9 rectangle on tall/narrow viewports. */
+    vec2 edgePx = min(p, uDisp - p);
+    float innerDistance = min(edgePx.x, edgePx.y);
+    float innerFeather = smoothstep(0.0, 58.0, innerDistance);
+    vec3 plate = texture(uTex, uv).rgb;
+    vec3 edge = edgeSample(uv, uDisp,
+      edgePx.x < edgePx.y ? 0.0 : 1.0);
+    float nearEdge = 1.0 - smoothstep(0.0, 58.0, innerDistance);
+    col = mix(plate, edge, nearEdge) * innerFeather;
   } else {
     vec2 auv = clamp(uv, vec2(0.0), vec2(1.0));
 
@@ -684,7 +693,9 @@ void main(){
     float keep = pow(1.0 - dd, 1.7);
 
     vec3 edge = edgeSample(auv, uDisp, insideX ? 0.0 : 1.0);
-    col = edge * keep;
+    float outsideDistance = max(dx, dy);
+    float joinFeather = smoothstep(0.0, 58.0, outsideDistance);
+    col = edge * keep * joinFeather;
 
     if (uAmbient > 0.5 && dd > 0.02) {
       float edgeLuma  = dot(edge, LUMA);
