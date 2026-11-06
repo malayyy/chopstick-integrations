@@ -1075,6 +1075,18 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     var(--color-1);
 }
 </style>
+<style id="chopstick-contact-form-contrast">
+/* Keep form controls light, but make the copy readable on the dark panel. */
+#contact .contact__form{color:#fff}
+#contact .contact__form h3,
+#contact .contact__form>p,
+#contact .contact__form label,
+#contact .contact__form .contact__status{color:#fff}
+#contact .contact__form label{color:rgba(255,255,255,.82)}
+#contact .contact__form .contact__status{color:rgba(255,255,255,.72)}
+#contact .contact__form .m-field{color:#171216;background:#f7f3f4}
+#contact .contact__form .m-field::placeholder{color:#777}
+</style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
