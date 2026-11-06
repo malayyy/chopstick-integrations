@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "CHOPSTICK — a single-file, scroll-controlled cinematic experience (300 x 4K frames, WebGL2).",
+  "description": "CHOPSTICK — real-time Three.js cinematic intro with scroll-driven 3D scene.",
   "scripts": {
     "dev": "node tools/dev-server.mjs",
     "frames": "node tools/build-frames.mjs",
