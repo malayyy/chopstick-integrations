@@ -1010,6 +1010,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   document.documentElement.dataset.theme = theme;
   const themeColor = document.querySelector('meta[name="theme-color"]');
   if (themeColor) themeColor.content = theme === 'dark' ? '#0b090b' : '#f5f2ef';
+  const colorScheme = document.querySelector('meta[name="color-scheme"]');
+  if (colorScheme) colorScheme.content = theme;
 })();
 </script>
 </head>
@@ -2698,6 +2700,8 @@ document.addEventListener('animationstart', scan, true);
     if (icon) icon.textContent = isDark ? '☼' : '☾';
     const themeColor = document.querySelector('meta[name="theme-color"]');
     if (themeColor) themeColor.content = isDark ? '#0b090b' : '#f5f2ef';
+    const colorScheme = document.querySelector('meta[name="color-scheme"]');
+    if (colorScheme) colorScheme.content = theme;
     if (persist) {
       try { localStorage.setItem('chopstick-theme', theme); } catch {}
     }
