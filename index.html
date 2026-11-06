@@ -191,29 +191,79 @@
     line-height: 1.75;
   }
 
-  /* Boot veil: pure black with a single crimson hairline. No text. */
+  /* Branded boot loader: keep the cinematic layer hidden until its opening
+     frames are decoded, then fade the veil away cleanly. */
   #boot {
     position: fixed;
     inset: 0;
     z-index: 5;
-    background: #050206;
     display: grid;
     place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 48%, rgba(116, 10, 34, 0.19), transparent 38%),
+      #050206;
     opacity: 1;
-    transition: opacity 0.45s ease;
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0.65s ease;
     pointer-events: none;
+  }
+  #boot-content {
+    width: min(260px, calc(100vw - 64px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+  #boot-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f7f3f4;
+    font: 700 13px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.2em;
+  }
+  #boot-mark {
+    width: 22px;
+    height: 22px;
+    color: #d11b3a;
+    filter: drop-shadow(0 0 9px rgba(209, 27, 58, 0.55));
+  }
+  #boot-status {
+    color: rgba(247, 243, 244, 0.58);
+    font: 500 9px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  #boot-progress { width: 100%; }
+  #boot-track {
+    width: 100%;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.13);
   }
   #boot-bar {
     width: 0%;
-    max-width: 220px;
-    height: 2px;
-    border-radius: 1px;
-    background: #c8102e;
-    box-shadow: 0 0 12px rgba(200, 16, 46, 0.55);
-    transition: width 0.28s ease, opacity 0.45s ease;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8d1029, #f04460);
+    box-shadow: 0 0 14px rgba(200, 16, 46, 0.7);
+    transition: width 0.24s ease;
   }
-  #boot.done { opacity: 0; }
-  #boot.done #boot-bar { opacity: 0; }
+  #boot-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    color: rgba(247, 243, 244, 0.38);
+    font: 500 9px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.12em;
+  }
+  #boot-percent { color: rgba(247, 243, 244, 0.78); font-variant-numeric: tabular-nums; }
+  #boot.done { opacity: 0; visibility: hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    #boot, #boot-bar { transition-duration: 0.01s; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     #cinematic-layer, #stage, #stage-fallback, .home-nav a { transition-duration: 0.01s; }
@@ -294,7 +344,21 @@
     <img id="stage-fallback" alt="" draggable="false" hidden>
   </div>
   <div id="track" aria-hidden="true"></div>
-  <div id="boot" aria-hidden="true"><div id="boot-bar"></div></div>
+  <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
+    <div id="boot-content">
+      <div id="boot-brand">
+        <svg id="boot-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M5 26 24 7M10 28 27 11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <span>CHOPSTICK</span>
+      </div>
+      <div id="boot-status">Preparing the experience</div>
+      <div id="boot-progress">
+        <div id="boot-track"><div id="boot-bar"></div></div>
+        <div id="boot-meta"><span>LOADING CINEMATIC</span><span id="boot-percent">0%</span></div>
+      </div>
+    </div>
+  </div>
 
 <script type="module">
 /* ============================================================================
@@ -325,10 +389,10 @@ const CONFIG = Object.freeze({
   SETTLE_EPSILON: 0.0008,       // frames; below this the engine stops drawing
 
   /* Loading */
-  BOOT_RING: 7,                 // frames decoded before the film is revealed
-  PREFETCH_LANES: 2,            // concurrent out-of-boot decodes
-  PREFETCH_AHEAD: 12,           // frames prefetched beyond the playhead (scroll direction)
-  PREFETCH_BEHIND: 8,           // frames kept behind it (for immediate reversal)
+  BOOT_RING: 11,                // opening frames decoded before the film is revealed
+  PREFETCH_LANES: 3,            // concurrent out-of-boot decodes
+  PREFETCH_AHEAD: 18,           // frames prefetched beyond the playhead (scroll direction)
+  PREFETCH_BEHIND: 10,          // frames kept behind it (for immediate reversal)
   IDLE_FREEZE_MS: 6000,         // freeze ambient drift after this idle time
 
   /* Texture memory. Bitmaps are rescaled at decode to what the viewport can
@@ -1034,8 +1098,11 @@ void main(){
     const bootLanes = CONFIG.PREFETCH_LANES + 1;
     let ready = 0;
 
+    const bootPercent = document.getElementById('boot-percent');
     const setBar = () => {
-      bootBar.style.width = `${clamp(ready / total * 100, 8, 100)}%`;
+      const percent = Math.round(ready / total * 100);
+      bootBar.style.width = `${percent}%`;
+      if (bootPercent) bootPercent.textContent = `${percent}%`;
     };
 
     const loadLane = async (lane) => {
