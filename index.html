@@ -545,6 +545,8 @@ textarea.m-field { min-height: 112px; resize: vertical; }
 #capabilities .capabilities__deck { display: grid; gap: 20px; }
 #capabilities .service { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: clamp(18px, 2.4vw, 34px); overflow: hidden; box-shadow: var(--shadow-1); }
 #capabilities .service__text { display: flex; flex-direction: column; gap: 16px; }
+#capabilities .service__text h3 { color: #f7f3f4; }
+:root[data-theme="light"] #capabilities .service__text h3 { color: #171419; }
 #capabilities .service__line { max-width: 30rem; color: var(--color-6); }
 #capabilities .service__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 8px; color: var(--color-6); }
 #capabilities .service__media { overflow: hidden; border-radius: var(--radius-3); aspect-ratio: 16 / 10; }
@@ -1917,7 +1919,11 @@ void main(){
     if (!('caches' in window)) throw new Error('Browser cache storage is unavailable.');
     const cache = await caches.open(FRAME_CACHE_NAME);
     let completed = 0, next = 0, firstError = null;
-    const workers = Array.from({ length: 6 }, async () => {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const isPhone = matchMedia('(max-width: 767px), (pointer: coarse)').matches;
+    const slowNetwork = connection && /^(slow-2g|2g|3g)$/.test(connection.effectiveType || '');
+    const workerCount = slowNetwork ? 2 : (isPhone ? 4 : 8);
+    const workers = Array.from({ length: workerCount }, async () => {
       while (true) {
         const index = next++;
         if (index >= CONFIG.FRAME_COUNT) return;
@@ -2257,10 +2263,15 @@ void main(){
     /* Wait for page images and web fonts as well. */
     if (bootState) bootState.textContent = 'Finishing the details';
     const pageImages = [...document.images];
-    pageImages.forEach(img => { img.loading = 'eager'; });
+    /* Decode images in the initial viewport before reveal. Keep below-fold
+       images lazy so mobile users are not forced to fetch the entire page twice. */
+    const initialImages = pageImages.filter(img => {
+      const rect = img.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < innerHeight * 1.5;
+    });
     await Promise.all([
       document.fonts?.ready || Promise.resolve(),
-      ...pageImages.map(img => img.decode ? img.decode().catch(() => {}) : Promise.resolve())
+      ...initialImages.map(img => img.decode ? img.decode().catch(() => {}) : Promise.resolve())
     ]);
 
     /* Reveal: canvas fades in over the black veil, then the veil removes. */
