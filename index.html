@@ -1006,10 +1006,10 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 (() => {
   let theme = null;
   try { theme = localStorage.getItem('chopstick-theme'); } catch {}
-  if (theme !== 'dark' && theme !== 'light') {
-    theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
+  if (theme !== 'dark' && theme !== 'light') theme = 'dark';
   document.documentElement.dataset.theme = theme;
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor) themeColor.content = theme === 'dark' ? '#0b090b' : '#f5f2ef';
 })();
 </script>
 </head>
