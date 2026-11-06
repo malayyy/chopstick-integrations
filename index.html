@@ -196,13 +196,13 @@
   /* Custom Chopstick loader. The original template's site styling is untouched. */
   #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
-  #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font:italic 400 clamp(17px,2.1vw,22px)/1.45 Georgia,serif;letter-spacing:.01em}
+  #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font-family:var(--font-2);font-size:clamp(17px,2.1vw,22px);font-style:normal;font-weight:400;line-height:1.45;letter-spacing:-.015em}
   #chopstick-loader{display:block;width:min(220px,54vw);height:auto;margin:22px 0 20px;overflow:visible}
   #chopstick-loader .bowl{transform-origin:190px 337px;animation:bowl-breathe 2.8s ease-in-out infinite}
   #chopstick-loader .sticks{transform-origin:256px 256px;animation:sticks-float 2.8s ease-in-out infinite}
   #chopstick-loader .shine{fill:none;stroke:rgba(255,255,255,.78);stroke-width:2.5;stroke-linecap:round}
-  #boot-progress{color:#fff;font:300 23px/1 Georgia,serif;font-variant-numeric:tabular-nums;letter-spacing:.04em}
-  #boot-state{margin-top:12px;color:rgba(247,243,244,.48);font:500 9px/1.5 ui-sans-serif,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}
+  #boot-progress{color:#fff;font-family:var(--font-1);font-size:23px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  #boot-state{margin-top:12px;color:rgba(247,243,244,.48);font-family:var(--font-2);font-size:9px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase}
   #boot-instruction{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;color:#fff;font:700 clamp(15px,2.2vw,21px)/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(15px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
   #boot-instruction .mobile{display:none}
   #boot-scroll-cue{width:22px;height:34px;border:1px solid rgba(255,255,255,.65);border-radius:12px;position:relative}
@@ -946,6 +946,72 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   #statement, #method, #studio, #journal, #faq { color: var(--color-1); }
 }
 </style>
+
+<style data-8b-part="theme-switcher">
+/* Two complete, paired palettes. The cinematic loader intentionally stays dark. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-1: #f5f2ef;
+  --color-2: #171419;
+  --color-3: #c8102e;
+  --color-4: #e9e4e0;
+  --color-5: #655e61;
+  --color-6: #777075;
+  --color-7: #e5dfdb;
+}
+:root[data-theme="light"] #home {
+  color: var(--color-2);
+  background: radial-gradient(ellipse at 78% 18%, rgba(200,16,46,.08), transparent 38%), var(--color-1);
+}
+:root[data-theme="light"] #navigation .nav__brand {
+  background: var(--color-1);
+  color: var(--color-2);
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  margin-left: 10px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: var(--radius-2);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-2);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.theme-toggle:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.theme-toggle:focus-visible { outline: 2px solid var(--color-3); outline-offset: 3px; }
+.theme-toggle__icon { font-size: 16px; line-height: 1; }
+#navigation .theme-toggle { color: var(--color-2); }
+:root[data-theme="light"] #navigation .theme-toggle { color: var(--color-2); }
+@media (max-width: 899px) {
+  #navigation .theme-toggle { margin-left: auto; margin-right: 8px; }
+  #navigation .nav__menu { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle { transition: none; }
+}
+</style>
+<script>
+(() => {
+  let theme = null;
+  try { theme = localStorage.getItem('chopstick-theme'); } catch {}
+  if (theme !== 'dark' && theme !== 'light') {
+    theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
@@ -959,6 +1025,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     </ul>
   </nav>
   <a class="m-btn nav__cta" href="#contact"><span class="m-btn__label">Start a project</span></a>
+  <button class="m-btn-2 theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle__icon" aria-hidden="true">☼</span><span class="theme-toggle__label">Light</span></button>
   <button class="m-btn-2 nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="m-btn__label">Menu</span></button>
   <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
     <div class="menu__top"><button class="m-icon menu__close" type="button" aria-label="Close the menu"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13"/></svg></button></div>
@@ -2612,6 +2679,33 @@ watch.observe(element);
 scan();
 addEventListener('load', scan);
 document.addEventListener('animationstart', scan, true);
+})();
+</script>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const toggle = document.querySelector('.theme-toggle');
+  if (!toggle) return;
+  const label = toggle.querySelector('.theme-toggle__label');
+  const icon = toggle.querySelector('.theme-toggle__icon');
+  const apply = (theme, persist = true) => {
+    root.dataset.theme = theme;
+    const isDark = theme === 'dark';
+    toggle.setAttribute('aria-pressed', String(!isDark));
+    toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    if (label) label.textContent = isDark ? 'Light' : 'Dark';
+    if (icon) icon.textContent = isDark ? '☼' : '☾';
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.content = isDark ? '#0b090b' : '#f5f2ef';
+    if (persist) {
+      try { localStorage.setItem('chopstick-theme', theme); } catch {}
+    }
+  };
+  apply(root.dataset.theme === 'light' ? 'light' : 'dark', false);
+  toggle.addEventListener('click', () => {
+    apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
 })();
 </script>
 </body></html>
