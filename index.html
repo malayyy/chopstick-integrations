@@ -1055,7 +1055,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 }
 #hero .hero__word{max-width:100%}
 #hero .hero__period{flex:0 0 auto}
-#hero .hero__stage{z-index:-1}
+#hero .hero__stage{z-index:1;pointer-events:none}
 @media (min-width:900px) and (orientation:landscape){
   #hero{--ap:min(31vw,52svh)}
   #hero .hero__title{font-size:clamp(110px,13vw,190px)}
@@ -1111,6 +1111,14 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 #journal .story h3 a:hover{color:#c8102e}
 #journal .story__read{display:inline-block;margin-top:3px}
 @media(max-width:899px){#journal .journal__frame--editorial{min-height:280px}#journal .journal__body{gap:30px}}
+</style><style id="chopstick-reveal-failsafe">
+/* Keep scroll-timeline art progressive, but never hide core content if its observer does not fire. */
+#statement .statement__index{opacity:1}
+#statement .statement__index li{opacity:1;transform:none}
+#work .case__link{z-index:1}
+#work .case__media{z-index:0}
+#work .case__tag,#work .case__text{pointer-events:none}
+#work .case__link:focus-visible{outline:3px solid #f05a73;outline-offset:-6px;border-radius:var(--radius-1)}
 </style></head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
@@ -1119,7 +1127,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <li><a class="m-link-2" href="#work">Work</a></li>
       <li><a class="m-link-2" href="#capabilities">Services</a></li>
       <li><a class="m-link-2" href="#method">Approach</a></li>
-      <li><a class="m-link-2" href="#studio">Studio</a></li>
+      <li><a class="m-link-2" href="#studio">Studio</a></li><li><a class="m-link-2" href="/blog/">Journal</a></li>
       
     </ul>
   </nav>
@@ -1316,7 +1324,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <a class="m-link-2" href="#capabilities">Services</a>
       <a class="m-link-2" href="#method">Approach</a>
       <a class="m-link-2" href="#studio">Studio</a>
-      <a class="m-link-2" href="#journal">Journal</a>
+      <a class="m-link-2" href="/blog/">Journal</a>
     </nav>
     <div class="footer__col">
       <p class="m-text-6 footer__label">Talk</p>
