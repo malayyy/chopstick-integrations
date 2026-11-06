@@ -191,8 +191,7 @@
     line-height: 1.75;
   }
 
-  /* Branded boot loader: keep the cinematic layer hidden until its opening
-     frames are decoded, then fade the veil away cleanly. */
+  /* Minimal chopstick preloader + scroll invitation. The sticks are the loader. */
   #boot {
     position: fixed;
     inset: 0;
@@ -200,69 +199,109 @@
     display: grid;
     place-items: center;
     overflow: hidden;
-    background:
-      radial-gradient(ellipse at 50% 48%, rgba(116, 10, 34, 0.19), transparent 38%),
-      #050206;
+    color: #f7f3f4;
+    background: #050206;
     opacity: 1;
-    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 0.65s ease;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.7s ease;
     pointer-events: none;
   }
   #boot-content {
-    width: min(260px, calc(100vw - 64px));
+    width: min(360px, calc(100vw - 48px));
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;
+    text-align: center;
+    gap: 0;
+    transform: translateY(-2vh);
   }
-  #boot-brand {
+  #boot-quote {
+    min-height: 42px;
+    max-width: 330px;
+    color: rgba(247,243,244,.82);
+    font: italic 400 clamp(15px, 2.1vw, 19px)/1.5 Georgia, serif;
+    letter-spacing: .025em;
+    opacity: 1;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  #boot-quote.changing { opacity: 0; transform: translateY(5px); }
+  #boot-quote-index {
+    margin-top: 8px;
+    color: rgba(247,243,244,.35);
+    font: 500 9px/1 ui-sans-serif,system-ui,sans-serif;
+    letter-spacing: .24em;
+  }
+  #chopstick-loader {
+    width: 112px;
+    height: 94px;
+    margin: 25px 0 15px;
+    overflow: visible;
+    filter: drop-shadow(0 0 9px rgba(209,27,58,.28));
+  }
+  #chopstick-loader .stick {
+    transform-box: fill-box;
+    transform-origin: 12% 50%;
+    animation: stick-click 1.25s cubic-bezier(.6,0,.35,1) infinite;
+  }
+  #chopstick-loader .stick.second { animation-delay: .08s; }
+  #chopstick-loader .stick line {
+    stroke: url(#stickGlow);
+    stroke-width: 2.8;
+    stroke-linecap: round;
+  }
+  #chopstick-loader .spark {
+    fill: #ff536b;
+    transform-origin: center;
+    animation: spark-pop 1.25s ease-out infinite;
+  }
+  @keyframes stick-click {
+    0%, 100% { transform: rotate(-9deg); }
+    42%, 58% { transform: rotate(0deg); }
+  }
+  @keyframes spark-pop {
+    0%, 38%, 100% { opacity: 0; transform: scale(.25); }
+    50% { opacity: 1; transform: scale(1.2); }
+    68% { opacity: 0; transform: scale(2.1); }
+  }
+  #boot-progress {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: baseline;
+    gap: 4px;
     color: #f7f3f4;
-    font: 700 13px/1 ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: 0.2em;
+    font: 300 22px/1 Georgia,serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .04em;
   }
-  #boot-mark {
-    width: 22px;
-    height: 22px;
-    color: #d11b3a;
-    filter: drop-shadow(0 0 9px rgba(209, 27, 58, 0.55));
-  }
-  #boot-status {
-    color: rgba(247, 243, 244, 0.58);
-    font: 500 9px/1 ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: 0.2em;
+  #boot-percent { min-width: 48px; }
+  #boot-state {
+    margin-top: 9px;
+    color: rgba(247,243,244,.36);
+    font: 500 8px/1.4 ui-sans-serif,system-ui,sans-serif;
+    letter-spacing: .2em;
     text-transform: uppercase;
   }
-  #boot-progress { width: 100%; }
-  #boot-track {
-    width: 100%;
-    height: 2px;
-    overflow: hidden;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.13);
+  #boot-instruction {
+    margin-top: 30px;
+    color: rgba(247,243,244,.76);
+    font: 600 9px/1.5 ui-sans-serif,system-ui,sans-serif;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .6s ease, transform .6s ease;
   }
-  #boot-bar {
-    width: 0%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #8d1029, #f04460);
-    box-shadow: 0 0 14px rgba(200, 16, 46, 0.7);
-    transition: width 0.24s ease;
-  }
-  #boot-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    color: rgba(247, 243, 244, 0.38);
-    font: 500 9px/1 ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: 0.12em;
-  }
-  #boot-percent { color: rgba(247, 243, 244, 0.78); font-variant-numeric: tabular-nums; }
+  #boot-instruction .mobile { display: none; }
+  #boot.ready #boot-instruction { opacity: 1; transform: translateY(0); }
+  #boot.ready #boot-state { opacity: 0; }
+  #boot.ready #boot-progress { color: #f7f3f4; }
   #boot.done { opacity: 0; visibility: hidden; }
+  @media (pointer: coarse), (max-width: 620px) {
+    #boot-instruction .desktop { display: none; }
+    #boot-instruction .mobile { display: inline; }
+    #chopstick-loader { width: 96px; height: 82px; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    #boot, #boot-bar { transition-duration: 0.01s; }
+    #boot, #boot-instruction { transition-duration: .01s; }
+    #chopstick-loader .stick, #chopstick-loader .spark { animation: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -346,16 +385,24 @@
   <div id="track" aria-hidden="true"></div>
   <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
     <div id="boot-content">
-      <div id="boot-brand">
-        <svg id="boot-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path d="M5 26 24 7M10 28 27 11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-        <span>CHOPSTICK</span>
-      </div>
-      <div id="boot-status">Preparing the experience</div>
-      <div id="boot-progress">
-        <div id="boot-track"><div id="boot-bar"></div></div>
-        <div id="boot-meta"><span>LOADING CINEMATIC</span><span id="boot-percent">0%</span></div>
+      <div id="boot-quote">“Less noise. More intelligence.”</div>
+      <div id="boot-quote-index">01 / 03</div>
+      <svg id="chopstick-loader" viewBox="0 0 120 100" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="stickGlow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#7d1028"/><stop offset=".48" stop-color="#ff647b"/>
+            <stop offset="1" stop-color="#a51635"/>
+          </linearGradient>
+        </defs>
+        <g class="stick"><line x1="15" y1="42" x2="105" y2="18"/><line x1="15" y1="42" x2="105" y2="18" stroke="white" stroke-opacity=".22" stroke-width=".7"/></g>
+        <g class="stick second"><line x1="15" y1="58" x2="105" y2="82"/><line x1="15" y1="58" x2="105" y2="82" stroke="white" stroke-opacity=".22" stroke-width=".7"/></g>
+        <circle class="spark" cx="15" cy="50" r="3"/>
+      </svg>
+      <div id="boot-progress"><span id="boot-percent">1%</span></div>
+      <div id="boot-state">Preparing the experience</div>
+      <div id="boot-instruction">
+        <span class="desktop">SCROLL FOR THE EXPERIENCE</span>
+        <span class="mobile">SWIPE UP FOR THE EXPERIENCE</span>
       </div>
     </div>
   </div>
@@ -444,7 +491,7 @@ function bandAnchorY(f) {
 const canvas = document.getElementById('stage');
 const fallbackImg = document.getElementById('stage-fallback');
 const bootVeil = document.getElementById('boot');
-const bootBar = document.getElementById('boot-bar');
+const bootPercent = document.getElementById('boot-percent');
 const track = document.getElementById('track');
 const cinematicLayer = document.getElementById('cinematic-layer');
 const homepage = document.getElementById('home');
@@ -479,6 +526,40 @@ function beginCurtain() {
   curtainTimer = setTimeout(finishCurtain, 1200);
   cinematicLayer.classList.add('curtain-open');
 }
+
+
+/* Rotating brand lines; keep the loader quiet and lightweight. */
+const quoteLines = [
+  '“Less noise. More intelligence.”',
+  '“Built with intent. Not just prompts.”',
+  '“Technology should solve. Not complicate.”'
+];
+let quoteIndex = 0;
+const quoteNode = document.getElementById('boot-quote');
+const quoteIndexNode = document.getElementById('boot-quote-index');
+if (quoteNode && !reducedMotion) {
+  setInterval(() => {
+    quoteNode.classList.add('changing');
+    setTimeout(() => {
+      quoteIndex = (quoteIndex + 1) % quoteLines.length;
+      quoteNode.textContent = quoteLines[quoteIndex];
+      if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 03`;
+      quoteNode.classList.remove('changing');
+    }, 360);
+  }, 3200);
+}
+
+/* First real user scroll dismisses the instruction veil, not the scroll rig. */
+let introDismissed = false;
+function dismissIntro() {
+  if (introDismissed || !bootVeil.classList.contains('ready')) return;
+  introDismissed = true;
+  bootVeil.classList.add('done');
+  setTimeout(() => bootVeil.remove(), 750);
+}
+addEventListener('scroll', () => {
+  if (scrollY > 4) dismissIntro();
+}, { passive: true, once: true });
 
 /* Start every load at the first frame (the film always plays from its head). */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -1099,9 +1180,8 @@ void main(){
     let ready = 0;
 
     const bootPercent = document.getElementById('boot-percent');
-    const setBar = () => {
-      const percent = Math.round(ready / total * 100);
-      bootBar.style.width = `${percent}%`;
+    const setProgress = () => {
+      const percent = Math.max(1, Math.round(ready / total * 100));
       if (bootPercent) bootPercent.textContent = `${percent}%`;
     };
 
@@ -1109,15 +1189,15 @@ void main(){
       for (let i = lane; i < total; i += bootLanes) {
         if (!textures.has(i)) await decodeFrame(i);
         ready++;
-        setBar();
+        setProgress();
       }
     };
     await Promise.all(Array.from({ length: bootLanes }, (_, l) => loadLane(l)));
 
     /* Reveal: canvas fades in over the black veil, then the veil removes. */
     canvas.style.opacity = '1';
-    bootVeil.classList.add('done');
-    setTimeout(() => bootVeil.remove(), 700);
+    bootVeil.classList.add('ready');
+    bootVeil.setAttribute('aria-label', 'Chopstick experience ready. Scroll to begin.');
 
     running = true;
     lastT = performance.now();
