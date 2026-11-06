@@ -1,0 +1,39 @@
+name: Deploy cinematic experience (GitHub Pages)
+
+# Deploys the minimal serving set: index.html + the 4K WebP frame derivatives.
+# The 4K PNG originals (frames-4k/) are preserved in the repository but are never
+# deployed — they are not required at runtime.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Gather serving files
+        run: |
+          mkdir -p _site/frames
+          cp index.html _site/
+          cp frames/*.webp _site/frames/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

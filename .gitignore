@@ -1,7 +1,4 @@
 .DS_Store
 node_modules/
-dist/
-*.tsbuildinfo
-hd-frames/
-frames/
-qa/
+qa/.artifacts/
+frames/.build-log.txt

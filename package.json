@@ -1,25 +1,16 @@
 {
   "name": "chopstick-integrations",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "CHOPSTICK — a single-file, scroll-controlled cinematic experience (300 x 4K frames, WebGL2).",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "frames": "node scripts/build-frames.mjs",
-    "pilot": "node scripts/pilot-test.mjs",
-    "qa": "node scripts/qa-browser.mjs"
+    "dev": "node tools/dev-server.mjs",
+    "frames": "node tools/build-frames.mjs",
+    "qa": "node tools/qa/run-qa.mjs"
   },
   "devDependencies": {
-    "chrome-remote-interface": "^0.34.0",
     "puppeteer-core": "^25.16.0",
-    "sharp": "^0.35.5",
-    "typescript": "^7.0.2",
-    "vite": "^8.3.5"
-  },
-  "dependencies": {
-    "gsap": "^3.15.0",
-    "lenis": "^1.3.27"
+    "sharp": "^0.35.5"
   }
 }

@@ -1,0 +1,11 @@
+# Vercel serves only the film itself (the masters, sources and QA tooling
+# stay in the repository but are never deployed).
+frames-4k/
+tools/
+qa/
+node_modules/
+README.md
+package.json
+package-lock.json
+.gitignore
+.github/
