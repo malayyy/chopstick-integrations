@@ -938,6 +938,14 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 #navigation .nav__brand { background: #0b090b; color: #f7f3f4; }
 .m-dot, .m-btn, .m-icon::after { --color-3: #d11b3a; }
 </style>
+
+<style data-8b-part="contrast-fix">
+@layer sections {
+  /* These light template sections sit inside #home, whose default text is light.
+     Set their foreground explicitly so inherited white text never lands on white. */
+  #statement, #method, #studio, #journal, #faq { color: var(--color-1); }
+}
+</style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
