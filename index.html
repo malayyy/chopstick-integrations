@@ -499,13 +499,32 @@ const homepage = document.getElementById('home');
 let cinematicComplete = false;
 let curtainStarted = false;
 let curtainTimer = 0;
+let replayCinematic = null;
+
+addEventListener('wheel', (event) => {
+  if (cinematicComplete && scrollY <= 2 && event.deltaY < -4 && replayCinematic) {
+    event.preventDefault();
+    replayCinematic();
+  }
+}, { passive: false });
+
+let replayTouchY = 0;
+addEventListener('touchstart', (event) => {
+  if (cinematicComplete && event.touches.length) replayTouchY = event.touches[0].clientY;
+}, { passive: true });
+addEventListener('touchend', (event) => {
+  if (cinematicComplete && scrollY <= 2 && event.changedTouches.length &&
+      event.changedTouches[0].clientY - replayTouchY > 36 && replayCinematic) {
+    replayCinematic();
+  }
+}, { passive: true });
 
 function finishCurtain() {
   if (cinematicComplete) return;
   cinematicComplete = true;
   clearTimeout(curtainTimer);
   cinematicLayer.hidden = true;
-  track.remove();
+  track.hidden = true;
   homepage.classList.add('active');
   homepage.removeAttribute('aria-hidden');
   document.documentElement.classList.remove('cinematic-active');
@@ -559,7 +578,7 @@ function dismissIntro() {
 }
 addEventListener('scroll', () => {
   if (scrollY > 4) dismissIntro();
-}, { passive: true, once: true });
+}, { passive: true });
 
 /* Start every load at the first frame (the film always plays from its head). */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -1003,6 +1022,30 @@ void main(){
   const refreshMaxScroll = () => {
     maxScroll = Math.max(1, track.offsetHeight -
                              document.documentElement.clientHeight);
+  };
+
+  /* Once the homepage is reached, scrolling back up at its top re-enters the
+     film at its final frame. The same native scroll mapping then rewinds it. */
+  replayCinematic = () => {
+    if (!cinematicComplete) return;
+    cinematicComplete = false;
+    curtainStarted = false;
+    clearTimeout(curtainTimer);
+    cinematicLayer.hidden = false;
+    cinematicLayer.classList.remove('curtain-open');
+    track.hidden = false;
+    homepage.classList.remove('active');
+    homepage.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.add('cinematic-active');
+    document.body.classList.add('cinematic-active');
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    scrollTo(0, maxScroll);
+    fIdxTarget = N - 1;
+    fIdxSmoothed = N - 1;
+    needsDraw = true;
+    running = true;
+    lastT = performance.now();
+    requestAnimationFrame(tick);
   };
 
   let fIdxTarget = 0;
