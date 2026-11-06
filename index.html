@@ -365,6 +365,9 @@ void main(){
   float g = hash21(gl_FragCoord.xy + floor(uSeed) * 91.7) - 0.5;
   col += g * GRAIN;
 
+  /* Blend weight of THIS pass. The engine renders adjacent frames as two
+     additive passes (A×(1−f) + B×f) — the classic crossfade. */
+  col *= uAlpha;
   fragColor = vec4(max(col, vec3(0.0)), 1.0);
 }`;
 
@@ -381,6 +384,10 @@ void main(){
   let anis = gl.getExtension('EXT_texture_filter_anisotropic');
   const ANIS_MAX = anis
     ? Math.min(4, gl.getParameter(anis.MAX_TEXTURE_MAX_ANISOTROPY_EXT)) : 0;
+  /* WEBGL_lose_context must be fetched while the context is alive: a LOST
+     context returns null for every getExtension(), so the restore path has
+     to keep this handle from boot. */
+  const loseCtxExt = gl.getExtension('WEBGL_lose_context');
 
   gl.viewport(0, 0, 1, 1);   // set properly at first composition
 
@@ -821,6 +828,8 @@ void main(){
           scroll: [scrollY, maxScroll],
           draws, lanes: scheduled.size,
           motion: reducedMotion ? 0 : 1,
+          glLost,
+          decodeFailed: decodeFailed.size,
           failed: [...decodeFailed],
         };
       },
@@ -834,14 +843,12 @@ void main(){
       },
       dims: () => [canvas.width, canvas.height],
       loseContext() {
-        const lc = gl.getExtension('WEBGL_lose_context');
-        if (lc) lc.loseContext();
-        return !!lc;
+        if (loseCtxExt) loseCtxExt.loseContext();
+        return !!loseCtxExt;
       },
       restoreContext() {
-        const lc = gl.getExtension('WEBGL_lose_context');
-        if (lc) lc.restoreContext();
-        return !!lc;
+        if (loseCtxExt) loseCtxExt.restoreContext();
+        return !!loseCtxExt;
       },
     };
   }
