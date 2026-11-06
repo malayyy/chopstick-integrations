@@ -5,13 +5,13 @@
   300 x 4K UHD frames · WebGL2 full-bleed renderer · native scroll · zero dependencies
   Architecture and tuning notes: README.md
 -->
-<html lang="en">
+<html lang="en" class="cinematic-active">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#050206">
-<meta name="description" content="A scroll-controlled cinematic experience.">
+<meta name="description" content="Chopstick Integrations connects strategy, technology, and operations to move businesses forward.">
 <title>CHOPSTICK — INTEGRATIONS</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050206'/%3E%3Cpath d='M14 50 46 18M22 52 50 26' stroke='%23c8102e' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
@@ -21,26 +21,39 @@
     background: #050206;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
-    overscroll-behavior-y: none;
-    scrollbar-width: none;               /* Firefox — the film is the interface */
   }
-  html::-webkit-scrollbar { display: none; } /* WebKit */
+  html.cinematic-active {
+    overscroll-behavior-y: none;
+    scrollbar-width: none;
+  }
+  html.cinematic-active::-webkit-scrollbar { display: none; }
   body {
     margin: 0;
     padding: 0;
     background: #050206;
-    overscroll-behavior-y: none;
   }
+  body.cinematic-active { overscroll-behavior-y: none; }
 
-  /* The stage is fixed and fills the viewport edge-to-edge at all times.
-     The scroll track (#track) sits beneath it and provides scroll distance. */
-  #stage {
+  #cinematic-layer {
     position: fixed;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    background: #050206;
+    transform: translateY(0);
+    transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1);
+    will-change: transform;
+  }
+  #cinematic-layer.curtain-open {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+  #stage {
+    position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     display: block;
-    z-index: 0;
     opacity: 0;                           /* boot fades this in */
     transition: opacity 0.9s ease;
   }
@@ -55,7 +68,7 @@
   /* Graceful path for browsers without WebGL2: a plain letterboxed <img>,
      still driven by scroll. The full experience requires WebGL2. */
   #stage-fallback {
-    position: fixed;
+    position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
@@ -63,8 +76,120 @@
     background: #050206;
     opacity: 0;
     transition: opacity 0.9s ease;
+    z-index: 1;
   }
   #stage-fallback.on { opacity: 1; }
+
+  #home {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    color: #f7f3f4;
+    background:
+      radial-gradient(ellipse at 78% 18%, rgba(119, 18, 39, 0.18), transparent 38%),
+      #0b090b;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #home.active {
+    position: relative;
+    inset: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+  .home-header {
+    width: min(1120px, calc(100% - 48px));
+    min-height: 88px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 24px;
+    height: 24px;
+    color: #d11b3a;
+  }
+  .home-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(14px, 2.5vw, 32px);
+  }
+  .home-nav a {
+    color: #c1babe;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .home-nav a:hover, .home-nav a:focus-visible { color: #fff; }
+  .home-hero {
+    width: min(1120px, calc(100% - 48px));
+    min-height: min(680px, calc(100vh - 89px));
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 72px 0 96px;
+    box-sizing: border-box;
+  }
+  .eyebrow {
+    margin: 0 0 24px;
+    color: #d11b3a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .home-hero h1 {
+    max-width: 900px;
+    margin: 0;
+    font-size: clamp(42px, 7.3vw, 92px);
+    font-weight: 600;
+    letter-spacing: -0.065em;
+    line-height: 0.99;
+  }
+  .home-hero .intro {
+    max-width: 520px;
+    margin: 28px 0 0;
+    color: #aaa1a6;
+    font-size: clamp(15px, 1.5vw, 18px);
+    line-height: 1.75;
+  }
+  .home-section {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 92px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .home-section h2 {
+    margin: 0 0 18px;
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 550;
+    letter-spacing: -0.045em;
+  }
+  .home-section p {
+    max-width: 650px;
+    margin: 0;
+    color: #aaa1a6;
+    font-size: 16px;
+    line-height: 1.75;
+  }
 
   /* Boot veil: pure black with a single crimson hairline. No text. */
   #boot {
@@ -91,13 +216,83 @@
   #boot.done #boot-bar { opacity: 0; }
 
   @media (prefers-reduced-motion: reduce) {
-    #stage, #stage-fallback { transition-duration: 0.01s; }
+    #cinematic-layer, #stage, #stage-fallback, .home-nav a { transition-duration: 0.01s; }
+  }
+  @media (max-width: 620px) {
+    .home-header {
+      width: calc(100% - 32px);
+      min-height: 78px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 0;
+      box-sizing: border-box;
+    }
+    .home-nav {
+      width: 100%;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .home-nav a { font-size: 11px; }
+    .home-hero, .home-section { width: calc(100% - 32px); }
+    .home-hero {
+      min-height: calc(100svh - 110px);
+      padding: 64px 0 80px;
+    }
+    .home-section { padding: 68px 0; }
   }
 </style>
 </head>
 <body>
-  <canvas id="stage" role="presentation" aria-hidden="true"></canvas>
-  <img id="stage-fallback" alt="" draggable="false" hidden>
+  <div id="home" aria-hidden="true">
+    <header class="home-header">
+      <a class="brand" href="#home-top" aria-label="Chopstick Integrations home">
+        <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M5 26 24 7M10 28 27 11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <span>CHOPSTICK</span>
+      </a>
+      <nav class="home-nav" aria-label="Main navigation">
+        <a href="#home-top">Home</a>
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+    <main id="home-top">
+      <section class="home-hero" aria-labelledby="home-heading">
+        <p class="eyebrow">Chopstick Integrations</p>
+        <h1 id="home-heading">We build systems that move businesses forward.</h1>
+        <p class="intro">Chopstick Integrations connects strategy, technology, and operations to help ambitious businesses work better and grow with confidence.</p>
+      </section>
+      <section class="home-section" id="services">
+        <p class="eyebrow">What we do</p>
+        <h2>Services</h2>
+        <p>We bring the right tools, teams, and processes together to create practical systems built around your business.</p>
+      </section>
+      <section class="home-section" id="work">
+        <p class="eyebrow">Selected partnerships</p>
+        <h2>Work</h2>
+        <p>Thoughtful integrations turn disconnected moving parts into a clearer path forward.</p>
+      </section>
+      <section class="home-section" id="about">
+        <p class="eyebrow">Built to move with you</p>
+        <h2>About</h2>
+        <p>We help people make technology useful, aligned, and ready for what comes next.</p>
+      </section>
+      <section class="home-section" id="contact">
+        <p class="eyebrow">Start a conversation</p>
+        <h2>Contact</h2>
+        <p>Have a system to connect or an opportunity to explore? We would love to hear what you are building.</p>
+      </section>
+    </main>
+  </div>
+  <div id="cinematic-layer">
+    <canvas id="stage" role="presentation" aria-hidden="true"></canvas>
+    <img id="stage-fallback" alt="" draggable="false" hidden>
+  </div>
   <div id="track" aria-hidden="true"></div>
   <div id="boot" aria-hidden="true"><div id="boot-bar"></div></div>
 
@@ -187,9 +382,43 @@ const fallbackImg = document.getElementById('stage-fallback');
 const bootVeil = document.getElementById('boot');
 const bootBar = document.getElementById('boot-bar');
 const track = document.getElementById('track');
+const cinematicLayer = document.getElementById('cinematic-layer');
+const homepage = document.getElementById('home');
+
+let cinematicComplete = false;
+let curtainStarted = false;
+let curtainTimer = 0;
+
+function finishCurtain() {
+  if (cinematicComplete) return;
+  cinematicComplete = true;
+  clearTimeout(curtainTimer);
+  cinematicLayer.hidden = true;
+  track.remove();
+  homepage.classList.add('active');
+  homepage.removeAttribute('aria-hidden');
+  document.documentElement.classList.remove('cinematic-active');
+  document.body.classList.remove('cinematic-active');
+  if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+  scrollTo(0, 0);
+}
+
+function beginCurtain() {
+  if (curtainStarted || cinematicComplete) return;
+  curtainStarted = true;
+  const onTransitionEnd = (event) => {
+    if (event.target === cinematicLayer && event.propertyName === 'transform') {
+      finishCurtain();
+    }
+  };
+  cinematicLayer.addEventListener('transitionend', onTransitionEnd);
+  curtainTimer = setTimeout(finishCurtain, 1200);
+  cinematicLayer.classList.add('curtain-open');
+}
 
 /* Start every load at the first frame (the film always plays from its head). */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+document.body.classList.add('cinematic-active');
 scrollTo(0, 0);
 
 const gl = canvas.getContext('webgl2', {
@@ -213,9 +442,12 @@ function startFallback() {
   const distance = () => clamp(window.innerHeight * CONFIG.SCROLL_DIST_VH,
     CONFIG.SCROLL_DIST_MIN, CONFIG.SCROLL_DIST_MAX);
   const sizeTrack = () => {
+    if (cinematicComplete) return;
     const clientH = document.documentElement.clientHeight;
     track.style.height = `${clientH + distance()}px`;
   };
+  const maxScroll = () => Math.max(1, track.offsetHeight -
+    document.documentElement.clientHeight);
   sizeTrack();
   const onResize = () => sizeTrack();
   addEventListener('resize', onResize, { passive: true });
@@ -223,12 +455,22 @@ function startFallback() {
 
   let raf = 0, last = -1;
   const tick = () => {
+    if (cinematicComplete) return;
     raf = requestAnimationFrame(tick);
-    const y = Math.max(0, scrollY);
-    const max = Math.max(1, document.documentElement.scrollHeight -
-                             document.documentElement.clientHeight);
-    const i = clamp(Math.round(y / max * (CONFIG.FRAME_COUNT - 1)), 0, CONFIG.FRAME_COUNT - 1);
-    if (i !== last) { last = i; fallbackImg.src = frameUrl(i); }
+    const p = clamp(Math.max(0, scrollY) / maxScroll(), 0, 1);
+    const i = clamp(Math.round(p * (CONFIG.FRAME_COUNT - 1)), 0, CONFIG.FRAME_COUNT - 1);
+    if (i !== last) {
+      last = i;
+      if (i === CONFIG.FRAME_COUNT - 1) {
+        fallbackImg.addEventListener('load', beginCurtain, { once: true });
+      }
+      fallbackImg.src = frameUrl(i);
+      if (i === CONFIG.FRAME_COUNT - 1 &&
+          fallbackImg.currentSrc === new URL(frameUrl(i), location.href).href &&
+          fallbackImg.complete && fallbackImg.naturalWidth > 0) {
+        beginCurtain();
+      }
+    }
   };
   raf = requestAnimationFrame(tick);
 }
@@ -608,12 +850,13 @@ void main(){
           CONFIG.SCROLL_DIST_MIN, CONFIG.SCROLL_DIST_MAX);
 
   function sizeTrack() {
+    if (cinematicComplete) return;
     const clientH = document.documentElement.clientHeight || window.innerHeight;
     track.style.height = `${clientH + travel()}px`;
   }
   let maxScroll = 1;
   const refreshMaxScroll = () => {
-    maxScroll = Math.max(1, document.documentElement.scrollHeight -
+    maxScroll = Math.max(1, track.offsetHeight -
                              document.documentElement.clientHeight);
   };
 
@@ -641,12 +884,15 @@ void main(){
   let lastT = performance.now();
 
   function tick(now) {
-    if (!running) return;
+    if (!running || cinematicComplete) {
+      running = false;
+      return;
+    }
     requestAnimationFrame(tick);
     const dt = Math.min(0.1, Math.max(0.001, (now - lastT) / 1000));
     lastT = now;
 
-    readScroll();
+    const scrollProgress = readScroll();
 
     /* frame-rate-independent exponential approach — smooth and reversible */
     const k = 1 - Math.exp(-dt * (reducedMotion ? 22 : CONFIG.SMOOTH_LAMBDA));
@@ -665,10 +911,13 @@ void main(){
     trimCache();   /* eviction never depends on a successful draw */
 
     const settled = Math.abs(fIdxTarget - fIdxSmoothed) < CONFIG.SETTLE_EPSILON;
-    if (needsDraw || !settled) {
+    const atEnd = scrollProgress >= 1 && fIdxTarget === N - 1;
+    if (atEnd && settled) fIdxSmoothed = N - 1;
+    if (needsDraw || !settled || (atEnd && settled)) {
       drawFrame();
       needsDraw = false;
     }
+    if (atEnd && settled) beginCurtain();
   }
 
   const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -728,6 +977,7 @@ void main(){
   /* ------------------------------ RESIZE --------------------------------- */
   let resizeTimer = 0;
   function onResize() {
+    if (cinematicComplete) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       sizeTrack();

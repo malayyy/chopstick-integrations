@@ -37,7 +37,7 @@ const VIEWPORTS = [
 ];
 
 /* Frames sampled for pixel accuracy against the masters. */
-const SAMPLE_INDICES = [0, 1, 60, 129, 160, 219, 240, 299];
+const SAMPLE_INDICES = [0, 1, 60, 129, 160, 219, 240];
 
 const report = { startedAt: new Date().toISOString(), runs: [], robustness: [] };
 let totalFails = 0;
@@ -84,8 +84,9 @@ function wireLogging(page, run) {
 /* 240-point readback grid straight from the GL framebuffer (ground truth).
    draw() must be called in the same task or readPixels returns a purged
    default-framebuffer (preserveDrawingBuffer: false). */
-const GRID = (page) => page.evaluate(() => {
+const GRID = (page, seekIndex = null) => page.evaluate((seek) => {
   const f = window.__film;
+  if (seek !== null) f.seek(seek);
   f.draw();
   const st = f.snapshot();
   const [ox, oy] = st.off, [dw, dh] = st.disp, [cw, ch] = f.dims();
@@ -100,7 +101,7 @@ const GRID = (page) => page.evaluate(() => {
     }
   }
   return pts;
-});
+}, seekIndex);
 
 const gridVsMaster = (grid, master) => {
   const M = master.info.width, H2 = master.info.height, data = master.data;
@@ -249,10 +250,6 @@ async function runViewport(browser, vp) {
   await scrollPos(page, 0);
   await settle();
   run.checks.head = Math.abs((await snap()).index) < 0.02 ? 'pass' : 'FAIL';
-  await scrollPos(page, 1);
-  await settle();
-  run.checks.tail = Math.abs((await snap()).index - (N - 1)) < 0.02 ? 'pass' : 'FAIL';
-
   /* 5) memory: bounded, admission overshoot tolerated, tends back down */
   await settle(2500);   // let the window finish loading + trim
   const sEnd = await snap();
@@ -282,13 +279,47 @@ async function runViewport(browser, vp) {
     ? 'pass' : `FAIL ${fetched} frame fetches while idle`;
   if (after.draws - before.draws > 1 || fetched > 0) totalFails++;
 
-  /* 7) console clean */
+  /* 7) final frame, one-time curtain, and normal homepage scroll */
+  await scrollPos(page, 0.999);
+  await waitForFrame(page, N - 1);
+  const finalGrid = await GRID(page, N - 1);
+  const finalDiff = gridVsMaster(finalGrid, await masterRaw(N - 1));
+  run.checks.finalFrameAccuracy = finalDiff < GRID_ACCURACY_MAX
+    ? `pass (grid ${finalDiff.toFixed(2)})` : `FAIL grid=${finalDiff.toFixed(2)}`;
+
+  await scrollPos(page, 1);
+  await settle(2400);
+  const tail = await snap();
+  run.checks.tail = Math.abs(tail.index - (N - 1)) < 0.02 ? 'pass' : 'FAIL';
+  const reveal = await page.evaluate(() => ({
+    homeActive: document.getElementById('home').classList.contains('active'),
+    layerHidden: document.getElementById('cinematic-layer').hidden,
+    trackRemoved: !document.getElementById('track'),
+    scrollModeRestored: !document.documentElement.classList.contains('cinematic-active'),
+  }));
+  run.checks.curtainReveal = Object.values(reveal).every(Boolean) ? 'pass' : `FAIL ${JSON.stringify(reveal)}`;
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await settle(200);
+  const postTransition = await page.evaluate(() => ({
+    scrollY,
+    maxScroll: document.documentElement.scrollHeight - document.documentElement.clientHeight,
+    homeActive: document.getElementById('home').classList.contains('active'),
+  }));
+  run.checks.homepageScroll = postTransition.scrollY > 0 &&
+    postTransition.maxScroll > 0 && postTransition.homeActive &&
+    Math.abs((await snap()).index - (N - 1)) < 0.02
+    ? 'pass' : `FAIL ${JSON.stringify(postTransition)}`;
+
+  /* 8) console clean */
   run.checks.consoleIssues ||= [];
   run.checks.consoleClean = run.checks.consoleIssues.length === 0
     ? 'pass' : run.checks.consoleIssues;
 
   if (run.checks.reverse.startsWith('FAIL') || run.checks.rapidScroll.startsWith('FAIL') ||
-      run.checks.head === 'FAIL' || run.checks.tail === 'FAIL') totalFails++;
+      run.checks.head === 'FAIL' || run.checks.tail === 'FAIL' ||
+      run.checks.curtainReveal.startsWith('FAIL') ||
+      run.checks.homepageScroll.startsWith('FAIL') ||
+      run.checks.finalFrameAccuracy.startsWith('FAIL')) totalFails++;
 
   report.runs.push(run);
   const fails = Object.entries(run.checks).filter(([, v]) => String(v).startsWith('FAIL'));
@@ -326,6 +357,11 @@ async function reducedMotionRun(browser) {
   await settle(6500);
   const d1 = (await page.evaluate(() => window.__film.snapshot())).draws;
   run.checks.frozenWhileIdle = d1 - d0 <= 1 ? 'pass' : `FAIL ${d0}->${d1} draws`;
+  await scrollPos(page, 1);
+  await settle(1200);
+  run.checks.reducedMotionTransition = await page.evaluate(() =>
+    document.getElementById('home').classList.contains('active') &&
+    document.getElementById('cinematic-layer').hidden) ? 'pass' : 'FAIL';
   run.checks.consoleClean = (run.consoleIssues?.length ?? 0) === 0 ? 'pass' : run.consoleIssues;
   if (Object.values(run.checks).some((v) => String(v).startsWith('FAIL'))) totalFails++;
   report.robustness.push(run);
@@ -409,6 +445,15 @@ async function fallbackRun() {
   const idx = /ezgif-frame-(\d{3})\.webp/.exec(src)?.[1];
   run.checks.scrollDriven = idx && Math.abs((+idx - 1) - Math.round(0.5 * (N - 1))) <= 2
     ? `pass (frame-${idx})` : `FAIL src frame=${idx} at p=0.5`;
+  await scrollPos(page, 1);
+  await page.waitForFunction(() =>
+    document.getElementById('stage-fallback')?.currentSrc.includes('ezgif-frame-300.webp'),
+  { timeout: 15000 });
+  await settle(1400);
+  run.checks.curtainTransition = await page.evaluate(() =>
+    document.getElementById('home').classList.contains('active') &&
+    document.getElementById('cinematic-layer').hidden &&
+    !document.getElementById('track')) ? 'pass' : 'FAIL';
   if (Object.values(run.checks).some((v) => String(v).startsWith('FAIL'))) totalFails++;
   report.robustness.push(run);
   console.log(`  ${run.name}: ${JSON.stringify(run.checks)}`);

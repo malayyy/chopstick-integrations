@@ -1,8 +1,9 @@
 # CHOPSTICK — Integrations · Scroll-Controlled Cinematic Experience
 
-A single, immersive, full-screen, scroll-controlled **cinematic film** built from the
-original 300-frame 4K UHD sequence. Scroll down to advance the film; scroll up to
-reverse it; stop and it settles on the exact frame. Nothing else is on the page.
+A single-page experience that opens with an immersive, full-screen,
+scroll-controlled **cinematic film** built from the original 300-frame 4K UHD
+sequence. Scroll down to advance the film; scroll up to reverse it; at the final
+frame, the film lifts away to reveal the Chopstick Integrations homepage.
 
 ---
 
@@ -15,7 +16,7 @@ frames-4k/          the 300 original PNG masters, preserved untouched (3840×216
 tools/
   build-frames.mjs  offline encoder: frames-4k/*.png → frames/*.webp (sharp; run `npm run frames`)
   dev-server.mjs    tiny static server for local QA (`npm run dev` → http://localhost:4173)
-  qa/run-qa.mjs     automated QA battery (puppeteer): viewports, frame accuracy, console, memory
+  qa/run-qa.mjs     automated QA battery (puppeteer): viewports, frame accuracy, transition, console, memory
 .github/workflows/  deploys ONLY index.html + frames/ to GitHub Pages
 package.json        dev tooling only — nothing here ships to the browser
 ```
@@ -60,11 +61,13 @@ they add payload and indirection for zero visual benefit at this scene size.
   caching is the cache; failed frames are skipped and substituted by the
   nearest decoded neighbour.
 - **Scroll**: native scrolling over a spacer track — no hijacking, native touch
-  momentum and every device gesture work. `scrollY/maxScroll` is the single
+  momentum and every device gesture work. `scrollY/trackRange` is the single
   source of truth, smoothed by a frame-rate-independent exponential approach
   (λ = 11/s): silent scroll → reversible, settles exactly, immune to scroll-step
-  granularity. The track is sized `clientHeight + travel` so the film's scroll
-  range stays constant through iOS toolbar transitions.
+  granularity. The track is sized `clientHeight + travel`, keeping the film's
+  scroll range independent of the homepage and stable through iOS toolbar
+  transitions. Once the final frame settles, the cinematic layer slides away;
+  the track is removed and the homepage returns to normal document scrolling.
 - **Power**: after 6 s idle the ambient clock freezes and GPU work stops
   altogether; `prefers-reduced-motion` freezes atmosphere drift permanently.
 - **Resilience**: a lost GL context (mobile memory pressure) rebuilds the
@@ -94,11 +97,12 @@ npm run qa           # full browser battery (see below)
 
 The QA battery (`tools/qa/run-qa.mjs`) runs 5 viewports (desktop, ultrawide,
 phone portrait/landscape, tablet) through: boot, full-bleed composition,
-frame accuracy at 8 sampled indices against the raw 4K masters — measured by
+frame accuracy at sampled indices against the raw 4K masters — measured by
 same-task `readPixels` grid probes, which are the authoritative metric
 (`page.screenshot` output is compositor-managed and only advisory) — plus
-scroll reversal, rapid scroll, exact endpoints, texture budget bounds, idle
-GPU/network silence and console cleanliness; then robustness runs
+scroll reversal, rapid scroll, final-frame accuracy, the curtain transition and
+normal homepage scrolling, texture budget bounds, idle GPU/network silence and
+console cleanliness; then robustness runs
 (`reduced-motion`, GL context loss/restore, no-WebGL2 fallback). Reports and
 screenshots land in `qa/.artifacts/`.
 
