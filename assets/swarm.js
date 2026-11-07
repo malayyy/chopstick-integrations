@@ -1642,7 +1642,7 @@
   <div class="txt"><span class="status">Scanning page…</span></div>
   <div class="bar"><i></i></div>
   <button data-a="tour" title="Auto-scroll while the swarm builds">Tour</button>
-  <button data-a="speed" title="Build speed">1×</button>
+  <button data-a="speed" title="Build speed">2×</button>
   <button data-a="sound" class="snd" title="Sound (M)"></button>
   <button data-a="live" class="pri" hidden title="Fade back to the real page">Go live</button>
   <button data-a="replay" hidden title="Wipe and rebuild again">Replay</button>
@@ -3467,7 +3467,7 @@
       this.tourV = 0;
       this.tourAcc = 0;
       this.speeds = [1, 2, 3];
-      this.speedIx = 0;
+      this.speedIx = 1;
       this.complete = false;
       this.timing = {};
     }
@@ -3494,6 +3494,7 @@
       const shotP = this.loadShot();
       this.view = new View(this.env);
       this.engine = new Engine(this.view);
+      this.engine.speed = this.speeds[this.speedIx];
       this.sfx = new Sound();
       this.sfx.init();
       this.engine.sfx = this.sfx;
