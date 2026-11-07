@@ -13,7 +13,7 @@ let stage,canvas,ctx,raf=0,active=false,finished=false;
 const cursors=[],tracked=new WeakMap(),activeTargets=new Set();
 const $=(sel,root=document)=>root.querySelector(sel);
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const wait=ms=>sleep(ms/3);
+const wait=ms=>sleep(ms/2);
 function makeStage(){
  stage=document.createElement('div');stage.id='swarm-stage';stage.setAttribute('aria-hidden','true');
  stage.innerHTML='<canvas></canvas>';
