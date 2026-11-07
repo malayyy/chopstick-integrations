@@ -10,7 +10,7 @@ const palette=['#e52b4d','#a92b45','#6d5261','#bb4c5c','#8b354b','#d26b77','#9b2
 const roles=['Art direction','Brand','Motion','Systems','Typography','Layout','Interaction','Visuals'];
 const svg='<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 2.5 23.5 16 14.4 17.1 10.2 25.5Z" fill="#fff" stroke="#191317" stroke-width="1.25" stroke-linejoin="round"/><path d="m14.2 17.1 4.3 7.2 2.2-7.9Z" fill="var(--cursor-color)" stroke="#191317" stroke-width="1"/></svg>';
 let stage,canvas,ctx,raf=0,active=false,finished=false;
-const cursors=[],tracked=new WeakMap();
+const cursors=[],tracked=new WeakMap(),activeTargets=new Set();
 const $=(sel,root=document)=>root.querySelector(sel);
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function makeStage(){
@@ -21,8 +21,8 @@ function makeStage(){
  resizeCanvas();
 }
 function resizeCanvas(){if(!canvas||!ctx)return;const dpr=Math.min(devicePixelRatio||1,mobile?1.5:2);canvas.width=Math.round(innerWidth*dpr);canvas.height=Math.round(innerHeight*dpr);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
-function draw(){if(!active)return;ctx.clearRect(0,0,innerWidth,innerHeight);cursors.forEach(c=>{c.x+=(c.tx-c.x)*.22;c.y+=(c.ty-c.y)*.22;});raf=requestAnimationFrame(draw);}
-function move(c,x,y){c.tx=x;c.ty=y;c.el.style.transform='translate3d('+x+'px,'+y+'px,0)';c.el.classList.add('is-visible');}
+function draw(){if(!active)return;ctx.clearRect(0,0,innerWidth,innerHeight);ctx.save();ctx.strokeStyle='rgba(237,49,81,.13)';ctx.lineWidth=1;const step=mobile?48:32;for(let x=22;x<innerWidth;x+=step){ctx.beginPath();ctx.moveTo(x,22);ctx.lineTo(x,innerHeight);ctx.stroke();}for(let y=22;y<innerHeight;y+=step){ctx.beginPath();ctx.moveTo(22,y);ctx.lineTo(innerWidth,y);ctx.stroke();}activeTargets.forEach(el=>{if(!el.isConnected)return;const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;ctx.strokeStyle='rgba(237,49,81,.65)';ctx.setLineDash([4,4]);ctx.strokeRect(r.left-4,r.top-4,r.width+8,r.height+8);ctx.setLineDash([]);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.moveTo(22,r.top);ctx.lineTo(Math.min(innerWidth-22,r.right+28),r.top);ctx.moveTo(r.left,r.top-22);ctx.lineTo(r.left,Math.min(innerHeight,r.bottom+22));ctx.stroke();});ctx.restore();cursors.forEach(c=>{c.x+=(c.tx-c.x)*.22;c.y+=(c.ty-c.y)*.22;c.el.style.transform='translate3d('+c.x+'px,'+c.y+'px,0)';});raf=requestAnimationFrame(draw);}
+function move(c,x,y){c.tx=x;c.ty=y;c.el.classList.add('is-visible');}
 function rectOf(el){const r=el.getBoundingClientRect();return{x:r.left,y:r.top,w:r.width,h:r.height};}
 function splitText(el){
  if(tracked.has(el))return tracked.get(el);
@@ -38,11 +38,11 @@ async function typeElement(el,c){
  caret.remove();c.el.classList.remove('is-typing');el.classList.add('swarm-frame-in');await sleep(180);
 }
 async function buildElement(el,index){
- if(el.dataset.swarmBuilt==='yes'||!el.isConnected)return;el.dataset.swarmBuilt='yes';const c=cursors[index%cursors.length],r=rectOf(el);if(r.w<2||r.h<2)return;
+ if(el.dataset.swarmBuilt==='yes'||!el.isConnected)return;el.dataset.swarmBuilt='yes';const c=cursors[index%cursors.length],r=rectOf(el);if(r.w<2||r.h<2)return;activeTargets.add(el);
  const x=Math.max(18,Math.min(innerWidth-24,r.x-4)),y=Math.max(26,Math.min(innerHeight-24,r.y+Math.min(18,r.h/2)));move(c,x,y);c.el.classList.add('is-pressing');el.classList.add('swarm-build-target');await sleep(mobile?65:90);c.el.classList.remove('is-pressing');
  const text=el.matches('h1,h2,h3,h4,p,a,button,li,blockquote')?el:el.querySelector('h1,h2,h3,h4,p,a,button');
  if(text)await typeElement(text,c);else{el.classList.add('swarm-frame-in');const rr=rectOf(el);move(c,rr.x+rr.w,rr.y+rr.h);await sleep(220);}
- await sleep(mobile?40:70);c.el.classList.remove('is-visible');
+ await sleep(mobile?40:70);c.el.classList.remove('is-visible');setTimeout(()=>activeTargets.delete(el),650);
 }
 function targetsFor(section){
  const selectors='h1,h2,h3,.hero__lead,.hero__link,.statement__line,.case,.service,.method__item,.studio__item,.contact__title,.contact__lead,.m-btn,.m-card,.work-card,.capability-card';
