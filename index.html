@@ -1636,7 +1636,7 @@ let quoteIndex = 0;
 const quoteNode = document.getElementById('boot-quote');
 const quoteIndexNode = document.getElementById('boot-quote-index');
 if (quoteNode) quoteNode.textContent = personalizedQuote();
-if (quoteNode && !reducedMotion) {
+if (quoteNode) {
   setInterval(() => {
     quoteNode.classList.add('changing');
     setTimeout(() => {
