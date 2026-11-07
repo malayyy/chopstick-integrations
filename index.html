@@ -5,7 +5,7 @@
   300 x 4K UHD frames · WebGL2 full-bleed renderer · native scroll · zero dependencies
   Architecture and tuning notes: README.md
 -->
-<html lang="en" class="cinematic-active">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1215,8 +1215,12 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @media(max-width:640px){#boot .boot-choice-actions{width:100%;flex-direction:column;gap:10px}#boot .boot-choice-actions button{width:min(100%,240px);min-height:46px;font-size:9px}}
 </style>
 <link rel="stylesheet" href="/assets/launch-polish.css?v=20261107-2">
+<style id="disable-frame-scroll-intro">
+  #cinematic-layer, #track, #boot { display: none !important; }
+  #home { position: relative; inset: auto; min-height: 100vh; overflow: visible; }
+</style>
 </head>
-<body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
+<body class="m-text"><div id="home" class="active"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-hand-logo.webp" alt="Chopstick Integrations hand and chopsticks logo" class="site-logo" fetchpriority="high"></a>
   <nav class="nav__links" aria-label="Main">
     <ul data-8b-items=":scope > li">
@@ -1455,6 +1459,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   </div>
 
 <script type="module">
+if (false) {
+
 /* ============================================================================
    CHOPSTICK — INTEGRATIONS · cinematic scroll film engine
    ----------------------------------------------------------------------------
@@ -2682,6 +2688,8 @@ function buildProgram(glCtx, vsSrc, fsSrc) {
     throw new Error('Link: ' + glCtx.getProgramInfoLog(p));
   }
   return p;
+}
+
 }
 </script>
 <script data-8b-part="section-script:navigation">
