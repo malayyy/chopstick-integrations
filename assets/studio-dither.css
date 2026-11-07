@@ -297,3 +297,40 @@
   #studio .studio__collage > .studio__roles .role .m-text-7 { font-size: 19px; }
   #studio .studio__collage > .studio__roles .m-link { font-size: 14px; }
 }
+
+/* Studio microcopy follows the same Gabarito / Onest type system as the main site. */
+#studio .studio__dither-hint {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .065em;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 12px rgba(0,0,0,.65);
+}
+#studio .studio__dither-loader {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .10em;
+}
+#studio .studio__collage > .studio__roles h3,
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-weight: 800;
+}
+#studio .studio__collage > .studio__roles .role__place,
+#studio .studio__collage > .studio__roles .m-link {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-weight: 700;
+}
+@media (max-width: 620px) {
+  #studio .studio__dither-hint {
+    font-size: 10px;
+    letter-spacing: .045em;
+  }
+  #studio .studio__dither-loader {
+    font-size: 9px;
+  }
+}
