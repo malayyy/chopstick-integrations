@@ -13,16 +13,16 @@ let stage,canvas,ctx,raf=0,active=false,finished=false;
 const cursors=[],tracked=new WeakMap(),activeTargets=new Set();
 const $=(sel,root=document)=>root.querySelector(sel);
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const wait=ms=>sleep(ms/4);
+const wait=ms=>sleep(ms/3);
 function makeStage(){
  stage=document.createElement('div');stage.id='swarm-stage';stage.setAttribute('aria-hidden','true');
- stage.innerHTML='<div class="swarm-ruler top">CHOPSTICK / CREATIVE SYSTEMS / LIVE BUILD</div><div class="swarm-ruler left">LAYOUT GRID — 08PX</div><div class="swarm-status">BUILD SEQUENCE / 001</div><canvas></canvas>';
+ stage.innerHTML='<canvas></canvas>';
  document.body.appendChild(stage);canvas=$('canvas',stage);ctx=canvas.getContext('2d',{alpha:true});const count=mobile?6:18;
- for(let i=0;i<count;i++){const el=document.createElement('div');el.className='swarm-cursor';el.style.setProperty('--cursor-color',palette[i%palette.length]);el.innerHTML=svg+'<span class="swarm-name">'+roles[i%roles.length]+'</span>';stage.appendChild(el);cursors.push({el,x:innerWidth/2,y:innerHeight/2,tx:innerWidth/2,ty:innerHeight/2});}
+ for(let i=0;i<count;i++){const el=document.createElement('div');el.className='swarm-cursor';el.style.setProperty('--cursor-color',palette[i%palette.length]);el.innerHTML=svg;stage.appendChild(el);cursors.push({el,x:innerWidth/2,y:innerHeight/2,tx:innerWidth/2,ty:innerHeight/2});}
  resizeCanvas();
 }
 function resizeCanvas(){if(!canvas||!ctx)return;const dpr=Math.min(devicePixelRatio||1,mobile?1.5:2);canvas.width=Math.round(innerWidth*dpr);canvas.height=Math.round(innerHeight*dpr);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
-function draw(){if(!active)return;ctx.clearRect(0,0,innerWidth,innerHeight);ctx.save();ctx.strokeStyle='rgba(237,49,81,.13)';ctx.lineWidth=1;const step=mobile?48:32;for(let x=22;x<innerWidth;x+=step){ctx.beginPath();ctx.moveTo(x,22);ctx.lineTo(x,innerHeight);ctx.stroke();}for(let y=22;y<innerHeight;y+=step){ctx.beginPath();ctx.moveTo(22,y);ctx.lineTo(innerWidth,y);ctx.stroke();}activeTargets.forEach(el=>{if(!el.isConnected)return;const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;ctx.strokeStyle='rgba(237,49,81,.65)';ctx.setLineDash([4,4]);ctx.strokeRect(r.left-4,r.top-4,r.width+8,r.height+8);ctx.setLineDash([]);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.moveTo(22,r.top);ctx.lineTo(Math.min(innerWidth-22,r.right+28),r.top);ctx.moveTo(r.left,r.top-22);ctx.lineTo(r.left,Math.min(innerHeight,r.bottom+22));ctx.stroke();});ctx.restore();cursors.forEach(c=>{c.x+=(c.tx-c.x)*.63;c.y+=(c.ty-c.y)*.63;c.el.style.transform='translate3d('+c.x+'px,'+c.y+'px,0)';});raf=requestAnimationFrame(draw);}
+function draw(){if(!active)return;ctx.clearRect(0,0,innerWidth,innerHeight);ctx.save();ctx.strokeStyle='rgba(237,49,81,.13)';ctx.lineWidth=1;const step=mobile?48:32;for(let x=22;x<innerWidth;x+=step){ctx.beginPath();ctx.moveTo(x,22);ctx.lineTo(x,innerHeight);ctx.stroke();}for(let y=22;y<innerHeight;y+=step){ctx.beginPath();ctx.moveTo(22,y);ctx.lineTo(innerWidth,y);ctx.stroke();}activeTargets.forEach(el=>{if(!el.isConnected)return;const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;ctx.strokeStyle='rgba(237,49,81,.65)';ctx.setLineDash([4,4]);ctx.strokeRect(r.left-4,r.top-4,r.width+8,r.height+8);ctx.setLineDash([]);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.moveTo(22,r.top);ctx.lineTo(Math.min(innerWidth-22,r.right+28),r.top);ctx.moveTo(r.left,r.top-22);ctx.lineTo(r.left,Math.min(innerHeight,r.bottom+22));ctx.stroke();});ctx.restore();cursors.forEach(c=>{c.x+=(c.tx-c.x)*.72;c.y+=(c.ty-c.y)*.72;c.el.style.transform='translate3d('+c.x+'px,'+c.y+'px,0)';});raf=requestAnimationFrame(draw);}
 function move(c,x,y){c.tx=x;c.ty=y;c.el.classList.add('is-visible');}
 function rectOf(el){const r=el.getBoundingClientRect();return{x:r.left,y:r.top,w:r.width,h:r.height};}
 function splitText(el){
@@ -54,8 +54,8 @@ function targetsFor(section){
 let sectionBuildCount=0;
 async function buildSection(section){
  if(section.dataset.swarmBuilt==='yes')return;section.dataset.swarmBuilt='yes';const targets=targetsFor(section);if(!targets.length)return;
- const status=$('.swarm-status',stage);let done=0;sectionBuildCount++;if(status)status.textContent='BUILD SEQUENCE / '+String(sectionBuildCount).padStart(3,'0');
- const workers=cursors.map((c,i)=>(async()=>{for(let n=i;n<targets.length;n+=cursors.length){await buildElement(targets[n],n);done++;if(status)status.textContent='BUILD SEQUENCE / '+String(sectionBuildCount).padStart(3,'0')+' · '+Math.round(done/targets.length*100)+'%';}})());
+ let done=0;sectionBuildCount++;
+ const workers=cursors.map((c,i)=>(async()=>{for(let n=i;n<targets.length;n+=cursors.length){await buildElement(targets[n],n);done++;}})());
  await Promise.all(workers);if(section.matches('footer')){setTimeout(()=>{if(stage){stage.classList.add('is-finishing');setTimeout(stop,140);}},450);}
 }
 function start(){
