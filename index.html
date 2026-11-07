@@ -1148,28 +1148,9 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @media (max-width: 480px) {
   #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
 }
-</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preload" as="image" href="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" type="image/webp" fetchpriority="high">
-
-  <link rel="preconnect" href="https://esm.sh" crossorigin>
+</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preconnect" href="https://esm.sh" crossorigin>
   <link rel="preload" as="image" href="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="/assets/studio-dither.css?v=20261107">
-<style id="chopstick-hero-hand-art">
-/* Hero visual swap only: keep title, intro, orbit, moon and controls intact. */
-#hero .hero__aperture {
-  overflow: visible;
-  border-radius: 0;
-  background: transparent;
-}
-#hero .hero__img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  animation: none !important;
-  filter: drop-shadow(0 18px 28px rgba(0,0,0,.2));
-}
-#hero .hero__tint { display: none; }
-</style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1202,7 +1183,10 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 hero__lead">CRM at the centre. Connected systems, practical automation and AI built around the way your business works.</p>
     <a class="m-link hero__link" href="#work"><span class="m-link__label">Explore what we build</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
   </div>
-  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><img class="hero__img" src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" width="3840" height="2160" alt="" fetchpriority="high" decoding="async"><span class="hero__tint"></span></span></span></span></h1>
+  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><div class="hero__img hero__dither-stage" data-dither-veil data-src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" data-fit="contain" aria-label="Chopstick hand artwork with interactive DitherVeil reveal">
+  <div class="hero__dither-mount dither-veil" data-dither-mount></div>
+  <div class="hero__dither-loader" data-dither-loader role="status">Preparing the hero visual</div>
+</div><span class="hero__tint"></span></span></span></span></h1>
 </section><section id="statement" data-8b-section="statement" aria-labelledby="statement-title">
   <h2 class="m-text-3 statement__title" id="statement-title"><span class="statement__line">Your systems.</span><span class="statement__line">Working as one<span class="m-dot statement__dot" aria-hidden="true"></span></span></h2>
   <div class="statement__body">
@@ -1332,10 +1316,9 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 studio__lead" data-8b-motion="ink" data-8b-split="words">A hands-on technology and integrations studio working across CRM, business operations and software. We build with the people who will use and own the systems after launch. We understand the problem before choosing the tools. We build around the systems businesses already use, and care about what happens after launch.</p>
   </div>
   <div class="studio__collage">
-    <div class="studio__dither-stage" data-studio-dither data-src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" role="img" aria-label="Interactive dithered illustration of the Chopstick hand emblem">
-      <img class="studio__dither-poster" src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" alt="" aria-hidden="true" width="3840" height="2160" decoding="async" fetchpriority="high">
+    <div class="studio__dither-stage" data-dither-veil data-src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" data-fit="contain" role="img" aria-label="Interactive dithered illustration of the Chopstick hand emblem">
       <div class="studio__dither-mount dither-veil" data-dither-mount></div>
-      <div class="studio__dither-loader" role="status">Preparing the studio visual</div>
+      <div class="studio__dither-loader" data-dither-loader role="status">Preparing the studio visual</div>
       <div class="studio__dither-hint" aria-hidden="true">Move to reveal · Click to burst</div>
     </div>
     <div class="studio__roles">
@@ -2902,6 +2885,5 @@ if(!('IntersectionObserver'in window)){nodes.forEach(reveal);return;}
 const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);io.unobserve(entry.target);}}),{rootMargin:'12% 0px 12% 0px',threshold:0.01});
 nodes.forEach(el=>io.observe(el));
 })();
-</script>
-  <script type="module" src="/assets/studio-dither.js?v=20261107"></script>
+</script>  <script type="module" src="/assets/studio-dither.js?v=20261107"></script>
 </body></html>

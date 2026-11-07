@@ -1,21 +1,24 @@
 /* React Bits — DitherVeil (JavaScript + CSS)
  * Original source: https://github.com/DavidHDev/react-bits/tree/main/src/content/Animations/DitherVeil
- * Adaptation: React lifecycle/JSX wrapper removed only; original OGL shader, dithering, reveal, trail and burst logic retained.
+ * Adaptation: React lifecycle/JSX wrapper removed only for this vanilla HTML site.
+ * Original OGL shaders, Floyd/Atkinson dithering, cursor reveal, trail and click-burst logic retained.
+ * One OGL module instance mounts independently into the Hero and Studio stages.
  * License: MIT + Commons Clause. See assets/REACT-BITS-DITHER-VEIL-LICENSE.txt.
  */
 (async () => {
-  const stage = document.querySelector("[data-studio-dither]");
-  const container = stage?.querySelector("[data-dither-mount]");
-  if (!stage || !container) return;
-  const showError = error => {
-    stage.classList.add("is-error");
-    console.error("[React Bits DitherVeil]", error);
-  };
+  const stages = Array.from(document.querySelectorAll("[data-dither-veil]"));
+  if (!stages.length) return;
+
   let OGL;
   try {
     OGL = await import("https://esm.sh/ogl@1.0.11");
   } catch (error) {
-    showError(error);
+    stages.forEach(stage => {
+      stage.classList.add("is-error");
+      const loader = stage.querySelector("[data-dither-loader]");
+      if (loader) loader.textContent = "Interactive visual unavailable";
+    });
+    console.error("[React Bits DitherVeil] OGL failed to load.", error);
     return;
   }
   const { Renderer, Program, Mesh, Triangle, Texture, RenderTarget } = OGL;
@@ -802,31 +805,46 @@ function mountDitherVeil(container, options = {}) {
     };
 }
 
-  const onReady = () => stage.classList.add("is-ready");
-  container.addEventListener("studio-dither-ready", onReady, { once: true });
-  container.addEventListener("studio-dither-error", () => showError(new Error("Image source failed to load.")), { once: true });
-  try {
-    mountDitherVeil(container, {
-      src: stage.dataset.src,
-      fit: "contain",
-      pattern: "floyd",
-      pixelSize: 2,
-      levels: 2,
-      palette: "duotone",
-      inkColor: "#120f17",
-      paperColor: "#f5f2ef",
-      contrast: 1.15,
-      brightness: 0,
-      revealRadius: 200,
-      softness: 0.6,
-      linger: 1,
-      rimColor: "#d11b3a",
-      rim: 0.16,
-      reverse: false,
-      wander: false,
-      clickBurst: true
-    });
-  } catch (error) {
-    showError(error);
-  }
+  stages.forEach(stage => {
+    const container = stage.querySelector("[data-dither-mount]");
+    if (!container) return;
+
+    const showError = error => {
+      stage.classList.add("is-error");
+      const loader = stage.querySelector("[data-dither-loader]");
+      if (loader) loader.textContent = "Interactive visual unavailable";
+      console.error("[React Bits DitherVeil]", error);
+    };
+    const onReady = () => stage.classList.add("is-ready");
+
+    container.addEventListener("studio-dither-ready", onReady, { once: true });
+    container.addEventListener("studio-dither-error", () => {
+      showError(new Error("Image source failed to load."));
+    }, { once: true });
+
+    try {
+      mountDitherVeil(container, {
+        src: stage.dataset.src || DEFAULT_SRC,
+        fit: stage.dataset.fit || "contain",
+        pattern: stage.dataset.pattern || "floyd",
+        pixelSize: Number(stage.dataset.pixelSize || 2),
+        levels: Number(stage.dataset.levels || 2),
+        palette: stage.dataset.palette || "duotone",
+        inkColor: stage.dataset.inkColor || "#120f17",
+        paperColor: stage.dataset.paperColor || "#f5f2ef",
+        contrast: Number(stage.dataset.contrast || 1.15),
+        brightness: Number(stage.dataset.brightness || 0),
+        revealRadius: Number(stage.dataset.revealRadius || 200),
+        softness: Number(stage.dataset.softness || 0.6),
+        linger: Number(stage.dataset.linger || 1),
+        rimColor: stage.dataset.rimColor || "#d11b3a",
+        rim: Number(stage.dataset.rim || 0.16),
+        reverse: stage.dataset.reverse === "true",
+        wander: stage.dataset.wander === "true",
+        clickBurst: stage.dataset.clickBurst !== "false"
+      });
+    } catch (error) {
+      showError(error);
+    }
+  });
 })();
