@@ -1199,12 +1199,15 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 <script src="/assets/work-carousel.js?v=20261107" defer></script>
 <style id="chopstick-audio-control">
 #boot.ready{pointer-events:auto}
-#boot #boot-instruction{flex-direction:column;gap:18px;margin-top:30px}
+#boot.ready #boot-content{position:absolute;inset:0;width:100%;max-width:none;display:flex;align-items:center;justify-content:center;transform:none;padding:24px}
+#boot #boot-instruction{position:absolute;left:50%;top:50%;width:min(92vw,560px);margin:0;transform:translate(-50%,-50%);flex-direction:column;align-items:center;gap:18px;text-align:center}
+#boot.ready #boot-instruction{opacity:1;transform:translate(-50%,-50%)}
 #boot .boot-choice-label{font:700 10px/1.2 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.2em;color:rgba(255,255,255,.62)}
 #boot .boot-choice-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-#boot .boot-choice-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
+#boot .boot-choice-actions button{position:static;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
 #boot .boot-choice-actions #sound-toggle{border-color:rgba(237,49,81,.85);background:rgba(126,9,34,.78)}
 #boot .boot-choice-actions button:focus-visible{outline:2px solid #ed3151;outline-offset:3px}
+#boot.done #boot-instruction{display:none!important}
 @media(max-width:640px){#boot .boot-choice-actions{width:100%;flex-direction:column;gap:10px}#boot .boot-choice-actions button{width:min(100%,280px);min-height:46px;font-size:9px}}
 </style>
 </head>
@@ -1794,6 +1797,8 @@ function dismissIntro() {
   if (introDismissed || !bootVeil.classList.contains('ready')) return;
   introDismissed = true;
   bootVeil.classList.add('done');
+  const choiceButtons = bootVeil.querySelector('.boot-choice-actions');
+  if (choiceButtons) choiceButtons.remove();
   setTimeout(() => bootVeil.remove(), 750);
 }
 addEventListener('scroll', () => {
