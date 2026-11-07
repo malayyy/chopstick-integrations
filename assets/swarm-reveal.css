@@ -29,3 +29,7 @@
 @keyframes swarm-caret-blink{50%{opacity:0}}
 @media(max-width:767px){#swarm-stage .swarm-ruler.left{display:none}#swarm-stage .swarm-ruler.top{height:18px;padding:5px 10px;font-size:8px}.swarm-cursor svg{width:21px;height:21px}.swarm-cursor .swarm-name{font-size:8px;left:13px;top:12px}.swarm-status{right:10px;top:26px;font-size:8px}}
 @media(prefers-reduced-motion:reduce){#swarm-stage{display:none!important}.swarm-char{opacity:1!important;transition:none!important}.swarm-build-target.swarm-frame-in{animation:none!important}}
+/* Logo and cursor visibility fixes. */
+#swarm-stage{z-index:99999!important}
+#swarm-stage .swarm-cursor{display:block!important;visibility:visible!important}
+#swarm-stage .swarm-cursor.is-visible{opacity:1!important}
