@@ -1,0 +1,35 @@
+/* Chopstick collaborative build reveal — independent implementation. */
+#swarm-stage{position:fixed;inset:0;z-index:9998;pointer-events:none;overflow:hidden;opacity:0;visibility:hidden;color:#f7f2f3;mix-blend-mode:normal;transition:opacity .45s ease,visibility .45s ease}
+#swarm-stage.is-active{opacity:1;visibility:visible}
+#swarm-stage.is-finishing{opacity:0;visibility:hidden}
+#swarm-stage canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.swarm-ruler{position:absolute;z-index:2;background:rgba(8,7,9,.88);border-color:rgba(255,255,255,.13);color:rgba(255,255,255,.48);font:500 9px/1 ui-monospace,monospace;letter-spacing:.08em;opacity:0;transition:opacity .3s ease}
+.swarm-ruler.top{top:0;left:0;right:0;height:22px;border-bottom:1px solid rgba(255,255,255,.13);padding:7px 14px}
+.swarm-ruler.left{top:0;left:0;bottom:0;width:22px;border-right:1px solid rgba(255,255,255,.13);writing-mode:vertical-rl;text-align:center;padding:14px 7px}
+#swarm-stage.is-active .swarm-ruler{opacity:1}
+.swarm-intro-mark{position:absolute;left:50%;top:50%;width:54px;height:54px;transform:translate(-50%,-50%) scale(1);opacity:0;transition:opacity .35s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
+#swarm-stage.is-active .swarm-intro-mark{opacity:.95}
+#swarm-stage.has-started .swarm-intro-mark{opacity:0;transform:translate(-50%,-50%) scale(.72)}
+.swarm-cursor{position:absolute;left:0;top:0;z-index:5;will-change:transform;opacity:0;transform:translate3d(-100px,-100px,0);transition:opacity .2s ease}
+.swarm-cursor.is-visible{opacity:1}
+.swarm-cursor svg{display:block;width:25px;height:25px;overflow:visible;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.swarm-cursor .swarm-name{position:absolute;left:16px;top:15px;padding:3px 6px;border-radius:3px;background:var(--cursor-color);color:#fff;font:600 9px/1.25 ui-sans-serif,system-ui,sans-serif;letter-spacing:.01em;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+.swarm-cursor.is-typing svg{transform:scale(.92)}
+.swarm-cursor.is-pressing svg{transform:scale(.88)}
+.swarm-char{opacity:0;transition:opacity .035s linear}
+.swarm-char.is-written{opacity:1}
+.swarm-build-target{position:relative}
+.swarm-build-target.swarm-frame-in{animation:swarm-frame-in .48s cubic-bezier(.2,.8,.2,1) both}
+.swarm-build-target.swarm-frame-in:after{content:"";position:absolute;inset:-5px;border:1px solid rgba(237,49,81,.62);box-shadow:0 0 18px rgba(237,49,81,.09);pointer-events:none;opacity:0;animation:swarm-outline .9s ease both}
+.swarm-caret{display:inline-block;width:1px;height:1em;margin-left:2px;vertical-align:-.12em;background:#ed3151;box-shadow:0 0 8px #ed3151;animation:swarm-caret-blink .8s steps(1) infinite}
+.swarm-status{position:absolute;right:18px;top:34px;z-index:4;color:rgba(255,255,255,.52);font:600 9px/1.4 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;opacity:0;transition:opacity .3s}
+#swarm-stage.is-active .swarm-status{opacity:1}
+@keyframes swarm-frame-in{0%{filter:brightness(.65)}45%{filter:brightness(1.18)}100%{filter:none}}
+@keyframes swarm-outline{0%{opacity:0;transform:scale(.985)}25%{opacity:1}100%{opacity:0;transform:scale(1.008)}}
+@keyframes swarm-caret-blink{50%{opacity:0}}
+@media(max-width:767px){#swarm-stage .swarm-ruler.left{display:none}#swarm-stage .swarm-ruler.top{height:18px;padding:5px 10px;font-size:8px}.swarm-cursor svg{width:21px;height:21px}.swarm-cursor .swarm-name{font-size:8px;left:13px;top:12px}.swarm-status{right:10px;top:26px;font-size:8px}}
+@media(prefers-reduced-motion:reduce){.swarm-char{opacity:1!important;transition:none!important}.swarm-build-target.swarm-frame-in{animation:none!important}}
+/* Logo and cursor visibility fixes. */
+#swarm-stage{z-index:99999!important}
+#swarm-stage .swarm-cursor{display:block!important;visibility:visible!important}
+#swarm-stage .swarm-cursor.is-visible{opacity:1!important}

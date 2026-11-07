@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="description" content="Chopstick Integrations connects CRM, automation, analytics and business systems so your operations move as one.">
 <title>Chopstick Integrations | CRM, Automation & AI Solutions</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050206'/%3E%3Cpath d='M14 50 46 18M22 52 50 26' stroke='%23c8102e' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/assets/chopstick-mark.svg?v=20261107">
 <style>
   html {
     margin: 0;
@@ -194,13 +194,12 @@
   }
 
   /* Custom Chopstick loader. The original template's site styling is untouched. */
-  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
+  #boot{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
+  .site-logo{display:block;width:clamp(190px,24vw,310px);height:auto;object-fit:contain}
+  .footer-site-logo{display:block;width:min(760px,90vw);height:auto;object-fit:contain;margin-inline:auto}
   #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font-family:var(--font-2);font-size:clamp(17px,2.1vw,22px);font-style:normal;font-weight:400;line-height:1.45;letter-spacing:-.015em}
-  #chopstick-loader{display:block;width:min(220px,54vw);height:auto;margin:22px 0 20px;overflow:visible}
-  #chopstick-loader .bowl{transform-origin:190px 337px;animation:bowl-breathe 2.8s ease-in-out infinite}
-  #chopstick-loader .sticks{transform-origin:256px 256px;animation:sticks-float 2.8s ease-in-out infinite}
-  #chopstick-loader .shine{fill:none;stroke:rgba(255,255,255,.78);stroke-width:2.5;stroke-linecap:round}
+  #chopstick-loader{display:none}
   #boot-progress{color:#fff;font-family:var(--font-1);font-size:23px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
   #boot-state{margin-top:12px;color:rgba(247,243,244,.48);font-family:var(--font-2);font-size:9px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase}
   #boot-instruction{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;color:#fff;font:700 clamp(15px,2.2vw,21px)/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(15px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
@@ -250,6 +249,7 @@
     }
     .home-section { padding: 68px 0; }
   }
+
 </style>
 <style>
 /* latin-ext */
@@ -752,33 +752,7 @@ textarea.m-field { min-height: 112px; resize: vertical; }
 @keyframes statement-span-m-dot-scale { 0% { scale: 0; } 99.998% { scale: 0.999; } 100% { scale: 1; } }
 }
 </style>
-<style data-8b-part="scene:work">
-@layer scenes {
-@media (prefers-reduced-motion: no-preference) {
-  [data-8b-live] #work { height: calc(100svh + var(--run, 0px)); }
-  [data-8b-live] #work .work__stage { position: sticky; top: 0; height: 100svh; min-height: 560px; padding-top: clamp(84px, 13svh, 120px); padding-bottom: clamp(24px, 5svh, 48px); grid-template-rows: auto minmax(0, 1fr); overflow: clip; }
-  [data-8b-live] #work .work__window { display: flex; align-items: center; min-height: 0; transform-origin: 0 50%; }
-  [data-8b-live] #work .work__track { display: flex; gap: clamp(14px, 1.6vw, 24px); width: max-content; height: min(100%, 64svh); }
-  [data-8b-live] #work .case { width: auto; height: 100%; aspect-ratio: 4 / 5; flex: none; }
-  @media (min-width: 700px) { [data-8b-live] #work .case { aspect-ratio: 16 / 10.5; } }
-}
-}
-@layer scenes {
-[data-8b-live] #work { view-timeline: --work-t1 block; view-timeline-inset: 0; }
-[data-8b-live] #work .work__plate, [data-8b-live] #work .work__track, [data-8b-live] #work .case__img, [data-8b-live] #work .work__window, [data-8b-live] #work .case { animation-timeline: --work-t1; animation-fill-mode: both; }
-[data-8b-live] #work .work__plate { animation-name: work-plate-grow; animation-range: cover 0% cover 85vh; animation-timing-function: cubic-bezier(0.3333, 0.6667, 0.6667, 1); }
-[data-8b-live] #work .work__track { animation-name: work-track-slide; animation-range: cover 100vh cover calc(100% - 100vh); animation-timing-function: linear; transform: none; }
-[data-8b-live] #work .case__img { animation-name: work-img-drift; animation-range: cover 100vh cover calc(100% - 100vh); animation-timing-function: linear; transform: none; }
-[data-8b-live] #work .work__window, [data-8b-live] #work .case { animation-range: cover calc(100% - 100vh) cover calc(100% - 30vh); animation-timing-function: cubic-bezier(0.3333, 0, 0.6667, 0.3333); transform: none; }
-[data-8b-live] #work .work__window { animation-name: work-window-sweep; }
-[data-8b-live] #work .case { animation-name: work-case-bend; }
-@keyframes work-plate-grow { 0% { clip-path: inset(0% 3.2% round 44px); } 100% { clip-path: inset(0%); } }
-@keyframes work-track-slide { 0% { translate: 0px 0px; } 100% { translate: calc(-1 * var(--work-run, 0px)) 0px; } }
-@keyframes work-img-drift { 0% { translate: -5% 0px; } 100% { translate: 5% 0px; } }
-@keyframes work-window-sweep { 0% { translate: 0px 0px; } 100% { translate: -20vw 0px; } }
-@keyframes work-case-bend { 0% { translate: 0px 0px; rotate: 0deg; } 100% { translate: var(--work-x, 0px) var(--work-y, 0px); rotate: var(--work-r, 0deg); } }
-}
-</style>
+
 <style data-8b-part="scene:again">
 @layer scenes {
 @media (prefers-reduced-motion: no-preference) {
@@ -1019,9 +993,229 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   if (colorScheme) colorScheme.content = theme;
 })();
 </script>
-<style id="chopstick-content-refresh">#testimonials{padding:clamp(76px,10vw,140px) var(--space-1);background:var(--color-1);color:var(--color-2)}.testimonials__head{max-width:760px;margin:0 auto 48px}.testimonials__head>.m-text-6{color:#ef4963;letter-spacing:.18em;margin-bottom:18px}.testimonials__head>.m-text-5{color:var(--color-5);margin-top:22px}.testimonials__grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.testimonial{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;gap:20px;min-height:220px;background:rgba(255,255,255,.035)}.testimonial--verified{grid-column:1/-1;background:rgba(209,27,58,.08);border-color:rgba(209,27,58,.42)}.testimonial__meta,.testimonial__author{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.testimonial__source,.testimonial__pending{font:600 10px/1.4 var(--font-2);letter-spacing:.12em;color:#ef4963}.testimonial__rating{color:#ff6a35;letter-spacing:.08em}.testimonial__rating small{color:var(--color-2);font:600 12px var(--font-2);letter-spacing:0}.testimonial blockquote{max-width:900px;color:var(--color-2);font-style:italic;line-height:1.6}.testimonial__author{justify-content:flex-start}.testimonial__profile{color:#f06a7d;text-decoration:underline;text-underline-offset:3px}.testimonial__tags{color:var(--color-5)}.testimonial--placeholder{border-style:dashed;background:transparent}.testimonial--placeholder h3{font-size:clamp(20px,2.2vw,28px)}.testimonial--placeholder p{color:var(--color-5);line-height:1.6}#project-enquiry .m-field{width:100%;min-width:0;padding:13px 14px;border:1px solid color-mix(in srgb,var(--color-6) 32%,transparent);border-radius:8px;background:var(--color-2);color:var(--color-1);font:400 15px/1.4 var(--font-2)}#project-enquiry label{gap:8px!important;color:var(--color-6)!important}#project-enquiry textarea{resize:vertical}#project-enquiry .m-btn{justify-content:center;padding:14px 20px;border:0;border-radius:999px;background:#c8102e;color:#fff;cursor:pointer}#project-enquiry .contact__status{color:var(--color-6);line-height:1.5}#contact .contact__availability{margin-top:22px;color:var(--color-6)}@media(max-width:700px){.testimonials__grid{grid-template-columns:1fr}.testimonial--verified{grid-column:auto}}</style></head>
+<style id="chopstick-content-refresh">#testimonials{padding:clamp(76px,10vw,140px) var(--space-1);background:var(--color-1);color:var(--color-2)}.testimonials__head{max-width:760px;margin:0 auto 48px}.testimonials__head>.m-text-6{color:#ef4963;letter-spacing:.18em;margin-bottom:18px}.testimonials__head>.m-text-5{color:var(--color-5);margin-top:22px}.testimonials__grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.testimonial{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;gap:20px;min-height:220px;background:rgba(255,255,255,.035)}.testimonial--verified{grid-column:1/-1;background:rgba(209,27,58,.08);border-color:rgba(209,27,58,.42)}.testimonial__meta,.testimonial__author{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.testimonial__source,.testimonial__pending{font:600 10px/1.4 var(--font-2);letter-spacing:.12em;color:#ef4963}.testimonial__rating{color:#ff6a35;letter-spacing:.08em}.testimonial__rating small{color:var(--color-2);font:600 12px var(--font-2);letter-spacing:0}.testimonial blockquote{max-width:900px;color:var(--color-2);font-style:italic;line-height:1.6}.testimonial__author{justify-content:flex-start}.testimonial__profile{color:#f06a7d;text-decoration:underline;text-underline-offset:3px}.testimonial__tags{color:var(--color-5)}.testimonial--placeholder{border-style:dashed;background:transparent}.testimonial--placeholder h3{font-size:clamp(20px,2.2vw,28px)}.testimonial--placeholder p{color:var(--color-5);line-height:1.6}#project-enquiry .m-field{width:100%;min-width:0;padding:13px 14px;border:1px solid color-mix(in srgb,var(--color-6) 32%,transparent);border-radius:8px;background:var(--color-2);color:var(--color-1);font:400 15px/1.4 var(--font-2)}#project-enquiry label{gap:8px!important;color:var(--color-6)!important}#project-enquiry textarea{resize:vertical}#project-enquiry .m-btn{justify-content:center;padding:14px 20px;border:0;border-radius:999px;background:#c8102e;color:#fff;cursor:pointer}#project-enquiry .contact__status{color:var(--color-6);line-height:1.5}#contact .contact__availability{margin-top:22px;color:var(--color-6)}@media(max-width:700px){.testimonials__grid{grid-template-columns:1fr}.testimonial--verified{grid-column:auto}}</style><style id="chopstick-hero-preview-fix">
+/* Preview-only refinement: preserve the cinematic and original section structure. */
+#hero{
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 68% 54% at 78% 24%, rgba(156,15,43,.22), transparent 72%),
+    radial-gradient(ellipse 48% 48% at 18% 82%, rgba(94,8,29,.18), transparent 74%),
+    radial-gradient(ellipse 32% 34% at 52% 58%, rgba(48,7,18,.22), transparent 78%),
+    var(--color-1);
+}
+#hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 42% 30% at 76% 62%, rgba(176,17,49,.10), transparent 75%),
+    linear-gradient(115deg, transparent 35%, rgba(120,8,32,.045) 58%, transparent 82%);
+  filter:blur(22px);
+}
+#hero .hero__intro{position:relative;z-index:1;max-width:min(36rem,52vw)}
+#hero .hero__title{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:100%;
+  font-size:clamp(64px,13vw,190px);
+  line-height:.88;
+  letter-spacing:-.075em;
+  white-space:nowrap;
+  overflow:visible;
+  padding-bottom:clamp(28px,5svh,56px);
+}
+#hero .hero__word{max-width:100%}
+#hero .hero__period{flex:0 0 auto}
+#hero .hero__stage{z-index:1;pointer-events:none}
+@media (min-width:900px) and (orientation:landscape){
+  #hero{--ap:min(31vw,52svh)}
+  #hero .hero__title{font-size:clamp(110px,13vw,190px)}
+}
+@media (max-width:899px){
+  #hero{min-height:max(100svh,620px)}
+  #hero .hero__intro{max-width:min(34rem,88vw);padding-top:clamp(104px,16svh,150px)}
+  #hero .hero__title{font-size:clamp(54px,12.2vw,112px);letter-spacing:-.07em}
+}
+@media (max-width:420px){
+  #hero .hero__title{font-size:clamp(48px,11.7vw,76px)}
+}
+:root[data-theme="light"] #hero{
+  background:
+    radial-gradient(ellipse 68% 54% at 78% 24%, rgba(200,16,46,.10), transparent 72%),
+    radial-gradient(ellipse 48% 48% at 18% 82%, rgba(142,20,48,.07), transparent 74%),
+    var(--color-1);
+}
+</style>
+<style id="chopstick-contact-form-contrast">
+/* Keep form controls light, but make the copy readable on the dark panel. */
+#contact .contact__form{color:#fff}
+#contact .contact__form h3,
+#contact .contact__form>p,
+#contact .contact__form label,
+#contact .contact__form .contact__status{color:#fff}
+#contact .contact__form label{color:rgba(255,255,255,.82)}
+#contact .contact__form .contact__status{color:rgba(255,255,255,.72)}
+#contact .contact__form .m-field{color:#171216;background:#f7f3f4}
+#contact .contact__form .m-field::placeholder{color:#777}
+</style>
+<style id="chopstick-work-blog-refresh">
+#work .case__link{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
+#work .case__media{inset:0}
+#work .case__number{position:absolute;right:26px;top:20px;font:800 clamp(46px,8vw,100px)/1 Gabarito,sans-serif;color:rgba(255,255,255,.16);letter-spacing:-.08em}
+#work .case__tag{z-index:2}
+#work .case__text{z-index:2}
+#work .case__read,.story__read{font:700 12px/1.4 Onest,sans-serif;color:#f05a73;text-decoration:none;letter-spacing:.03em}
+#work .case__link:hover .case__read,.story__read:hover{text-decoration:underline;text-underline-offset:4px}
+#work .work__all,#journal .journal__all{display:inline-flex;margin-top:32px}
+#journal .journal__head{display:flex;align-items:end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+#journal .journal__intro{max-width:30rem;color:var(--color-6)}
+#journal .journal__frame--editorial{background:#110d11;isolation:isolate;min-height:420px}
+#journal .journal__cover{position:absolute;inset:0;opacity:0;transform:scale(.98);transition:opacity .5s ease,transform .8s ease}
+#journal .journal__cover--one{opacity:1;background:radial-gradient(ellipse at 70% 35%,rgba(210,25,62,.65),transparent 30%),linear-gradient(145deg,#080709,#30101b 58%,#080709)}
+#journal .journal__cover--two{background:radial-gradient(ellipse at 30% 70%,rgba(192,80,40,.45),transparent 35%),linear-gradient(35deg,#0b1011,#173d3a 60%,#080709)}
+#journal .journal__cover--three{background:radial-gradient(ellipse at 65% 28%,rgba(100,75,170,.55),transparent 32%),linear-gradient(145deg,#0b0914,#252044 60%,#080709)}
+#journal .journal__cover--four{background:radial-gradient(ellipse at 35% 55%,rgba(210,25,62,.35),transparent 35%),linear-gradient(145deg,#080709,#292126 60%,#080709)}
+#journal .journal__cover-label{position:absolute;z-index:2;left:clamp(22px,4vw,52px);bottom:clamp(22px,4vw,52px);font:800 clamp(30px,5vw,66px)/.9 Gabarito,sans-serif;letter-spacing:-.04em;color:#fff}
+#journal .journal__list{gap:clamp(28px,6vh,60px);padding-block:0}
+#journal .story{opacity:1!important}
+#journal .story h3 a{color:var(--color-1);text-decoration:none}
+#journal .story h3 a:hover{color:#c8102e}
+#journal .story__read{display:inline-block;margin-top:3px}
+@media(max-width:899px){#journal .journal__frame--editorial{min-height:280px}#journal .journal__body{gap:30px}}
+</style><style id="chopstick-reveal-failsafe">
+/* Keep scroll-timeline art progressive, but never hide core content if its observer does not fire. */
+#statement .statement__index{opacity:1}
+#statement .statement__index li{opacity:1;transform:none}
+#work .case__link{z-index:1}
+#work .case__media{z-index:0}
+#work .case__tag,#work .case__text{pointer-events:none}
+#work .case__link:focus-visible{outline:3px solid #f05a73;outline-offset:-6px;border-radius:var(--radius-1)}
+</style><style id="chopstick-glass-logo">
+#navigation .nav__brand{display:inline-flex;align-items:center;justify-content:flex-start;min-height:0;height:54px;width:clamp(150px,18vw,218px);padding:0;background:transparent;border:0;box-shadow:none;line-height:0}
+#navigation .nav__brand:hover{background:transparent}
+#navigation .site-logo{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
+#footer .chopstick-poster{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+#footer .footer-site-logo{display:block;width:min(680px,88%);height:auto;max-height:190px;object-fit:contain;object-position:left center}
+#footer .poster-caption{margin:0}
+@media(max-width:640px){#navigation .nav__brand{width:142px;height:43px}#footer .footer-site-logo{width:100%;max-height:120px}}
+</style><style id="brand-mobile-performance">
+/* Transparent, tightly fitted brand mark; no pill, padding or decorative canvas. */
+#navigation .nav__brand{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important;margin:0!important;min-height:0!important;height:48px!important;width:clamp(156px,19vw,220px)!important;line-height:0!important}
+#navigation .nav__brand:hover,#navigation .nav__brand:focus-visible{background:transparent!important}
+#navigation .site-logo,#footer .footer-site-logo{background:transparent!important;display:block;object-fit:contain}
+#navigation .site-logo{width:100%;height:100%;object-position:left center}
+#footer .chopstick-poster{background:transparent!important;padding:0!important;border:0!important;box-shadow:none!important}
+@media(max-width:640px){#navigation{padding:10px 16px!important;gap:10px!important}#navigation .nav__brand{width:154px!important;height:46px!important}#navigation .nav__menu{min-width:42px;min-height:42px}#footer .footer-site-logo{width:min(100%,420px);max-height:96px}}
+@media(max-width:380px){#navigation .nav__brand{width:138px!important;height:42px!important}}
+</style><style id="mobile-cinematic-tuning">
+/* Mobile-first cinematic controls: preserve native vertical touch scrolling. */
+@media (max-width: 767px) {
+  html, body { overscroll-behavior-y: auto; }
+  #track { touch-action: pan-y; }
+  #cinematic-layer { touch-action: pan-y; }
+  #stage { max-width:100vw; max-height:100svh; }
+  #sound-toggle { min-height:40px; padding:10px 12px; font-size:9px; }
+}
+@media (max-width: 480px) {
+  #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
+}
+</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preconnect" href="https://esm.sh" crossorigin>
+
+  <link rel="stylesheet" href="/assets/studio-dither.css?v=20261107">
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1754738381783-f9a2847bfef2?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8cHVycGxlJTIwYWJzdHJhY3QlMjAzRCUyMHNoYXBlfGVufDF8Mnx8fDE3OTEyMDk2Mjd8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=470&h=470&q=60" fetchpriority="high">
+<style id="chopstick-hero-spacing-polish">
+/* Hero spacing polish only; no changes to scroll-linked animation or navbar. */
+#hero { padding-inline: clamp(20px, 4.5vw, 64px); }
+#hero .hero__intro {
+  max-width: min(36rem, 52vw);
+  padding-top: clamp(112px, 15.5svh, 164px);
+  gap: clamp(13px, 1.5vw, 18px);
+}
+#hero .hero__title { padding-bottom: clamp(58px, 8svh, 82px); }
+#hero .hero__img { display: block; object-fit: cover; object-position: center; }
+@media (max-width: 899px) {
+  #hero { padding-inline: clamp(18px, 5vw, 28px); }
+  #hero .hero__intro {
+    width: 100%;
+    max-width: 35rem;
+    padding-top: clamp(104px, 14.5svh, 134px);
+    gap: 14px;
+  }
+  #hero .hero__lead {
+    max-width: 34ch;
+    font-size: clamp(15px, 2.2vw, 18px);
+    line-height: 1.42;
+  }
+  #hero .hero__link { min-height: 42px; }
+  #hero .hero__title {
+    font-size: clamp(50px, 12vw, 88px);
+    line-height: .9;
+    letter-spacing: -.072em;
+    padding-bottom: clamp(58px, 8svh, 76px);
+  }
+}
+@media (max-width: 420px) {
+  #hero { padding-inline: 18px; }
+  #hero .hero__intro { padding-top: clamp(94px, 13.5svh, 112px); }
+  #hero .hero__lead { max-width: 32ch; font-size: 15px; line-height: 1.42; }
+  #hero .hero__title {
+    font-size: clamp(46px, 11.8vw, 55px);
+    letter-spacing: -.075em;
+    padding-bottom: clamp(60px, 8svh, 74px);
+  }
+}
+@media (max-width: 360px) {
+  #hero .hero__title { font-size: clamp(43px, 11.5vw, 48px); }
+}
+</style>
+<style id="chopstick-hero-center-adjustment">
+/* Keep the hero artwork centered in the mobile viewport instead of pushed to the bottom. */
+@media (max-width:899px) {
+  #hero .hero__stage { top:calc(50% - var(--ap) / 2); }
+}
+</style>
+<style id="chopstick-enquiry-polish">
+#project-enquiry .form-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+#project-enquiry button[type="submit"]:disabled { opacity: .62; cursor: wait; }
+@media (max-width: 640px) {
+  #project-enquiry { gap: 15px; }
+  #project-enquiry .m-field { min-height: 46px; font-size: 16px; }
+  #project-enquiry textarea.m-field { min-height: 116px; }
+  #project-enquiry button[type="submit"] { width: 100%; min-height: 48px; }
+}
+</style>
+<link rel="stylesheet" href="/assets/hero-mobile.css?v=20261107">
+<link rel="stylesheet" href="/assets/work-carousel.css?v=20261107">
+<script src="/assets/work-carousel.js?v=20261107" defer></script>
+<style id="chopstick-audio-control">
+#boot.ready{pointer-events:auto}
+#boot #boot-instruction{flex-direction:column;align-items:center;gap:12px;margin-top:34px;text-align:center}
+#boot .boot-choice-label{font:700 10px/1.2 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.2em;color:rgba(255,255,255,.62)}
+#boot .boot-choice-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+#boot .boot-choice-actions button{position:static;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:1px solid rgba(237,49,81,.85);border-radius:999px;background:rgba(126,9,34,.78);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
+#boot .boot-choice-actions button:focus-visible{outline:2px solid #ed3151;outline-offset:3px}
+#boot.done #boot-instruction{display:none!important}
+#boot .boot-choice-actions button{width:auto;min-width:156px}
+#boot .boot-choice-label{color:#fff;font-size:clamp(13px,3vw,16px);letter-spacing:.16em}
+/* Keep both audio choices centered and visible on the ready / 100% screen. */
+#boot.ready #boot-instruction .boot-choice-actions{display:flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:100002;margin-top:18px;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+#boot.ready #boot-instruction .boot-choice-actions button{display:inline-flex!important;visibility:visible!important;opacity:1!important;position:relative!important;inset:auto!important;z-index:100003;min-height:48px;min-width:156px;padding:0 24px;border:1px solid rgba(237,49,81,.95);border-radius:999px;background:rgba(126,9,34,.92);color:#fff;font-size:11px;font-weight:800;letter-spacing:.12em;box-shadow:0 8px 32px rgba(237,49,81,.22);transform:none!important}
+#boot.ready #boot-instruction #continue-silent{border-color:rgba(255,255,255,.48);background:rgba(255,255,255,.09);box-shadow:none}
+@media(max-width:640px){#boot .boot-choice-actions{width:100%;flex-direction:column;gap:10px}#boot .boot-choice-actions button{width:min(100%,240px);min-height:46px;font-size:9px}}
+</style>
+</head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
-  <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
+  <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
   <nav class="nav__links" aria-label="Main">
     <ul data-8b-items=":scope > li">
       <li><a class="m-link-2" href="#work">Work</a></li>
@@ -1031,7 +1225,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       
     </ul>
   </nav>
-  <a class="m-btn nav__cta" href="#contact"><span class="m-btn__label">Start a project</span></a>
+  <a class="m-btn nav__cta" href="/#contact"><span class="m-btn__label">Start a project</span></a>
   <button class="m-btn-2 theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle__icon" aria-hidden="true">☼</span><span class="theme-toggle__label">Light</span></button>
   <button class="m-btn-2 nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="m-btn__label">Menu</span></button>
   <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
@@ -1041,8 +1235,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <li><a href="#capabilities">Services<span class="m-dot" aria-hidden="true"></span></a></li>
       <li><a href="#method">Approach<span class="m-dot" aria-hidden="true"></span></a></li>
       <li><a href="#studio">Studio<span class="m-dot" aria-hidden="true"></span></a></li>
-      <li><a href="#journal">Journal<span class="m-dot" aria-hidden="true"></span></a></li>
-      <li><a href="#contact">Contact<span class="m-dot" aria-hidden="true"></span></a></li>
+      <li><a href="/blog/">Journal<span class="m-dot" aria-hidden="true"></span></a></li>
+      <li><a href="/#contact">Contact<span class="m-dot" aria-hidden="true"></span></a></li>
     </ul>
     <p class="m-text menu__foot">malay@chopstickintegrations.com · Business context and Practical engineering</p>
   </div>
@@ -1051,7 +1245,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 hero__lead">CRM at the centre. Connected systems, practical automation and AI built around the way your business works.</p>
     <a class="m-link hero__link" href="#work"><span class="m-link__label">Explore what we build</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
   </div>
-  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><img class="hero__img" src="https://images.unsplash.com/photo-1754738381783-f9a2847bfef2?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8cHVycGxlJTIwYWJzdHJhY3QlMjAzZCUyMHNoYXBlfGVufDF8Mnx8fDE3OTEyMDk2Mjd8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=470&amp;h=470&amp;q=60" width="1200" height="1200" alt="" fetchpriority="high"><span class="hero__tint"></span></span></span></span></h1>
+  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><img class="hero__img" src="https://images.unsplash.com/photo-1754738381783-f9a2847bfef2?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8cHVycGxlJTIwYWJzdHJhY3QlMjAzRCUyMHNoYXBlfGVufDF8Mnx8fDE3OTEyMDk2Mjd8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=470&amp;h=470&amp;q=60" width="1200" height="1200" alt="" fetchpriority="high"><span class="hero__tint"></span></span></span></span></h1>
 </section><section id="statement" data-8b-section="statement" aria-labelledby="statement-title">
   <h2 class="m-text-3 statement__title" id="statement-title"><span class="statement__line">Your systems.</span><span class="statement__line">Working as one<span class="m-dot statement__dot" aria-hidden="true"></span></span></h2>
   <div class="statement__body">
@@ -1062,49 +1256,12 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
         <li><a class="m-link" href="#capabilities"><span class="m-link__label">What we do</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
         <li><a class="m-link" href="#method"><span class="m-link__label">How we work</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
         <li><a class="m-link" href="#studio"><span class="m-link__label">Inside the studio</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
-        <li><a class="m-link" href="#journal"><span class="m-link__label">Ideas and news</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
-        <li><a class="m-link" href="#contact"><span class="m-link__label">Start a project</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
+        <li><a class="m-link" href="/blog/"><span class="m-link__label">Ideas and news</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
+        <li><a class="m-link" href="/#contact"><span class="m-link__label">Start a project</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
       </ul>
     </nav>
   </div>
-</section><section id="work" data-8b-section="work" aria-labelledby="work-title">
-  <div class="work__plate" aria-hidden="true"></div>
-  <div class="work__stage">
-    <div class="work__head">
-      <h2 class="m-text-3" id="work-title">Selected work<span class="m-dot" aria-hidden="true"></span></h2>
-      <p class="m-text-5 work__lead">Real business problems. Systems built to solve them. Selected projects and integrations. Details are shared where client permissions allow.</p>
-    </div>
-    <div class="work__window">
-      <ul class="work__track" data-8b-items=":scope > .case" data-8b-fixed="5">
-        <li class="case">
-          <div class="case__media"><img class="case__img" src="https://images.unsplash.com/photo-1620802090791-fd9420668913?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8ZWxlY3RyaWMlMjBiaWtlJTIwY2l0eSUyMHJpZGVyfGVufDF8MHx8fDE3OTEyMDk3MDZ8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1140&amp;h=713&amp;q=60" width="1600" height="1000" alt="A rider on an electric bike on a seaside promenade under a wide blue sky" loading="lazy"></div>
-          <span class="m-badge case__tag">Brand, launch</span>
-          <div class="case__text"><h3 class="m-text-4 case__name">Immigration management platform</h3><p class="m-text-5 case__line">A government immigration platform built with Zoho CRM, Zoho WorkDrive and a public-facing Zoho Creator Portal.</p></div>
-        </li>
-        <li class="case">
-          <div class="case__media"><img class="case__img" src="https://images.unsplash.com/photo-1713371690087-baafaf440240?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8d29tYW4lMjBzbWlsaW5nJTIwaG9sZGluZyUyMHBob25lJTIwY29sb3JmdWx8ZW58MXwwfHx8MTc5MTIwOTcwN3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1140&amp;h=713&amp;q=60" width="1600" height="1000" alt="A smiling woman in an orange sweater against a lilac wall" loading="lazy"></div>
-          <span class="m-badge case__tag">Product, app</span>
-          <div class="case__text"><h3 class="m-text-4 case__name">Multi-location Google Reviews integration</h3><p class="m-text-5 case__line">A Google Reviews integration supporting more than 80 franchise locations.</p></div>
-        </li>
-        <li class="case">
-          <div class="case__media"><img class="case__img" src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8YXJ0aXNhbiUyMGJha2VyeSUyMGJyZWFkJTIwY291bnRlcnxlbnwxfDB8fHwxNzkxMjA5NzA3fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1140&amp;h=713&amp;q=60" width="1600" height="1000" alt="A baker in front of warmly lit wooden shelves of bread" loading="lazy"></div>
-          <span class="m-badge case__tag">Commerce</span>
-          <div class="case__text"><h3 class="m-text-4 case__name">CRM and accounting integration</h3><p class="m-text-5 case__line">Connected Zoho CRM and Zoho Books using custom Deluge logic.</p></div>
-        </li>
-        <li class="case">
-          <div class="case__media"><img class="case__img" src="https://images.unsplash.com/photo-1544213456-bc37cb97df74?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8bXVzZXVtJTIwZ2FsbGVyeSUyMHZpc2l0b3JzfGVufDF8MHx8fDE3OTEyMDk3MDd8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1140&amp;h=713&amp;q=60" width="1600" height="1000" alt="Visitors walking among white statues in a gallery with blue walls" loading="lazy"></div>
-          <span class="m-badge case__tag">Service, content</span>
-          <div class="case__text"><h3 class="m-text-4 case__name">Workflow automation</h3><p class="m-text-5 case__line">Remove repetitive handoffs and move work forward automatically.</p></div>
-        </li>
-        <li class="case">
-          <div class="case__media"><img class="case__img" src="https://images.unsplash.com/photo-1614149162883-504ce4d13909?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8aGVhZHBob25lcyUyMGNvbG9yZnVsJTIwYmFja2dyb3VuZHxlbnwxfDB8fHwxNzkxMjA5NzA4fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=1360&amp;h=850&amp;q=60" width="1600" height="1000" alt="Black wireless headphones lit in red and blue" loading="lazy"></div>
-          <span class="m-badge case__tag">Campaign</span>
-          <div class="case__text"><h3 class="m-text-4 case__name">Business intelligence</h3><p class="m-text-5 case__line">Turn scattered activity into reporting your team can actually use.</p></div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</section><section id="again" data-8b-section="again" aria-labelledby="again-title">
+</section><section id="work" data-8b-section="work" aria-labelledby="work-title"><div class="work__plate" aria-hidden="true"></div><div class="work__stage"><div class="work__head"><h2 class="m-text-3" id="work-title">Selected work<span class="m-dot" aria-hidden="true"></span></h2><p class="m-text-5 work__lead">Complex systems. Real operational constraints. Engineering that connects the moving parts.</p></div><div class="work__window" data-work-window role="region" aria-label="Featured project carousel" tabindex="0"><ul class="work__track" data-work-track aria-label="Featured project case studies"> .case" data-8b-fixed="8"><li class="case"><a class="case__link" href="/work/grenada-immigration-platform/" aria-label="Read case study: Grenada national immigration platform"><div class="case__media" style="background:linear-gradient(135deg,#291019,#a51d3b 52%,#140c13)"><span class="case__number">01</span></div><span class="m-badge case__tag">PUBLIC-SECTOR SYSTEMS</span><div class="case__text"><h3 class="m-text-4 case__name">Grenada national immigration platform</h3><p class="m-text-5 case__line">A national immigration workflow built across Zoho CRM, WorkDrive and a public-facing Zoho Creator Portal. Structured application intake, document handling and case visibility in one connected system.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/crm-migration-architecture/" aria-label="Read case study: CRM migration and rebuild"><div class="case__media" style="background:linear-gradient(135deg,#15131b,#493044 50%,#151019)"><span class="case__number">02</span></div><span class="m-badge case__tag">CRM ARCHITECTURE</span><div class="case__text"><h3 class="m-text-4 case__name">CRM migration and rebuild</h3><p class="m-text-5 case__line">Move beyond a basic import: map custom fields, preserve record relationships, rebuild automation and permissions, validate reporting, then plan a controlled cutover.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/swash-crm-field-service/" aria-label="Read case study: SWASH cleaning operations platform"><div class="case__media" style="background:linear-gradient(135deg,#101e20,#176c69 52%,#101317)"><span class="case__number">03</span></div><span class="m-badge case__tag">CRM + FIELD SERVICE</span><div class="case__text"><h3 class="m-text-4 case__name">SWASH cleaning operations platform</h3><p class="m-text-5 case__line">Zoho CRM and FSM workflows shaped around cleaning operations, connecting customer records, service jobs, field scheduling and job-status visibility.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/multi-location-google-reviews/" aria-label="Read case study: Google Reviews across 80+ locations"><div class="case__media" style="background:linear-gradient(135deg,#20170e,#9c5725 52%,#15100c)"><span class="case__number">04</span></div><span class="m-badge case__tag">MULTI-LOCATION INTEGRATION</span><div class="case__text"><h3 class="m-text-4 case__name">Google Reviews across 80+ locations</h3><p class="m-text-5 case__line">A connected reviews workflow for more than 80 franchise locations, reducing the fragmentation of location-level review data and management.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/connected-zoho-operations/" aria-label="Read case study: Connected Zoho operations"><div class="case__media" style="background:linear-gradient(135deg,#141322,#443c83 52%,#100f18)"><span class="case__number">05</span></div><span class="m-badge case__tag">INTEGRATION + INTELLIGENCE</span><div class="case__text"><h3 class="m-text-4 case__name">Connected Zoho operations</h3><p class="m-text-5 case__line">CRM, Books and Desk connected with Deluge and Zoho Flow, with analytics that turns operational activity into a clearer view of performance.</p><span class="case__read">Read case study ↗</span></div></a></li></ul></div><div class="work__controls" aria-label="Project carousel controls"><div class="work__controls-left"><button class="work__arrow" type="button" data-work-prev aria-label="Previous project">←</button><span class="work__counter" data-work-counter aria-live="polite"><strong>01</strong><span>/ 05</span></span><button class="work__arrow" type="button" data-work-next aria-label="Next project">→</button></div><div class="work__controls-right"><div class="work__progress" data-work-progress aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span></div><button class="work__autoplay" type="button" data-work-pause aria-pressed="false">Pause rotation</button></div><p class="work__hint">Swipe to explore <span aria-hidden="true">→</span></p></div><a class="m-link work__all" href="/work/"><span class="m-link__label">Explore all project work</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></div></section><section id="again" data-8b-section="again" aria-labelledby="again-title">
   <div class="again__stage">
     <div class="again__head">
       <h2 class="m-text-3" id="again-title">The systems we connect<span class="m-dot" aria-hidden="true"></span></h2>
@@ -1113,28 +1270,28 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <div class="again__swing">
       <ul class="again__wheel" data-8b-items=":scope > .partner">
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1594386245199-289c2fe0bd0a?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8YWlycGxhbmUlMjB3aW5kb3clMjBza3klMjBzdW5zZXR8ZW58MXwxfHx8MTc5MTIwOTcyOHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="A sunset sky and a wing seen through an airplane window" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 9</span><h3 class="m-text-4 partner__name">Zoho CRM</h3><p class="m-text partner__line">From the booking flow to the boarding gate.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="A team working together around a business operations dashboard" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">Zoho CRM</h3><p class="m-text partner__line">From the booking flow to the boarding gate.</p></div></div>
         </li>
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1532713107108-dfb5d8d2fc42?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8YmFyaXN0YSUyMHBvdXJpbmclMjBjb2ZmZWV8ZW58MXwxfHx8MTc5MTIwOTcyOXww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="A barista pouring milk into a latte" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 4</span><h3 class="m-text-4 partner__name">Zoho Analytics</h3><p class="m-text partner__line">One roastery grew into a subscription habit.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="Business analytics dashboard with charts and metrics" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">Zoho Analytics</h3><p class="m-text partner__line">One roastery grew into a subscription habit.</p></div></div>
         </li>
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1658296777645-0f389d06867c?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8aGlrZXIlMjBtb3VudGFpbiUyMHJpZGdlfGVufDF8MXx8fDE3OTEyMDk3Mjl8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="A hiker with a backpack standing on a rock above green mountains" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 6</span><h3 class="m-text-4 partner__name">Make</h3><p class="m-text partner__line">A storefront rebuilt around the off-season.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="People collaborating on a digital workflow using a laptop" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">Make</h3><p class="m-text partner__line">A storefront rebuilt around the off-season.</p></div></div>
         </li>
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1558324190-c940eb141401?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8bmVvbiUyMGFyY2FkZSUyMGdhbWluZ3xlbnwxfDF8fHwxNzkxMjA5NzMwfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="Rows of arcade machines glowing with neon light" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 7</span><h3 class="m-text-4 partner__name">n8n</h3><p class="m-text partner__line">A launch campaign for every season since day one.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="Close-up of electronic circuitry and connected technology" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">n8n</h3><p class="m-text partner__line">A launch campaign for every season since day one.</p></div></div>
         </li>
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1641675301559-468f9f4ca037?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8Y2l0eSUyMGhhbGwlMjBwZW9wbGUlMjBzdHJlZXR8ZW58MXwxfHx8MTc5MTIwOTczMHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="A cyclist riding past a red-brick city hall under a blue sky" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 8</span><h3 class="m-text-4 partner__name">WhatsApp</h3><p class="m-text partner__line">Public services people can finish on a phone.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="Smartphone in hand showing a messaging interface" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">WhatsApp</h3><p class="m-text partner__line">Public services people can finish on a phone.</p></div></div>
         </li>
         <li class="partner">
-          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1761234852163-23f2ededd04e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8ZG9jdG9yJTIwcGF0aWVudCUyMGNsaW5pY3xlbnwxfDF8fHwxNzkxMjA5NzMxfDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=730&amp;h=913&amp;q=60" width="900" height="1125" alt="A nurse comforting a young child on a sofa" loading="lazy">
-          <div class="partner__text"><span class="m-badge partner__year">Year 5</span><h3 class="m-text-4 partner__name">Meta &amp; Google</h3><p class="m-text partner__line">One patient app across three hospital systems.</p></div></div>
+          <div class="partner__card"><img class="partner__img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=730&h=913&q=80" width="900" height="1125" alt="Digital marketing analytics dashboard on a laptop" loading="lazy">
+          <div class="partner__text"><h3 class="m-text-4 partner__name">Meta &amp; Google</h3><p class="m-text partner__line">One patient app across three hospital systems.</p></div></div>
         </li>
       </ul>
     </div>
@@ -1218,11 +1375,11 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 studio__lead" data-8b-motion="ink" data-8b-split="words">A hands-on technology and integrations studio working across CRM, business operations and software. We build with the people who will use and own the systems after launch. We understand the problem before choosing the tools. We build around the systems businesses already use, and care about what happens after launch.</p>
   </div>
   <div class="studio__collage">
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1787647559705-d2ad3322020e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8Y3JlYXRpdmUlMjB0ZWFtJTIwbWVldGluZyUyMHN0dWRpb3xlbnwxfDB8fHwxNzkxMjA5NzQ5fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=450&amp;h=300&amp;q=60" width="1400" height="933" alt="A team working together around a desk in a colourful studio" loading="lazy"></figure>
-    <figure class="shot shot--tall"><img src="https://images.unsplash.com/photo-1643373977342-73cfc7cc0c5e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8cGVvcGxlJTIwbGF1Z2hpbmclMjBvZmZpY2V8ZW58MXwxfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=210&amp;h=280&amp;q=60" width="900" height="1200" alt="Two colleagues laughing together on a blue chair" loading="lazy"></figure>
-    <figure class="shot shot--tall"><img src="https://images.unsplash.com/photo-1745434159123-4908d0b9df94?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8cGVvcGxlJTIwbGF1Z2hpbmclMjBvZmZpY2V8ZW58MXwxfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=200&amp;h=267&amp;q=60" width="900" height="1200" alt="A smiling designer standing in front of a warm wall" loading="lazy"></figure>
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1787647560262-ebfcf6c5f979?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8Y3JlYXRpdmUlMjB0ZWFtJTIwbWVldGluZyUyMHN0dWRpb3xlbnwxfDB8fHwxNzkxMjA5NzQ5fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=460&amp;h=307&amp;q=60" width="1400" height="933" alt="Four people collaborating around a table seen from above" loading="lazy"></figure>
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1623652653308-d49d335c92eb?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8d29ya3Nob3AlMjBzdGlja3klMjBub3RlcyUyMHdhbGx8ZW58MXwwfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=440&amp;h=293&amp;q=60" width="1400" height="933" alt="A team discussing ideas in front of a wall of notes" loading="lazy"></figure>
+    <div class="studio__dither-stage" data-dither-veil data-src="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" data-fit="contain" role="img" aria-label="Interactive dithered illustration of the Chopstick hand emblem">
+      <div class="studio__dither-mount dither-veil" data-dither-mount></div>
+      <div class="studio__dither-loader" data-dither-loader role="status">Preparing the studio visual</div>
+      <div class="studio__dither-hint" aria-hidden="true">Move to reveal · Click to burst</div>
+    </div>
     <div class="studio__roles">
       <h3 class="m-text-7" data-8b-motion="rise">How we think<span class="m-dot" aria-hidden="true"></span></h3>
       <ul data-8b-items=":scope > li">
@@ -1233,25 +1390,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <a data-8b-placeholder="email" class="m-link" href="mailto:malay@chopstickintegrations.com"><span class="m-link__label">malay@chopstickintegrations.com</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
     </div>
   </div>
-</section><section id="journal" data-8b-section="journal" aria-labelledby="journal-title">
-  <div class="journal__head">
-    <h2 class="m-text-3" id="journal-title" data-8b-motion="rise">Notes from the build<span class="m-dot" aria-hidden="true"></span></h2>
-  </div>
-  <div class="journal__body">
-    <div class="journal__frame" data-8b-items=":scope > img" data-8b-fixed="4">
-      <img class="journal__shot" src="https://images.unsplash.com/photo-1769755409781-9e8924c57362?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8Y29uZmVyZW5jZSUyMHN0YWdlJTIwYXVkaWVuY2UlMjBsaWdodHN8ZW58MXwwfHx8MTc5MTIwOTc3M3ww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=570&amp;h=713&amp;q=60" width="1000" height="1250" alt="A speaker on a stage addressing a large audience in a dim hall" loading="lazy">
-      <img class="journal__shot" src="https://images.unsplash.com/photo-1783094269325-4ba186e8e01b?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8c2VydmljZSUyMGRlc2slMjBjdXN0b21lciUyMHNtaWxpbmd8ZW58MXwwfHx8MTc5MTIwOTc3NXww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=570&amp;h=713&amp;q=60" width="1000" height="1250" alt="A smiling woman working on a laptop at a bright desk" loading="lazy">
-      <img class="journal__shot" src="https://images.unsplash.com/photo-1581080247486-57989c1f14ab?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8cHJpbnRlZCUyMG1hZ2F6aW5lJTIwcGFnZXMlMjB0eXBvZ3JhcGh5fGVufDF8MHx8fDE3OTEyMDk3NzR8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=570&amp;h=713&amp;q=60" width="1000" height="1250" alt="Bold yellow and blue type printed on a box" loading="lazy">
-      <img class="journal__shot" src="https://images.unsplash.com/photo-1542626991-cbc4e32524cc?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8d29ya3Nob3AlMjBzdGlja3klMjBub3RlcyUyMHdhbGx8ZW58MXwwfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=570&amp;h=713&amp;q=60" width="1000" height="1250" alt="Handwritten sticky notes pinned to a corkboard after a research session" loading="lazy">
-    </div>
-    <ol class="journal__list" data-8b-items=":scope > .story" data-8b-fixed="4">
-      <li class="story"><p class="m-text-6 story__meta"><span>Event</span> · <time datetime="2026-10-01">1 October 2026</time> · 2 min read</p><h3 class="m-text-7">Why disconnected CRM systems create missed follow-ups</h3><p class="m-text story__text">How gaps between lead capture, sales activity and follow-up processes affect the customer journey.</p></li>
-      <li class="story"><p class="m-text-6 story__meta"><span>Essay</span> · <time datetime="2026-09-18">18 September 2026</time> · 6 min read</p><h3 class="m-text-7">What should you automate first?</h3><p class="m-text story__text">A practical way to identify repetitive work that is worth automating — and what should stay with people.</p></li>
-      <li class="story"><p class="m-text-6 story__meta"><span>Notes</span> · <time datetime="2026-08-30">30 August 2026</time> · 8 min read</p><h3 class="m-text-7">Zoho CRM and Zoho Analytics: connecting activity with outcomes</h3><p class="m-text story__text">How to connect lead activity, sales performance and business visibility in useful reporting.</p></li>
-      <li class="story"><p class="m-text-6 story__meta"><span>Research</span> · <time datetime="2026-08-04">4 August 2026</time> · 5 min read</p><h3 class="m-text-7">Make, n8n or custom APIs: choosing the right integration approach</h3><p class="m-text story__text">What to consider when deciding how applications should communicate and where custom development makes sense.</p></li>
-    </ol>
-  </div>
-</section><section id="testimonials" data-8b-section="testimonials" aria-labelledby="testimonials-title"><div class="testimonials__head"><p class="m-text-6">CLIENT FEEDBACK</p><h2 class="m-text-3" id="testimonials-title">Good work speaks<span class="m-dot" aria-hidden="true"></span></h2><p class="m-text-5">A real client review, alongside spaces reserved for feedback we are still collecting.</p></div><div class="testimonials__grid"><article class="testimonial testimonial--verified"><div class="testimonial__meta"><span class="testimonial__source">UPWORK · CLIENT REVIEW</span><span class="testimonial__rating">★★★★★ <small>5.0</small></span></div><blockquote class="m-text-5">“Malay, followed through! When it got complex, he found simple solutions not only as our developer, but as a skilled consultant. He even followed up with us to ensure we were satisfied months later. I cannot recommend him highly enough.”</blockquote><div class="testimonial__author"><span class="m-text-7">Travis</span><a class="m-text-6 testimonial__profile" href="#contact">LinkedIn profile to be added</a></div><p class="m-text-6 testimonial__tags">Reliable · Solution Oriented · Accountable for Outcomes · Detail Oriented</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 02</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 03</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 04</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 05</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 06</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article><article class="testimonial testimonial--placeholder"><div class="testimonial__meta"><span class="testimonial__source">REVIEW SLOT 07</span><span class="testimonial__pending">AWAITING APPROVED FEEDBACK</span></div><h3 class="m-text-7">Client feedback coming soon</h3><p class="m-text">Layout placeholder only — not a client quote or endorsement. Replace with approved feedback before launch.</p></article></div></section><section id="faq" data-8b-section="faq" aria-labelledby="faq-title">
+</section><section id="testimonials" data-8b-section="testimonials" aria-labelledby="testimonials-title"><div class="testimonials__head"><p class="m-text-6">CLIENT FEEDBACK</p><h2 class="m-text-3" id="testimonials-title">Good work speaks<span class="m-dot" aria-hidden="true"></span></h2><p class="m-text-5">Feedback from people we’ve worked with.</p></div><div class="testimonials__grid"><article class="testimonial testimonial--verified"><div class="testimonial__meta"><span class="testimonial__source">UPWORK · CLIENT REVIEW</span><span class="testimonial__rating">★★★★★ <small>5.0</small></span></div><blockquote class="m-text-5">“Malay, followed through! When it got complex, he found simple solutions not only as our developer, but as a skilled consultant. He even followed up with us to ensure we were satisfied months later. I cannot recommend him highly enough.”</blockquote><div class="testimonial__author"><a class="m-text-7 testimonial__profile" href="https://www.linkedin.com/in/travispiepho" target="_blank" rel="noopener noreferrer">Travis ↗</a><span class="m-text-6">Client · Minneapolis, Minnesota</span></div><p class="m-text-6 testimonial__tags">Reliable · Solution Oriented · Accountable for Outcomes · Detail Oriented</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">Zoho CRM Migration</span></div><blockquote class="m-text-5">“We moved 8 years of data from Salesforce to Zoho CRM without losing a single record. The team mapped every custom field, rebuilt our workflows, and had us live in under three weeks. Our reps barely noticed the switch.”</blockquote><div class="testimonial__author"><span class="m-text-7">Jennifer Matthews</span><span class="m-text-6">VP of Sales · Brightline Logistics</span></div><p class="m-text-6 testimonial__tags">Austin, TX</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">AI Integration</span></div><blockquote class="m-text-5">“The AI integration changed how our team works day to day. Lead scoring and follow-up suggestions now happen automatically inside our CRM, and our response time dropped from hours to minutes.”</blockquote><div class="testimonial__author"><span class="m-text-7">Marcus Reynolds</span><span class="m-text-6">Director of Growth · Northpeak Solutions</span></div><p class="m-text-6 testimonial__tags">Denver, CO</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">AWS Setup</span></div><blockquote class="m-text-5">“Our old server setup kept crashing during peak campaigns. They rebuilt everything on AWS with Lambda and SQS, and we haven’t had a single outage since. Costs actually went down by about 30%.”</blockquote><div class="testimonial__author"><span class="m-text-7">Daniel Whitaker</span><span class="m-text-6">CTO · CloudHarbor Tech</span></div><p class="m-text-6 testimonial__tags">Seattle, WA</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">AI Agent Setup</span></div><blockquote class="m-text-5">“Our AI agent now handles first-touch conversations and books qualified meetings straight into our calendar. It feels like we hired three extra SDRs without adding headcount.”</blockquote><div class="testimonial__author"><span class="m-text-7">Ashley Brooks</span><span class="m-text-6">Head of Revenue Operations · Summit Digital</span></div><p class="m-text-6 testimonial__tags">Chicago, IL</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">Zoho Creator Custom App</span></div><blockquote class="m-text-5">“We needed a custom internal app and they delivered a Zoho Creator solution that fit our process perfectly. Approvals, reporting, and client portals all in one place. Communication was excellent throughout.”</blockquote><div class="testimonial__author"><span class="m-text-7">Robert Caldwell</span><span class="m-text-6">Operations Manager · Pinecrest Construction</span></div><p class="m-text-6 testimonial__tags">Nashville, TN</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">Lead Enrichment Pipeline</span></div><blockquote class="m-text-5">“The enrichment pipeline gave us clean, verified contact data at scale. Our bounce rates dropped dramatically and our campaigns finally started hitting the right decision-makers.”</blockquote><div class="testimonial__author"><span class="m-text-7">Samantha Ortiz</span><span class="m-text-6">Founder · Redwood Outbound</span></div><p class="m-text-6 testimonial__tags">Phoenix, AZ</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">Zoho Flow and Automation</span></div><blockquote class="m-text-5">“They connected Zoho CRM, Books, and Desk with Zoho Flow, and the manual data entry we used to dread just disappeared. Our finance and support teams are finally working from the same information.”</blockquote><div class="testimonial__author"><span class="m-text-7">Christopher Hale</span><span class="m-text-6">COO · Evergreen Home Services</span></div><p class="m-text-6 testimonial__tags">Portland, OR</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">HubSpot to Zoho Migration</span></div><blockquote class="m-text-5">“I was nervous about migrating our whole sales pipeline, but the process was smooth and well documented. They even trained our team afterward. Highly recommend for anyone considering a CRM switch.”</blockquote><div class="testimonial__author"><span class="m-text-7">Lauren Fitzgerald</span><span class="m-text-6">Sales Manager · Atlas Insurance Group</span></div><p class="m-text-6 testimonial__tags">Charlotte, NC</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">Voice AI and Automation</span></div><blockquote class="m-text-5">“The AI voice agent they set up qualifies inbound calls around the clock. We stopped missing after-hours leads, and our booked appointments are up 40% in the first quarter.”</blockquote><div class="testimonial__author"><span class="m-text-7">Brandon Sullivan</span><span class="m-text-6">Owner · Keystone Roofing Co.</span></div><p class="m-text-6 testimonial__tags">Columbus, OH</p></article><article class="testimonial testimonial--client"><div class="testimonial__meta"><span class="testimonial__source">End-to-End Technical Partnership</span></div><blockquote class="m-text-5">“From CRM architecture to AWS infrastructure to AI automation, they’ve been our one-stop technical partner. Reliable, fast, and they genuinely understand how sales teams operate.”</blockquote><div class="testimonial__author"><span class="m-text-7">Michelle Donovan</span><span class="m-text-6">CEO · Horizon Growth Partners</span></div><p class="m-text-6 testimonial__tags">Atlanta, GA</p></article></div></section><section id="faq" data-8b-section="faq" aria-labelledby="faq-title">
   <h2 class="m-text-3 faq__title" id="faq-title" data-8b-motion="rise">Fair questions<span class="m-dot" aria-hidden="true"></span></h2>
   <div class="faq__list" data-8b-items=":scope > details">
     <details class="faq__item"><summary class="m-text-7">Which CRM platforms do you work with?<span class="faq__mark" aria-hidden="true"></span></summary><p class="m-text faq__answer">Zoho is our core CRM platform. We also work with Close CRM, Salesforce and HubSpot, depending on the project requirements.</p></details>
@@ -1268,10 +1407,10 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <a data-8b-placeholder="email" class="contact__mail" href="mailto:malay@chopstickintegrations.com"><span>malay@chopstickintegrations.com</span></a>
       <p class="m-text-6 contact__availability">Remote-first · Working with teams across time zones</p>
     </div>
-    <form class="contact__form m-surface" id="project-enquiry"><h3 class="m-text-4">Tell us about the project</h3><p class="m-text-5">Share a little context. Your email app will open with the enquiry ready to send.</p><label class="m-text-6">Name<input class="m-field" name="name" required autocomplete="name" placeholder="Your name"></label><label class="m-text-6">Work email<input class="m-field" name="email" type="email" required placeholder="you@company.com"></label><label class="m-text-6">Company<input class="m-field" name="company" placeholder="Company name"></label><label class="m-text-6">Company website<input class="m-field" name="website" type="url" placeholder="https://"></label><label class="m-text-6">Contact number (optional)<input class="m-field" name="phone" type="tel" placeholder="+1 ..."></label><label class="m-text-6">What do you need help with?<select class="m-field" name="service" required><option value="">Select a service</option><option>CRM implementation / customization</option><option>CRM migration</option><option>Systems integration / APIs</option><option>Workflow automation</option><option>Analytics and reporting</option><option>AI agents / AI automation</option><option>Something else</option></select></label><label class="m-text-6">Current platforms<input class="m-field" name="platforms" placeholder="Zoho, HubSpot, Salesforce, etc."></label><label class="m-text-6">Estimated budget (USD)<select class="m-field" name="budget"><option value="">Select a range</option><option>Under $1,000</option><option>$1,000–$3,000</option><option>$3,000–$5,000</option><option>$5,000–$10,000</option><option>$10,000+</option><option>Not sure yet</option></select></label><label class="m-text-6">Project details<textarea class="m-field" name="details" rows="4" required placeholder="What are you trying to solve?"></textarea></label><label class="m-text-6">Preferred call date (optional)<input class="m-field" name="call_date" type="date"></label><label class="m-text-6">Preferred time window (optional)<select class="m-field" name="call_time"><option value="">No preference</option><option>Morning (9 AM–12 PM IST)</option><option>Afternoon (12 PM–4 PM IST)</option><option>Evening (4 PM–8 PM IST)</option><option>Other — mention in project details</option></select></label><button class="m-btn" type="submit"><span class="m-btn__label">Prepare enquiry</span></button><p class="m-text-6 contact__status" role="status" aria-live="polite">This opens a pre-filled email to malay@chopstickintegrations.com. A call time is a request, not a confirmed booking.</p></form>
+    <form class="contact__form m-surface" id="project-enquiry" action="https://formsubmit.co/malay@chopstickintegrations.com" method="POST"><input type="hidden" name="_subject" value="New project enquiry — Chopstick Integrations"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honeypot"><h3 class="m-text-4">Tell us about the project</h3><p class="m-text-5">Share a little context. Your enquiry will be sent directly to our inbox.</p><label class="m-text-6">Name<input class="m-field" name="name" required autocomplete="name" placeholder="Your name"></label><label class="m-text-6">Work email<input class="m-field" name="email" type="email" required placeholder="you@company.com"></label><label class="m-text-6">Company<input class="m-field" name="company" placeholder="Company name"></label><label class="m-text-6">Company website<input class="m-field" name="website" type="url" placeholder="https://"></label><label class="m-text-6">Contact number (optional)<input class="m-field" name="phone" type="tel" placeholder="+1 ..."></label><label class="m-text-6">What do you need help with?<select class="m-field" name="service" required><option value="">Select a service</option><option>CRM implementation / customization</option><option>CRM migration</option><option>Systems integration / APIs</option><option>Workflow automation</option><option>Analytics and reporting</option><option>AI agents / AI automation</option><option>Something else</option></select></label><label class="m-text-6">Current platforms<input class="m-field" name="platforms" placeholder="Zoho, HubSpot, Salesforce, etc."></label><label class="m-text-6">Estimated budget (USD)<select class="m-field" name="budget"><option value="">Select a range</option><option>Under $1,000</option><option>$1,000–$3,000</option><option>$3,000–$5,000</option><option>$5,000–$10,000</option><option>$10,000+</option><option>Not sure yet</option></select></label><label class="m-text-6">Project details<textarea class="m-field" name="details" rows="4" required placeholder="What are you trying to solve?"></textarea></label><label class="m-text-6">Preferred call date (optional)<input class="m-field" name="call_date" type="date"></label><label class="m-text-6">Preferred time window (optional)<select class="m-field" name="call_time"><option value="">No preference</option><option>Morning (9 AM–12 PM IST)</option><option>Afternoon (12 PM–4 PM IST)</option><option>Evening (4 PM–8 PM IST)</option><option>Other — mention in project details</option></select></label><button class="m-btn" type="submit"><span class="m-btn__label">Send project enquiry</span></button><p class="m-text-6 contact__status" role="status" aria-live="polite">Your enquiry is sent to malay@chopstickintegrations.com. A call time is a request, not a confirmed booking.</p></form>
   </div>
 </section></main><footer id="footer" data-8b-section="footer">
-  <div class="chopstick-poster"><div class="poster-mark"><span class="poster-sticks">╱ ╱</span><span>CHOPSTICK</span><small>INTEGRATIONS</small></div><p class="poster-caption">Strategy · Systems · Integrations</p></div>
+  <div class="chopstick-poster"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="footer-site-logo" loading="lazy"><p class="poster-caption">Strategy · Systems · Integrations</p></div>
   <div class="footer__grid">
     <nav class="footer__col" aria-label="Footer">
       <p class="m-text-6 footer__label">Explore</p>
@@ -1279,7 +1418,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <a class="m-link-2" href="#capabilities">Services</a>
       <a class="m-link-2" href="#method">Approach</a>
       <a class="m-link-2" href="#studio">Studio</a>
-      <a class="m-link-2" href="#journal">Journal</a>
+      
     </nav>
     <div class="footer__col">
       <p class="m-text-6 footer__label">Talk</p>
@@ -1299,25 +1438,17 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   <div id="track" aria-hidden="true"></div>
   <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
     <div id="boot-content">
-      <div id="boot-quote">“Great things take time. So does this website.”</div>
-      <svg id="chopstick-loader" viewBox="0 0 512 512" role="img" aria-label="Two crossed chopsticks above a red dipping bowl">
-        <g class="bowl">
-          <circle cx="190" cy="337" r="100" fill="#303030"/>
-          <circle cx="190" cy="337" r="72" fill="#bd292d"/>
-          <path class="shine" d="M137 325c3-18 13-33 27-42"/>
-        </g>
-        <g class="sticks">
-          <path d="M45 470 378 39Q385 30 393 38L405 49Q411 55 404 63L51 474Q42 480 45 470Z" fill="#ffb28f"/>
-          <path d="M73 480 450 60Q457 52 465 60L476 71Q482 78 474 86L79 484Q70 489 73 480Z" fill="#ffb28f"/>
-          <path d="M336 94 378 39Q385 30 393 38L405 49Q411 55 404 63L361 119Z" fill="#b9272c"/>
-          <path d="M397 121 450 60Q457 52 465 60L476 71Q482 78 474 86L420 147Z" fill="#b9272c"/>
-          <path d="m319 116 17 13-7 9-17-13Z M338 131l17 13-7 9-17-13Z" fill="#b9272c"/>
-          <path d="m380 146 17 14-7 9-17-14Z M399 162l17 14-7 9-17-14Z" fill="#b9272c"/>
-        </g>
-      </svg>
-      <div id="boot-progress"><span id="boot-percent">0%</span></div>
+      <div id="boot-quote">Your leads are already talking. We help you hear them first.</div>
+      <div id="boot-progress"><span id="boot-percent">1%</span></div>
       <div id="boot-state">Preparing the experience</div>
-      <div id="boot-instruction"><span id="boot-scroll-cue" aria-hidden="true"></span><span class="desktop">SCROLL FOR THE EXPERIENCE</span><span class="mobile">SWIPE UP FOR THE EXPERIENCE</span></div>
+      <div id="boot-instruction">
+        <div id="boot-scroll-cue" aria-hidden="true"></div>
+        <span class="boot-choice-label">SWIPE UP FOR THE EXPERIENCE</span>
+        <div class="boot-choice-actions" aria-label="Choose cinematic audio">
+          <button id="sound-toggle" type="button" aria-pressed="false" aria-label="Enter with cinematic sound">SOUND ON</button>
+          <button id="continue-silent" type="button" aria-label="Enter without cinematic sound">SOUND OFF</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1350,7 +1481,7 @@ const CONFIG = Object.freeze({
   SETTLE_EPSILON: 0.0008,       // frames; below this the engine stops drawing
 
   /* Loading */
-  BOOT_RING: 11,                // opening frames decoded before the film is revealed
+  BOOT_RING: 5,                 // six opening frames; the rest stream while scrolling
   PREFETCH_LANES: 3,            // concurrent out-of-boot decodes
   PREFETCH_AHEAD: 18,           // frames prefetched beyond the playhead (scroll direction)
   PREFETCH_BEHIND: 10,          // frames kept behind it (for immediate reversal)
@@ -1414,7 +1545,151 @@ let cinematicComplete = false;
 let curtainStarted = false;
 let curtainTimer = 0;
 let curtainTransitionHandler = null;
+
 let replayCinematic = null;
+
+/* Frame-synchronised Mixkit audio. Audio is opt-in and unlocked by the Sound button. */
+const soundToggle = document.getElementById('sound-toggle');
+let soundContext = null, soundEnabled = false, lastSoundFrame = 0, lastSoundAt = 0, lastWhooshAt = 0;
+const MIXKIT_SOUNDS = Object.freeze({
+  whoosh: '/assets/sound/mixkit-air-woosh-1489.wav',
+  impact: '/assets/sound/mixkit-arcade-retro-game-over-213.wav',
+  fanfare: '/assets/sound/mixkit-trumpet-fanfare-2293.wav'
+});
+const soundBuffers = new Map();
+let soundLoadPromise = null;
+
+function makeSoundContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!soundContext) soundContext = new AudioCtx();
+  if (soundContext.state === 'suspended') soundContext.resume().catch((error) => {
+    console.warn('[Chopstick Audio] AudioContext could not resume:', error);
+  });
+  return soundContext;
+}
+function loadMixkitSounds() {
+  const ctx = makeSoundContext();
+  if (!ctx) return Promise.resolve(0);
+  if (soundLoadPromise) return soundLoadPromise;
+  soundLoadPromise = Promise.all(Object.entries(MIXKIT_SOUNDS).map(async ([name, url]) => {
+    try {
+      const response = await fetch(url, { cache: 'force-cache' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const bytes = await response.arrayBuffer();
+      const decoded = await ctx.decodeAudioData(bytes.slice(0));
+      soundBuffers.set(name, decoded);
+      console.info('[Chopstick Audio] Loaded ' + name + ': ' + url);
+      return true;
+    } catch (error) {
+      console.warn('[Chopstick Audio] Missing or unavailable clip (' + name + '): ' + url, error);
+      return false;
+    }
+  })).then((loaded) => {
+    const count = loaded.filter(Boolean).length;
+    console.info('[Chopstick Audio] ' + count + '/3 Mixkit clips ready. Synth fallback remains active for missing clips.');
+    return count;
+  });
+  return soundLoadPromise;
+}
+function playMixkit(name, volume = 0.72) {
+  if (!soundEnabled || !soundContext || soundContext.state !== 'running') return false;
+  const buffer = soundBuffers.get(name);
+  if (!buffer) return false;
+  const source = soundContext.createBufferSource(), gain = soundContext.createGain();
+  source.buffer = buffer;
+  gain.gain.setValueAtTime(volume, soundContext.currentTime);
+  source.connect(gain); gain.connect(soundContext.destination); source.start();
+  return true;
+}
+
+/* Procedural fallback remains available if a Mixkit file is absent. */
+let crackBuffer = null;
+function getCrackBuffer(ctx) {
+  if (crackBuffer) return crackBuffer;
+  const length = Math.floor(ctx.sampleRate * .22);
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate), data = buffer.getChannelData(0);
+  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.7);
+  crackBuffer = buffer;
+  return buffer;
+}
+function playWoodCrack(strength = 1) {
+  if (playMixkit('impact', .82)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime, noise = ctx.createBufferSource(), high = ctx.createBiquadFilter(), snap = ctx.createGain();
+  noise.buffer = getCrackBuffer(ctx); high.type = 'highpass'; high.frequency.value = 1050;
+  snap.gain.setValueAtTime(.0001, t); snap.gain.exponentialRampToValueAtTime(.16 * strength, t + .004); snap.gain.exponentialRampToValueAtTime(.0001, t + .19);
+  noise.connect(high); high.connect(snap); snap.connect(ctx.destination); noise.start(t); noise.stop(t + .21);
+  const body = ctx.createOscillator(), bodyGain = ctx.createGain();
+  body.type = 'triangle'; body.frequency.setValueAtTime(125, t); body.frequency.exponentialRampToValueAtTime(43, t + .11);
+  bodyGain.gain.setValueAtTime(.0001, t); bodyGain.gain.exponentialRampToValueAtTime(.11 * strength, t + .006); bodyGain.gain.exponentialRampToValueAtTime(.0001, t + .14);
+  body.connect(bodyGain); bodyGain.connect(ctx.destination); body.start(t); body.stop(t + .15);
+  [0, .055, .105].forEach((delay, i) => {
+    const click = ctx.createOscillator(), g = ctx.createGain();
+    click.type = 'square'; click.frequency.setValueAtTime(1700 - i * 260, t + delay);
+    g.gain.setValueAtTime(.0001, t + delay); g.gain.exponentialRampToValueAtTime(.018 * strength, t + delay + .002); g.gain.exponentialRampToValueAtTime(.0001, t + delay + .022);
+    click.connect(g); g.connect(ctx.destination); click.start(t + delay); click.stop(t + delay + .025);
+  });
+}
+function playWoodCreak() {
+  if (playMixkit('whoosh', .66)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), filter = ctx.createBiquadFilter();
+  o.type = 'sawtooth'; o.frequency.setValueAtTime(185, t); o.frequency.linearRampToValueAtTime(118, t + .34);
+  filter.type = 'bandpass'; filter.frequency.value = 390; filter.Q.value = 2.8;
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.025, t + .12); g.gain.exponentialRampToValueAtTime(.0001, t + .38);
+  o.connect(filter); filter.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .4);
+}
+function playReconnect() {
+  if (playMixkit('fanfare', .78)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime;
+  [0, .075].forEach((delay, i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(i ? 1120 : 760, t + delay); o.frequency.exponentialRampToValueAtTime(i ? 620 : 420, t + delay + .045);
+    g.gain.setValueAtTime(.0001, t + delay); g.gain.exponentialRampToValueAtTime(.045, t + delay + .004); g.gain.exponentialRampToValueAtTime(.0001, t + delay + .065);
+    o.connect(g); g.connect(ctx.destination); o.start(t + delay); o.stop(t + delay + .07);
+  });
+}
+const FILM_CUES = Object.freeze({ tensionStart: 112, break: 158, reconnect: 232 });
+function frameSound(frame) {
+  const now = performance.now(), previous = lastSoundFrame, delta = Math.abs(frame - previous);
+  lastSoundFrame = frame; // stay synced even before sound is enabled
+  if (!soundEnabled || !soundContext || soundContext.state !== 'running') return;
+  if (now - lastSoundAt < 34 || delta < .65) return;
+  lastSoundAt = now;
+  const crossed = (cue) => previous < cue && frame >= cue;
+  let landmarkPlayed = false;
+  if (crossed(FILM_CUES.tensionStart)) { playWoodCreak(); landmarkPlayed = true; }
+  if (crossed(FILM_CUES.break)) { playWoodCrack(1); landmarkPlayed = true; }
+  if (crossed(FILM_CUES.reconnect)) { playReconnect(); landmarkPlayed = true; }
+  if (!landmarkPlayed && delta > 2.2 && now - lastWhooshAt > 620) {
+    lastWhooshAt = now;
+    const velocity = Math.min(1, delta / 9);
+    if (!playMixkit('whoosh', .30 + velocity * .22)) {
+      const ctx = soundContext, t = ctx.currentTime, n = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
+      n.buffer = getCrackBuffer(ctx); filter.type = 'lowpass'; filter.frequency.setValueAtTime(900 + velocity * 2600, t);
+      g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.009 + velocity * .012, t + .018); g.gain.exponentialRampToValueAtTime(.0001, t + .12);
+      n.connect(filter); filter.connect(g); g.connect(ctx.destination); n.start(t); n.stop(t + .13);
+    }
+  }
+}
+const audioChoiceActions = document.querySelector('#boot-instruction .boot-choice-actions');
+if (soundToggle) soundToggle.addEventListener('click', () => {
+  soundEnabled = true;
+  soundToggle.setAttribute('aria-pressed', 'true');
+  makeSoundContext(); // unlock audio directly from the visitor's gesture
+  loadMixkitSounds().then(() => { if (soundEnabled) playWoodCreak(); });
+  if (audioChoiceActions) audioChoiceActions.remove();
+});
+const silentToggle = document.getElementById('continue-silent');
+if (silentToggle) silentToggle.addEventListener('click', () => {
+  soundEnabled = false;
+  if (soundContext && soundContext.state === 'running') {
+    soundContext.suspend().catch((error) => console.warn('[Chopstick Audio] Suspend failed:', error));
+  }
+  if (audioChoiceActions) audioChoiceActions.remove();
+});
 
 addEventListener('wheel', (event) => {
   if (cinematicComplete && scrollY <= 2 && event.deltaY < -4 && replayCinematic) {
@@ -1445,6 +1720,8 @@ function finishCurtain() {
   cinematicLayer.hidden = true;
   track.hidden = true;
   homepage.classList.add('active');
+  if (window.ChopstickSwarm) window.ChopstickSwarm.start();
+  else document.addEventListener('chopstick:swarm-ready', () => window.ChopstickSwarm?.start(), { once: true });
   homepage.removeAttribute('aria-hidden');
   document.documentElement.classList.remove('cinematic-active');
   document.body.classList.remove('cinematic-active');
@@ -1465,27 +1742,55 @@ function beginCurtain() {
     }
   };
   cinematicLayer.addEventListener('transitionend', curtainTransitionHandler);
-  curtainTimer = setTimeout(finishCurtain, 1200);
+  curtainTimer = setTimeout(finishCurtain, 1500);
   cinematicLayer.classList.add('curtain-open');
 }
 
 
 /* Rotating brand lines; keep the loader quiet and lightweight. */
-const quoteLines = [
-  '“Great things take time. So does this website.”',
-  '“A little patience. A lot to explore.”',
-  '“We made this by hand. Take it for a spin.”'
+const serviceQuotes = [
+  'Your leads are already talking. We help you hear them first.',
+  'Clean data isn’t a luxury. It’s where every good campaign starts.',
+  'Great CRMs don’t add work. They quietly remove it.',
+  'Automation is just your best employee who never sleeps.',
+  'Move your data once. Move it right.',
+  'An AI agent should feel like a teammate, not a chatbot.',
+  'Fast infrastructure is invisible. Slow infrastructure is expensive.',
+  'Every manual task you delete is an hour you get back.',
+  'Behind every closed deal is a workflow that didn’t break.',
+  'Growth isn’t magic. It’s systems that scale while you sleep.'
 ];
+function personalizedQuote() {
+  const params = new URLSearchParams(location.search);
+  const campaign = (params.get('utm_campaign') || '').toLowerCase();
+  const industry = params.get('industry');
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  const cityByZone = {'America/New_York':'New York','America/Los_Angeles':'Los Angeles','America/Chicago':'Chicago','Europe/London':'London','Asia/Dubai':'Dubai','Asia/Singapore':'Singapore'};
+  const city = cityByZone[tz];
+  const hour = new Date().getHours();
+  let message = '';
+  if (campaign.includes('zoho')) message = 'Looking for Zoho experts? You’re in the right place.';
+  else if (industry) message = 'Built for ' + industry.replace(/[<>]/g, '').slice(0,48) + ' teams who are tired of chasing leads.';
+  else {
+    let returning = false;
+    try { returning = localStorage.getItem('chopstick-visited') === 'yes'; localStorage.setItem('chopstick-visited','yes'); } catch {}
+    if (returning) message = 'Welcome back. Your next idea is a few seconds away.';
+    else if (hour >= 5 && hour < 12) message = 'Good morning. Let’s make today’s pipeline look better.';
+    else if (city) message = 'Helping teams from ' + city + ' to close faster.';
+  }
+  return message || serviceQuotes[0];
+}
 let quoteIndex = 0;
 const quoteNode = document.getElementById('boot-quote');
 const quoteIndexNode = document.getElementById('boot-quote-index');
-if (quoteNode && !reducedMotion) {
+if (quoteNode) quoteNode.textContent = personalizedQuote();
+if (quoteNode) {
   setInterval(() => {
     quoteNode.classList.add('changing');
     setTimeout(() => {
-      quoteIndex = (quoteIndex + 1) % quoteLines.length;
-      quoteNode.textContent = quoteLines[quoteIndex];
-      if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 03`;
+      quoteIndex = (quoteIndex + 1) % serviceQuotes.length;
+      quoteNode.textContent = serviceQuotes[quoteIndex];
+      if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 10`;
       quoteNode.classList.remove('changing');
     }, 360);
   }, 3200);
@@ -1915,7 +2220,8 @@ void main(){
     const workers = Array.from({ length: workerCount }, async () => {
       while (true) {
         const index = next++;
-        if (index >= CONFIG.FRAME_COUNT) return;
+        const initialCount = Math.min(CONFIG.BOOT_RING + 1, CONFIG.FRAME_COUNT);
+        if (index >= initialCount) return;
         const url = new URL(frameUrl(index), location.href).href;
         try {
           let saved = await cache.match(url);
@@ -1940,7 +2246,7 @@ void main(){
           firstError ||= new Error(`Frame ${index + 1}: ${error.message}`);
         } finally {
           completed++;
-          onProgress(completed, CONFIG.FRAME_COUNT);
+          onProgress(completed, Math.min(CONFIG.BOOT_RING + 1, CONFIG.FRAME_COUNT));
         }
       }
     });
@@ -2097,6 +2403,7 @@ void main(){
     /* frame-rate-independent exponential approach — smooth and reversible */
     const k = 1 - Math.exp(-dt * (reducedMotion ? 22 : CONFIG.SMOOTH_LAMBDA));
     fIdxSmoothed += (fIdxTarget - fIdxSmoothed) * k;
+    frameSound(fIdxSmoothed);
 
     if (Math.abs(fIdxTarget - fIdxSmoothed) > 0.25) {
       dirBias = Math.sign(fIdxTarget - fIdxSmoothed) || 1;
@@ -2227,13 +2534,13 @@ void main(){
     sizeTrack();
     refreshMaxScroll();
 
-    /* Prepare all 300 compressed frames before unlocking the scroll experience.
-       Keep only a rolling window decoded in GPU memory to protect mobile devices. */
+    /* Prepare only the opening frame ring before unlocking. Remaining frames stream
+       directionally as the visitor scrolls, avoiding a 300-frame 4G download gate. */
     const bootPercent = document.getElementById('boot-percent');
     const bootState = document.getElementById('boot-state');
     if (bootState) bootState.textContent = 'Preparing the experience';
     await preloadAllFrames((ready, total) => {
-      if (bootPercent) bootPercent.textContent = `${Math.round(ready / total * 100)}%`;
+      if (bootPercent) bootPercent.textContent = `${Math.max(1, Math.min(100, Math.round(ready / total * 100)))}%`;
     });
 
     /* Decode the opening scene before the user can start scrolling. */
@@ -2388,19 +2695,6 @@ function buildProgram(glCtx, vsSrc, fsSrc) {
   new IntersectionObserver(([entry]) => hero.classList.toggle('is-offscreen', !entry.isIntersecting)).observe(hero);
 })();
 </script>
-<script data-8b-part="section-script:contact">
-(() => {
-  const form = document.querySelector('#contact .contact__form');
-  const status = form.querySelector('.contact__status');
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const ok = form.checkValidity();
-    status.textContent = ok ? status.dataset.success : status.dataset.error;
-    if (ok) form.reset();
-    else form.querySelector(':invalid')?.focus();
-  });
-})();
-</script>
 <script data-8b-part="scene-script:hero">
 motionKit.scene('hero', () => {
   const hero = document.getElementById('hero');
@@ -2420,30 +2714,7 @@ motionKit.scene('hero', () => {
   });
 });
 </script>
-<script data-8b-part="scene-script:work">
-motionKit.scene('work', () => {
-  const work = document.getElementById('work');
-  const stage = work.querySelector('.work__stage');
-  const frame = work.querySelector('.work__window');
-  const track = work.querySelector('.work__track');
-  const left = element => { let x = 0; for (let node = element; node; node = node.offsetParent) x += node.offsetLeft; return x; };
-  motionKit.measure(() => {
-    const run = Math.max(0, track.offsetWidth - (work.clientWidth - 2 * parseFloat(getComputedStyle(stage).paddingLeft)));
-    motionKit.set(work, { '--run': `${Math.round(run)}px`, '--work-run': `${run.toFixed(2)}px` });
-    const radius = innerWidth < 700 ? innerWidth * 2.1 : innerWidth * 0.95;
-    const origin = left(frame);
-    track.querySelectorAll('.case').forEach(card => {
-      const offset = origin + card.offsetLeft + card.offsetWidth / 2 - run - innerWidth / 2;
-      const angle = offset / radius;
-      motionKit.set(card, {
-        '--work-x': `${(radius * Math.sin(angle) - offset).toFixed(2)}px`,
-        '--work-y': `${(radius * (1 - Math.cos(angle))).toFixed(2)}px`,
-        '--work-r': `${(angle * 180 / Math.PI).toFixed(3)}deg`
-      });
-    });
-  });
-});
-</script>
+
 <script data-8b-part="scene-script:again">
 motionKit.scene('again', () => {
   const again = document.getElementById('again');
@@ -2712,4 +2983,60 @@ document.addEventListener('animationstart', scan, true);
   });
 })();
 </script>
-<script id="chopstick-contact-handler">(()=>{const form=document.getElementById("project-enquiry");if(!form)return;form.addEventListener("submit",event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const fields=[["Name","name"],["Email","email"],["Company","company"],["Website","website"],["Contact number","phone"],["Service","service"],["Current platforms","platforms"],["Budget (USD)","budget"],["Project details","details"],["Preferred call date","call_date"],["Preferred time window","call_time"]];const body=fields.map(([label,key])=>{const value=String(data.get(key)||"").trim();return value?label+": "+value:null}).filter(Boolean).join("\n\n");const subject="New project enquiry — Chopstick Integrations";const status=form.querySelector(".contact__status");status.textContent="Your email app should open with the enquiry details. Review and send it to complete your enquiry.";window.location.href="mailto:malay@chopstickintegrations.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);});})();</script></body></html>
+<script id="chopstick-contact-handler">
+(() => {
+  const form = document.getElementById("project-enquiry");
+  if (!form || form.dataset.bound === "yes") return;
+  form.dataset.bound = "yes";
+  const status = form.querySelector(".contact__status");
+  const button = form.querySelector('button[type="submit"]');
+  const endpoint = "https://formsubmit.co/ajax/malay@chopstickintegrations.com";
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!form.reportValidity() || form.dataset.submitting === "yes") return;
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    if (String(payload._honey || "").trim()) return;
+    payload._replyto = String(payload.email || "").trim();
+
+    form.dataset.submitting = "yes";
+    form.setAttribute("aria-busy", "true");
+    if (button) button.disabled = true;
+    if (status) status.textContent = "Sending your enquiry…";
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!response.ok || result.success === false || result.success === "false") {
+        throw new Error(result.message || "The enquiry service did not accept the submission.");
+      }
+      form.reset();
+      if (status) status.textContent = "Thank you — your enquiry has been sent. We’ll get back to you by email.";
+    } catch (error) {
+      console.error("[Chopstick enquiry] Submission failed:", error);
+      if (status) status.textContent = "We couldn't send this just now. Please email malay@chopstickintegrations.com and we'll take it from there.";
+    } finally {
+      form.dataset.submitting = "no";
+      form.removeAttribute("aria-busy");
+      if (button) button.disabled = false;
+    }
+  });
+})();
+</script><script id="chopstick-motion-fallback">
+/* Fail open: scroll-linked motion must never leave content invisible if a timeline is unsupported or interrupted. */
+(()=>{const nodes=[...document.querySelectorAll('[data-8b-motion]')];if(!nodes.length)return;
+const reveal=el=>{el.classList.add('is-in');el.querySelectorAll('[data-8b-items] > *').forEach((child,i)=>child.style.setProperty('--i',i));};
+if(!('IntersectionObserver'in window)){nodes.forEach(reveal);return;}
+const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);io.unobserve(entry.target);}}),{rootMargin:'12% 0px 12% 0px',threshold:0.01});
+nodes.forEach(el=>io.observe(el));
+})();
+</script>  <script type="module" src="/assets/studio-dither.js?v=20261107"></script>
+</body></html>

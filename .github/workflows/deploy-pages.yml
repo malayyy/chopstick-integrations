@@ -1,8 +1,4 @@
-name: Deploy cinematic experience (GitHub Pages)
-
-# Deploys the minimal serving set: index.html + the 4K WebP frame derivatives.
-# The 4K PNG originals (frames-4k/) are preserved in the repository but are never
-# deployed — they are not required at runtime.
+name: Deploy Chopstick website (GitHub Pages)
 
 on:
   push:
@@ -26,14 +22,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/configure-pages@v5
-      - name: Gather serving files
+
+      - name: Gather complete static website
         run: |
-          mkdir -p _site/frames
+          mkdir -p _site
           cp index.html _site/
-          cp frames/*.webp _site/frames/
+          cp -R assets blog work frames _site/
+          if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
       - id: deployment
         uses: actions/deploy-pages@v4

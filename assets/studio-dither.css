@@ -1,0 +1,336 @@
+/* React Bits DitherVeil original container rule. */
+.dither-veil {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+/* Chopstick Studio — dark editorial panel around the original DitherVeil visual. */
+#studio .studio__collage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(18px, 2.8vw, 38px);
+  width: 100%;
+  min-height: 460px;
+  aspect-ratio: 2.2;
+  padding: clamp(16px, 2.5vw, 34px);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: clamp(16px, 2vw, 24px);
+  background:
+    radial-gradient(ellipse 60% 70% at 19% 46%, rgba(146,19,49,.19), transparent 76%),
+    radial-gradient(ellipse 45% 65% at 88% 12%, rgba(102,45,103,.12), transparent 78%),
+    linear-gradient(135deg, #080709, #151016 58%, #090709);
+  box-shadow: 0 24px 72px rgba(0,0,0,.16);
+}
+#studio .studio__dither-stage {
+  position: relative;
+  grid-column: 1;
+  align-self: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 330px;
+  max-height: 570px;
+  aspect-ratio: 1.32;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: clamp(12px, 1.5vw, 18px);
+  background:
+    radial-gradient(ellipse at 48% 50%, rgba(209,27,58,.10), transparent 70%),
+    #120f17;
+}
+#studio .studio__dither-mount {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+#studio .studio__dither-mount canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+#studio .studio__dither-loader {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: clamp(14px, 2vw, 22px);
+  color: rgba(255,255,255,.76);
+  background: #120f17;
+  font: 600 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transition: opacity .55s ease, visibility .55s ease;
+}
+#studio .studio__dither-loader::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: #d11b3a;
+  box-shadow: 0 0 12px rgba(209,27,58,.8);
+  animation: studio-dither-pulse 1.1s ease-in-out infinite;
+}
+#studio .studio__dither-hint {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  bottom: 17px;
+  color: rgba(255,255,255,.9);
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0,0,0,.55);
+  opacity: 0;
+  transition: opacity .4s ease .2s;
+  pointer-events: none;
+}
+#studio .studio__dither-stage.is-ready .studio__dither-mount { opacity: 1; }
+#studio .studio__dither-stage.is-ready .studio__dither-loader {
+  opacity: 0;
+  visibility: hidden;
+}
+#studio .studio__dither-stage.is-ready .studio__dither-hint { opacity: 1; }
+#studio .studio__dither-stage.is-error .studio__dither-loader { color: rgba(255,255,255,.9); }
+#studio .studio__dither-stage.is-error .studio__dither-loader::before { animation: none; }
+
+#studio .studio__collage > .studio__roles {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  grid-column: 2;
+  align-self: center;
+  display: grid;
+  align-content: center;
+  gap: clamp(12px, 1.65vw, 22px);
+  width: auto !important;
+  max-width: none;
+  min-width: 0;
+  padding: clamp(14px, 2vw, 26px) clamp(4px, 1vw, 14px) clamp(14px, 2vw, 26px) 0;
+  color: #fff !important;
+  background: transparent;
+  text-shadow: 0 1px 16px rgba(0,0,0,.45);
+}
+#studio .studio__collage > .studio__roles *,
+#studio .studio__collage > .studio__roles h3,
+#studio .studio__collage > .studio__roles .role,
+#studio .studio__collage > .studio__roles .role__place,
+#studio .studio__collage > .studio__roles .m-link,
+#studio .studio__collage > .studio__roles .m-link__label {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+}
+#studio .studio__collage > .studio__roles .m-dot {
+  color: #d11b3a !important;
+  -webkit-text-fill-color: #d11b3a;
+}
+#studio .studio__collage > .studio__roles ul {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+#studio .studio__collage > .studio__roles .role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 5px 12px;
+  padding: clamp(10px, 1.2vw, 15px) 0;
+  border-top: 1px solid rgba(255,255,255,.24);
+}
+#studio .studio__collage > .studio__roles .role__place {
+  color: rgba(255,255,255,.68) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.68);
+}
+#studio .studio__collage > .studio__roles .m-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+}
+#studio .studio__collage > .studio__roles .m-link__arrow {
+  flex: 0 0 auto;
+  stroke: #fff !important;
+}
+@keyframes studio-dither-pulse {
+  0%,100% { opacity: .45; transform: scale(.8); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+@media (min-width: 900px) {
+  #studio .studio__collage { aspect-ratio: 2.2; min-height: 460px; }
+  #studio .studio__dither-stage { min-height: 340px; }
+}
+@media (min-width: 621px) and (max-width: 899px) {
+  #studio .studio__collage {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .95fr);
+    gap: 16px;
+    aspect-ratio: auto;
+    min-height: 405px;
+    padding: 18px;
+  }
+  #studio .studio__dither-stage {
+    min-height: 290px;
+    max-height: 370px;
+    aspect-ratio: 1.08;
+  }
+  #studio .studio__collage > .studio__roles {
+    gap: 12px;
+    padding: 8px 2px 8px 0;
+  }
+  #studio .studio__collage > .studio__roles h3 { font-size: clamp(18px, 2.4vw, 23px); }
+  #studio .studio__collage > .studio__roles .role { gap: 4px 7px; padding: 10px 0; }
+  #studio .studio__collage > .studio__roles .role .m-text-7 { font-size: clamp(14px, 1.9vw, 17px); }
+  #studio .studio__collage > .studio__roles .m-link { font-size: clamp(12px, 1.65vw, 15px); }
+}
+@media (max-width: 620px) {
+  #studio .studio__collage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 0;
+    min-height: 0;
+    padding: 12px;
+    aspect-ratio: auto;
+    border-radius: 16px;
+  }
+  #studio .studio__dither-stage {
+    grid-column: 1;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: 1.25;
+    border-radius: 12px;
+  }
+  #studio .studio__collage > .studio__roles {
+    grid-column: 1;
+    width: 100% !important;
+    gap: 11px;
+    padding: 19px 8px 12px;
+    border-top: 1px solid rgba(255,255,255,.20);
+  }
+  #studio .studio__collage > .studio__roles h3 {
+    margin: 0;
+    font-size: clamp(19px, 5.2vw, 23px);
+  }
+  #studio .studio__collage > .studio__roles .role {
+    gap: 4px 8px;
+    padding: 11px 0;
+  }
+  #studio .studio__collage > .studio__roles .role .m-text-7 {
+    font-size: clamp(15px, 4.2vw, 18px);
+    line-height: 1.18;
+  }
+  #studio .studio__collage > .studio__roles .role__place {
+    font-size: clamp(11px, 3.1vw, 13px);
+  }
+  #studio .studio__collage > .studio__roles .m-link {
+    margin-top: 3px;
+    font-size: clamp(13px, 3.8vw, 15px);
+  }
+  #studio .studio__dither-loader { padding: 14px; font-size: 8px; }
+  #studio .studio__dither-hint { right: 13px; bottom: 13px; font-size: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #studio .studio__dither-loader::before { animation: none; }
+  #studio .studio__dither-mount,
+  #studio .studio__dither-loader,
+  #studio .studio__dither-hint { transition-duration: .01ms; }
+}
+
+/* Match the live Chopstick brand type system in the Studio panel. */
+#studio .studio__collage > .studio__roles h3,
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.035em;
+}
+#studio .studio__collage > .studio__roles h3 {
+  font-size: clamp(21px, 2.2vw, 30px);
+  line-height: 1;
+}
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-size: clamp(18px, 1.7vw, 23px);
+  line-height: 1.1;
+}
+#studio .studio__collage > .studio__roles .role__place,
+#studio .studio__collage > .studio__roles .m-link {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-weight: 700;
+}
+#studio .studio__collage > .studio__roles .m-link { font-size: 14px; }
+@media (max-width: 620px) {
+  #studio .studio__dither-hint {
+    right: 12px;
+    bottom: 12px;
+    font-size: 9px;
+    letter-spacing: .055em;
+  }
+  #studio .studio__collage > .studio__roles h3 { font-size: 22px; }
+  #studio .studio__collage > .studio__roles .role .m-text-7 { font-size: 19px; }
+  #studio .studio__collage > .studio__roles .m-link { font-size: 14px; }
+}
+
+/* Studio microcopy follows the same Gabarito / Onest type system as the main site. */
+#studio .studio__dither-hint {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .065em;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 12px rgba(0,0,0,.65);
+}
+#studio .studio__dither-loader {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .10em;
+}
+#studio .studio__collage > .studio__roles h3,
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-weight: 800;
+}
+#studio .studio__collage > .studio__roles .role__place,
+#studio .studio__collage > .studio__roles .m-link {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-weight: 700;
+}
+@media (max-width: 620px) {
+  #studio .studio__dither-hint {
+    font-size: 10px;
+    letter-spacing: .045em;
+  }
+  #studio .studio__dither-loader {
+    font-size: 9px;
+  }
+}
