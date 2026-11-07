@@ -1045,6 +1045,38 @@ body,a,button,[role=button]{cursor:none!important}
 .chopstick-cursor-trail{position:fixed;z-index:99998;left:0;top:0;width:4px;height:4px;margin:-2px;border-radius:50%;background:rgba(222,32,69,.62);box-shadow:0 0 12px rgba(222,32,69,.42);pointer-events:none;opacity:0;will-change:transform,opacity}
 }
 @media (pointer:coarse),(prefers-reduced-motion:reduce){#chopstick-cursor,.chopstick-cursor-trail{display:none!important}}
+
+/* Header/top-edge cleanup: remove the dark strip and all header bars */
+html,body{background:#080609!important}
+body{margin:0!important;padding-top:0!important}
+#home{background:#080609!important}
+#navigation{
+  top:0!important;inset-block-start:0!important;
+  margin:0!important;padding-top:10px!important;
+  border:0!important;border-top:0!important;border-bottom:0!important;
+  outline:0!important;box-shadow:none!important;
+  background:transparent!important;
+  background-image:none!important;
+}
+#navigation::before,#navigation::after{
+  content:none!important;display:none!important;
+  border:0!important;box-shadow:none!important;
+}
+#navigation .nav__brand,
+#navigation .nav__links,
+#navigation .nav__cta,
+#navigation .theme-toggle,
+#navigation .nav__menu{
+  border-top:0!important;
+}
+#navigation .nav__links{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#navigation .nav__brand{
+  background:rgba(18,15,18,.38)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 22px rgba(0,0,0,.12)!important;
+}
 </style></head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><span class="chopstick-wordmark">CHOPSTICK<span>INTEGRATIONS</span></span></a>
