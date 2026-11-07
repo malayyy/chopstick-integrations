@@ -1,0 +1,171 @@
+/* React Bits DitherVeil CSS — original component rule copied verbatim.
+   Section placement and loading treatment are scoped to #studio. */
+.dither-veil {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+#studio .studio__collage {
+  position: relative;
+  display: block;
+  aspect-ratio: 2.45;
+  min-height: 430px;
+}
+#studio .studio__dither-stage {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 68%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-3, 18px);
+  background: #120f17;
+}
+#studio .studio__dither-poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #120f17;
+  transition: opacity .55s ease;
+}
+#studio .studio__dither-mount {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+#studio .studio__dither-mount canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+#studio .studio__dither-loader {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 22px;
+  color: rgba(245,242,239,.72);
+  background: #120f17;
+  font: 600 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transition: opacity .55s ease, visibility .55s ease;
+}
+#studio .studio__dither-loader::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: #d11b3a;
+  box-shadow: 0 0 12px rgba(209,27,58,.8);
+  animation: studio-dither-pulse 1.1s ease-in-out infinite;
+}
+#studio .studio__dither-hint {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  bottom: 19px;
+  color: rgba(245,242,239,.62);
+  font: 600 8px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity .4s ease .2s;
+  pointer-events: none;
+}
+#studio .studio__dither-stage.is-ready .studio__dither-poster { opacity: 0; }
+#studio .studio__dither-stage.is-ready .studio__dither-mount { opacity: 1; }
+#studio .studio__dither-stage.is-ready .studio__dither-loader {
+  opacity: 0;
+  visibility: hidden;
+}
+#studio .studio__dither-stage.is-ready .studio__dither-hint { opacity: 1; }
+#studio .studio__dither-stage.is-error .studio__dither-loader {
+  color: rgba(245,242,239,.85);
+  animation: none;
+}
+#studio .studio__dither-stage.is-error .studio__dither-loader::before {
+  animation: none;
+  background: #d11b3a;
+}
+@keyframes studio-dither-pulse {
+  0%,100% { opacity: .45; transform: scale(.8); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+@media (min-width: 900px) {
+  #studio .studio__collage { aspect-ratio: 2.45; min-height: 430px; }
+  #studio .studio__dither-stage { width: 68%; }
+}
+@media (min-width: 621px) and (max-width: 899px) {
+  #studio .studio__collage {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: 24px;
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+  #studio .studio__dither-stage {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1.55;
+    min-height: 340px;
+  }
+  #studio .studio__roles {
+    position: relative;
+    inset: auto;
+    width: auto;
+    padding-top: 0;
+    grid-column: 1;
+  }
+}
+@media (max-width: 620px) {
+  #studio .studio__collage {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+    gap: 22px;
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+  #studio .studio__dither-stage {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1.12;
+    min-height: 290px;
+    max-height: 420px;
+    border-radius: var(--radius-2, 14px);
+  }
+  #studio .studio__roles {
+    position: relative;
+    inset: auto;
+    width: auto;
+    padding-top: 0;
+    grid-column: 1;
+  }
+  #studio .studio__dither-loader { padding: 16px; font-size: 8px; }
+  #studio .studio__dither-hint { right: 14px; bottom: 14px; font-size: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #studio .studio__dither-loader::before { animation: none; }
+  #studio .studio__dither-poster,
+  #studio .studio__dither-mount,
+  #studio .studio__dither-loader,
+  #studio .studio__dither-hint { transition-duration: .01ms; }
+}
