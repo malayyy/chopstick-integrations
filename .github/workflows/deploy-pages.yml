@@ -6,7 +6,7 @@ name: Deploy cinematic experience (GitHub Pages)
 
 on:
   push:
-    branches: [main]
+    branches: [live/film]
   workflow_dispatch:
 
 permissions:
