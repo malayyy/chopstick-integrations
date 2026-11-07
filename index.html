@@ -1148,7 +1148,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @media (max-width: 480px) {
   #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
 }
-</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script></head>
+</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="stylesheet" href="/assets/studio-glass.css?v=20261107">\n</head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
   <nav class="nav__links" aria-label="Main">
@@ -1310,11 +1310,10 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 studio__lead" data-8b-motion="ink" data-8b-split="words">A hands-on technology and integrations studio working across CRM, business operations and software. We build with the people who will use and own the systems after launch. We understand the problem before choosing the tools. We build around the systems businesses already use, and care about what happens after launch.</p>
   </div>
   <div class="studio__collage">
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1787647559705-d2ad3322020e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8Y3JlYXRpdmUlMjB0ZWFtJTIwbWVldGluZyUyMHN0dWRpb3xlbnwxfDB8fHwxNzkxMjA5NzQ5fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=450&amp;h=300&amp;q=60" width="1400" height="933" alt="A team working together around a desk in a colourful studio" loading="lazy"></figure>
-    <figure class="shot shot--tall"><img src="https://images.unsplash.com/photo-1643373977342-73cfc7cc0c5e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8cGVvcGxlJTIwbGF1Z2hpbmclMjBvZmZpY2V8ZW58MXwxfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=210&amp;h=280&amp;q=60" width="900" height="1200" alt="Two colleagues laughing together on a blue chair" loading="lazy"></figure>
-    <figure class="shot shot--tall"><img src="https://images.unsplash.com/photo-1745434159123-4908d0b9df94?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8cGVvcGxlJTIwbGF1Z2hpbmclMjBvZmZpY2V8ZW58MXwxfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=200&amp;h=267&amp;q=60" width="900" height="1200" alt="A smiling designer standing in front of a warm wall" loading="lazy"></figure>
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1787647560262-ebfcf6c5f979?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8M3x8Y3JlYXRpdmUlMjB0ZWFtJTIwbWVldGluZyUyMHN0dWRpb3xlbnwxfDB8fHwxNzkxMjA5NzQ5fDA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=460&amp;h=307&amp;q=60" width="1400" height="933" alt="Four people collaborating around a table seen from above" loading="lazy"></figure>
-    <figure class="shot shot--wide"><img src="https://images.unsplash.com/photo-1623652653308-d49d335c92eb?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8d29ya3Nob3AlMjBzdGlja3klMjBub3RlcyUyMHdhbGx8ZW58MXwwfHx8MTc5MTIwOTc1MHww&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=440&amp;h=293&amp;q=60" width="1400" height="933" alt="A team discussing ideas in front of a wall of notes" loading="lazy"></figure>
+    <div class="studio__glass-stage" role="img" aria-label="An interactive field of floating glass orbs with flowing crimson and violet light textures">
+      <canvas class="studio__glass-canvas" aria-hidden="true"></canvas>
+      <div class="studio__glass-meta" aria-hidden="true"><span>CHOPSTICK / SYSTEMS IN MOTION</span><span>Move to disturb</span></div>
+    </div>
     <div class="studio__roles">
       <h3 class="m-text-7" data-8b-motion="rise">How we think<span class="m-dot" aria-hidden="true"></span></h3>
       <ul data-8b-items=":scope > li">
@@ -2879,4 +2878,4 @@ if(!('IntersectionObserver'in window)){nodes.forEach(reveal);return;}
 const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);io.unobserve(entry.target);}}),{rootMargin:'12% 0px 12% 0px',threshold:0.01});
 nodes.forEach(el=>io.observe(el));
 })();
-</script></body></html>
+</script><script type="module" src="/assets/studio-glass.js?v=20261107"></script>\n</body></html>
