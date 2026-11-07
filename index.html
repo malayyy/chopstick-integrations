@@ -194,7 +194,7 @@
   }
 
   /* Custom Chopstick loader. The original template's site styling is untouched. */
-  #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
+  #boot{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
   .site-logo{display:block;width:clamp(190px,24vw,310px);height:auto;object-fit:contain}
   .footer-site-logo{display:block;width:min(760px,90vw);height:auto;object-fit:contain;margin-inline:auto}
@@ -1191,6 +1191,12 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 <link rel="stylesheet" href="/assets/hero-mobile.css?v=20261107">
 <link rel="stylesheet" href="/assets/work-carousel.css?v=20261107">
 <script src="/assets/work-carousel.js?v=20261107" defer></script>
+<style id="chopstick-audio-control">
+#cinematic-layer #sound-toggle{position:absolute;z-index:6;right:clamp(16px,3vw,28px);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;justify-content:center;min-width:96px;min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(14,11,15,.76);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.11em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
+#cinematic-layer #sound-toggle[aria-pressed="true"]{border-color:rgba(237,49,81,.9);background:rgba(126,9,34,.76)}
+#cinematic-layer #sound-toggle:focus-visible{outline:2px solid #ed3151;outline-offset:3px}
+@media(max-width:640px){#cinematic-layer #sound-toggle{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));min-width:90px;min-height:42px;font-size:9px}}
+</style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1521,69 +1527,143 @@ let curtainTransitionHandler = null;
 
 let replayCinematic = null;
 
-/* Optional frame-synchronised sound design. Audio is opt-in and generated locally. */
+/* Frame-synchronised Mixkit audio. Audio is opt-in and unlocked by the Sound button. */
 const soundToggle = document.getElementById('sound-toggle');
-let soundContext = null, soundEnabled = false, lastSoundFrame = 0, lastSoundAt = 0;
-function makeSoundContext(){
-  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return null;
-  if(!soundContext)soundContext=new Ctx();if(soundContext.state==='suspended')soundContext.resume();return soundContext;
+let soundContext = null, soundEnabled = false, lastSoundFrame = 0, lastSoundAt = 0, lastWhooshAt = 0;
+const MIXKIT_SOUNDS = Object.freeze({
+  whoosh: '/assets/sound/mixkit-air-woosh-1489.wav',
+  impact: '/assets/sound/mixkit-arcade-retro-game-over-213.wav',
+  fanfare: '/assets/sound/mixkit-trumpet-fanfare-2293.wav'
+});
+const soundBuffers = new Map();
+let soundLoadPromise = null;
+
+function makeSoundContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!soundContext) soundContext = new AudioCtx();
+  if (soundContext.state === 'suspended') soundContext.resume().catch((error) => {
+    console.warn('[Chopstick Audio] AudioContext could not resume:', error);
+  });
+  return soundContext;
 }
-/* Hand-authored sound cues mapped to the film's 300-frame timeline.
-   These landmarks are easy to retime after reviewing the exact break frame. */
-const FILM_CUES = Object.freeze({ tensionStart: 112, break: 158, reconnect: 232 });
+function loadMixkitSounds() {
+  const ctx = makeSoundContext();
+  if (!ctx) return Promise.resolve(0);
+  if (soundLoadPromise) return soundLoadPromise;
+  soundLoadPromise = Promise.all(Object.entries(MIXKIT_SOUNDS).map(async ([name, url]) => {
+    try {
+      const response = await fetch(url, { cache: 'force-cache' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const bytes = await response.arrayBuffer();
+      const decoded = await ctx.decodeAudioData(bytes.slice(0));
+      soundBuffers.set(name, decoded);
+      console.info('[Chopstick Audio] Loaded ' + name + ': ' + url);
+      return true;
+    } catch (error) {
+      console.warn('[Chopstick Audio] Missing or unavailable clip (' + name + '): ' + url, error);
+      return false;
+    }
+  })).then((loaded) => {
+    const count = loaded.filter(Boolean).length;
+    console.info('[Chopstick Audio] ' + count + '/3 Mixkit clips ready. Synth fallback remains active for missing clips.');
+    return count;
+  });
+  return soundLoadPromise;
+}
+function playMixkit(name, volume = 0.72) {
+  if (!soundEnabled || !soundContext || soundContext.state !== 'running') return false;
+  const buffer = soundBuffers.get(name);
+  if (!buffer) return false;
+  const source = soundContext.createBufferSource(), gain = soundContext.createGain();
+  source.buffer = buffer;
+  gain.gain.setValueAtTime(volume, soundContext.currentTime);
+  source.connect(gain); gain.connect(soundContext.destination); source.start();
+  return true;
+}
+
+/* Procedural fallback remains available if a Mixkit file is absent. */
 let crackBuffer = null;
-function getCrackBuffer(ctx){
-  if(crackBuffer)return crackBuffer;
-  const length=Math.floor(ctx.sampleRate*.22),buffer=ctx.createBuffer(1,length,ctx.sampleRate),data=buffer.getChannelData(0);
-  for(let i=0;i<length;i++){const fade=Math.pow(1-i/length,2.7);data[i]=(Math.random()*2-1)*fade;}
-  crackBuffer=buffer;return buffer;
+function getCrackBuffer(ctx) {
+  if (crackBuffer) return crackBuffer;
+  const length = Math.floor(ctx.sampleRate * .22);
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate), data = buffer.getChannelData(0);
+  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.7);
+  crackBuffer = buffer;
+  return buffer;
 }
-function playWoodCrack(strength=1){
-  const ctx=makeSoundContext();if(!ctx)return;
-  const t=ctx.currentTime,noise=ctx.createBufferSource(),high=ctx.createBiquadFilter(),snap=ctx.createGain();
-  noise.buffer=getCrackBuffer(ctx);high.type='highpass';high.frequency.value=1050;
-  snap.gain.setValueAtTime(.0001,t);snap.gain.exponentialRampToValueAtTime(.16*strength,t+.004);snap.gain.exponentialRampToValueAtTime(.0001,t+.19);
-  noise.connect(high);high.connect(snap);snap.connect(ctx.destination);noise.start(t);noise.stop(t+.21);
-  const body=ctx.createOscillator(),bodyGain=ctx.createGain();body.type='triangle';
-  body.frequency.setValueAtTime(125,t);body.frequency.exponentialRampToValueAtTime(43,t+.11);
-  bodyGain.gain.setValueAtTime(.0001,t);bodyGain.gain.exponentialRampToValueAtTime(.11*strength,t+.006);bodyGain.gain.exponentialRampToValueAtTime(.0001,t+.14);
-  body.connect(bodyGain);bodyGain.connect(ctx.destination);body.start(t);body.stop(t+.15);
-  [0,.055,.105].forEach((delay,i)=>{const click=ctx.createOscillator(),g=ctx.createGain();click.type='square';click.frequency.setValueAtTime(1700-i*260,t+delay);g.gain.setValueAtTime(.0001,t+delay);g.gain.exponentialRampToValueAtTime(.018*strength,t+delay+.002);g.gain.exponentialRampToValueAtTime(.0001,t+delay+.022);click.connect(g);g.connect(ctx.destination);click.start(t+delay);click.stop(t+delay+.025);});
+function playWoodCrack(strength = 1) {
+  if (playMixkit('impact', .82)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime, noise = ctx.createBufferSource(), high = ctx.createBiquadFilter(), snap = ctx.createGain();
+  noise.buffer = getCrackBuffer(ctx); high.type = 'highpass'; high.frequency.value = 1050;
+  snap.gain.setValueAtTime(.0001, t); snap.gain.exponentialRampToValueAtTime(.16 * strength, t + .004); snap.gain.exponentialRampToValueAtTime(.0001, t + .19);
+  noise.connect(high); high.connect(snap); snap.connect(ctx.destination); noise.start(t); noise.stop(t + .21);
+  const body = ctx.createOscillator(), bodyGain = ctx.createGain();
+  body.type = 'triangle'; body.frequency.setValueAtTime(125, t); body.frequency.exponentialRampToValueAtTime(43, t + .11);
+  bodyGain.gain.setValueAtTime(.0001, t); bodyGain.gain.exponentialRampToValueAtTime(.11 * strength, t + .006); bodyGain.gain.exponentialRampToValueAtTime(.0001, t + .14);
+  body.connect(bodyGain); bodyGain.connect(ctx.destination); body.start(t); body.stop(t + .15);
+  [0, .055, .105].forEach((delay, i) => {
+    const click = ctx.createOscillator(), g = ctx.createGain();
+    click.type = 'square'; click.frequency.setValueAtTime(1700 - i * 260, t + delay);
+    g.gain.setValueAtTime(.0001, t + delay); g.gain.exponentialRampToValueAtTime(.018 * strength, t + delay + .002); g.gain.exponentialRampToValueAtTime(.0001, t + delay + .022);
+    click.connect(g); g.connect(ctx.destination); click.start(t + delay); click.stop(t + delay + .025);
+  });
 }
-function playWoodCreak(){
-  const ctx=makeSoundContext();if(!ctx)return;const t=ctx.currentTime;
-  const o=ctx.createOscillator(),g=ctx.createGain(),filter=ctx.createBiquadFilter();
-  o.type='sawtooth';o.frequency.setValueAtTime(185,t);o.frequency.linearRampToValueAtTime(118,t+.34);
-  filter.type='bandpass';filter.frequency.value=390;filter.Q.value=2.8;
-  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.025,t+.12);g.gain.exponentialRampToValueAtTime(.0001,t+.38);
-  o.connect(filter);filter.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.4);
+function playWoodCreak() {
+  if (playMixkit('whoosh', .66)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), filter = ctx.createBiquadFilter();
+  o.type = 'sawtooth'; o.frequency.setValueAtTime(185, t); o.frequency.linearRampToValueAtTime(118, t + .34);
+  filter.type = 'bandpass'; filter.frequency.value = 390; filter.Q.value = 2.8;
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.025, t + .12); g.gain.exponentialRampToValueAtTime(.0001, t + .38);
+  o.connect(filter); filter.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .4);
 }
-function playReconnect(){
-  const ctx=makeSoundContext();if(!ctx)return;const t=ctx.currentTime;
-  [0,.075].forEach((d,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(i?1120:760,t+d);o.frequency.exponentialRampToValueAtTime(i?620:420,t+d+.045);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(.045,t+d+.004);g.gain.exponentialRampToValueAtTime(.0001,t+d+.065);o.connect(g);g.connect(ctx.destination);o.start(t+d);o.stop(t+d+.07);});
+function playReconnect() {
+  if (playMixkit('fanfare', .78)) return;
+  const ctx = makeSoundContext(); if (!ctx) return;
+  const t = ctx.currentTime;
+  [0, .075].forEach((delay, i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(i ? 1120 : 760, t + delay); o.frequency.exponentialRampToValueAtTime(i ? 620 : 420, t + delay + .045);
+    g.gain.setValueAtTime(.0001, t + delay); g.gain.exponentialRampToValueAtTime(.045, t + delay + .004); g.gain.exponentialRampToValueAtTime(.0001, t + delay + .065);
+    o.connect(g); g.connect(ctx.destination); o.start(t + delay); o.stop(t + delay + .07);
+  });
 }
-function frameSound(frame){
-  if(!soundEnabled||!soundContext||reducedMotion)return;
-  const now=performance.now(),previous=lastSoundFrame,delta=Math.abs(frame-previous);
-  if(now-lastSoundAt<34||delta<.65)return;
-  lastSoundAt=now;lastSoundFrame=frame;
-  const crossed=(cue)=>previous<cue&&frame>=cue;
-  if(crossed(FILM_CUES.tensionStart))playWoodCreak();
-  if(crossed(FILM_CUES.break))playWoodCrack(1);
-  if(crossed(FILM_CUES.reconnect))playReconnect();
-  /* Soft airy movement only while the visitor is actively scrubbing. */
-  if(delta>2.2){
-    const ctx=soundContext,t=ctx.currentTime,velocity=Math.min(1,delta/9);
-    const n=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),g=ctx.createGain();
-    n.buffer=getCrackBuffer(ctx);filter.type='lowpass';filter.frequency.setValueAtTime(900+velocity*2600,t);
-    g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.009+velocity*.012,t+.018);g.gain.exponentialRampToValueAtTime(.0001,t+.12);
-    n.connect(filter);filter.connect(g);g.connect(ctx.destination);n.start(t);n.stop(t+.13);
+const FILM_CUES = Object.freeze({ tensionStart: 112, break: 158, reconnect: 232 });
+function frameSound(frame) {
+  const now = performance.now(), previous = lastSoundFrame, delta = Math.abs(frame - previous);
+  lastSoundFrame = frame; // stay synced even before sound is enabled
+  if (!soundEnabled || !soundContext || soundContext.state !== 'running') return;
+  if (now - lastSoundAt < 34 || delta < .65) return;
+  lastSoundAt = now;
+  const crossed = (cue) => previous < cue && frame >= cue;
+  let landmarkPlayed = false;
+  if (crossed(FILM_CUES.tensionStart)) { playWoodCreak(); landmarkPlayed = true; }
+  if (crossed(FILM_CUES.break)) { playWoodCrack(1); landmarkPlayed = true; }
+  if (crossed(FILM_CUES.reconnect)) { playReconnect(); landmarkPlayed = true; }
+  if (!landmarkPlayed && delta > 2.2 && now - lastWhooshAt > 620) {
+    lastWhooshAt = now;
+    const velocity = Math.min(1, delta / 9);
+    if (!playMixkit('whoosh', .30 + velocity * .22)) {
+      const ctx = soundContext, t = ctx.currentTime, n = ctx.createBufferSource(), filter = ctx.createBiquadFilter(), g = ctx.createGain();
+      n.buffer = getCrackBuffer(ctx); filter.type = 'lowpass'; filter.frequency.setValueAtTime(900 + velocity * 2600, t);
+      g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.009 + velocity * .012, t + .018); g.gain.exponentialRampToValueAtTime(.0001, t + .12);
+      n.connect(filter); filter.connect(g); g.connect(ctx.destination); n.start(t); n.stop(t + .13);
+    }
   }
 }
-if(soundToggle)soundToggle.addEventListener('click',()=>{
-  soundEnabled=!soundEnabled;if(soundEnabled)makeSoundContext();soundToggle.setAttribute('aria-pressed',String(soundEnabled));
-  soundToggle.textContent=soundEnabled?'Sound on':'Sound off';soundToggle.setAttribute('aria-label',soundEnabled?'Turn cinematic sound off':'Turn cinematic sound on');
-  if(!soundEnabled&&soundContext)soundContext.suspend();
+if (soundToggle) soundToggle.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  soundToggle.setAttribute('aria-pressed', String(soundEnabled));
+  soundToggle.textContent = soundEnabled ? 'Sound on' : 'Sound off';
+  soundToggle.setAttribute('aria-label', soundEnabled ? 'Turn cinematic sound off' : 'Turn cinematic sound on');
+  if (soundEnabled) {
+    makeSoundContext(); // invoked directly from the user gesture for iOS/Safari audio unlock
+    loadMixkitSounds().then(() => { if (soundEnabled) playWoodCreak(); });
+  } else if (soundContext) {
+    soundContext.suspend().catch((error) => console.warn('[Chopstick Audio] Suspend failed:', error));
+  }
 });
 
 addEventListener('wheel', (event) => {

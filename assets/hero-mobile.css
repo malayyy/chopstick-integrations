@@ -2,7 +2,7 @@
    Narrow-screen only: the desktop Hero, navbar and cinematic scroll timeline stay unchanged. */
 @media (max-width: 640px) {
   #hero {
-    --ap: min(62vw, 34svh);
+    --ap: min(54vw, 30svh);
     min-height: 100svh;
     grid-template-rows: minmax(0, 1fr) auto;
     padding-left: max(18px, env(safe-area-inset-left));
@@ -32,8 +32,9 @@
   }
 
   #hero .hero__stage {
-    left: calc(50% - var(--ap) / 2);
-    top: calc(57% - var(--ap) / 2);
+    left: auto;
+    right: 0;
+    top: calc(47% - var(--ap) / 2);
     width: var(--ap);
     height: var(--ap);
     z-index: 1;
@@ -54,7 +55,7 @@
 
 @media (max-width: 380px) {
   #hero {
-    --ap: min(62vw, 32svh);
+    --ap: min(54vw, 28svh);
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
   }
