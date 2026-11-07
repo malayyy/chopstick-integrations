@@ -752,33 +752,7 @@ textarea.m-field { min-height: 112px; resize: vertical; }
 @keyframes statement-span-m-dot-scale { 0% { scale: 0; } 99.998% { scale: 0.999; } 100% { scale: 1; } }
 }
 </style>
-<style data-8b-part="scene:work">
-@layer scenes {
-@media (prefers-reduced-motion: no-preference) {
-  [data-8b-live] #work { height: calc(100svh + var(--run, 0px)); }
-  [data-8b-live] #work .work__stage { position: sticky; top: 0; height: 100svh; min-height: 560px; padding-top: clamp(84px, 13svh, 120px); padding-bottom: clamp(24px, 5svh, 48px); grid-template-rows: auto minmax(0, 1fr); overflow: clip; }
-  [data-8b-live] #work .work__window { display: flex; align-items: center; min-height: 0; transform-origin: 0 50%; }
-  [data-8b-live] #work .work__track { display: flex; gap: clamp(14px, 1.6vw, 24px); width: max-content; height: min(100%, 64svh); }
-  [data-8b-live] #work .case { width: auto; height: 100%; aspect-ratio: 4 / 5; flex: none; }
-  @media (min-width: 700px) { [data-8b-live] #work .case { aspect-ratio: 16 / 10.5; } }
-}
-}
-@layer scenes {
-[data-8b-live] #work { view-timeline: --work-t1 block; view-timeline-inset: 0; }
-[data-8b-live] #work .work__plate, [data-8b-live] #work .work__track, [data-8b-live] #work .case__img, [data-8b-live] #work .work__window, [data-8b-live] #work .case { animation-timeline: --work-t1; animation-fill-mode: both; }
-[data-8b-live] #work .work__plate { animation-name: work-plate-grow; animation-range: cover 0% cover 85vh; animation-timing-function: cubic-bezier(0.3333, 0.6667, 0.6667, 1); }
-[data-8b-live] #work .work__track { animation-name: work-track-slide; animation-range: cover 100vh cover calc(100% - 100vh); animation-timing-function: linear; transform: none; }
-[data-8b-live] #work .case__img { animation-name: work-img-drift; animation-range: cover 100vh cover calc(100% - 100vh); animation-timing-function: linear; transform: none; }
-[data-8b-live] #work .work__window, [data-8b-live] #work .case { animation-range: cover calc(100% - 100vh) cover calc(100% - 30vh); animation-timing-function: cubic-bezier(0.3333, 0, 0.6667, 0.3333); transform: none; }
-[data-8b-live] #work .work__window { animation-name: work-window-sweep; }
-[data-8b-live] #work .case { animation-name: work-case-bend; }
-@keyframes work-plate-grow { 0% { clip-path: inset(0% 3.2% round 44px); } 100% { clip-path: inset(0%); } }
-@keyframes work-track-slide { 0% { translate: 0px 0px; } 100% { translate: calc(-1 * var(--work-run, 0px)) 0px; } }
-@keyframes work-img-drift { 0% { translate: -5% 0px; } 100% { translate: 5% 0px; } }
-@keyframes work-window-sweep { 0% { translate: 0px 0px; } 100% { translate: -20vw 0px; } }
-@keyframes work-case-bend { 0% { translate: 0px 0px; rotate: 0deg; } 100% { translate: var(--work-x, 0px) var(--work-y, 0px); rotate: var(--work-r, 0deg); } }
-}
-</style>
+
 <style data-8b-part="scene:again">
 @layer scenes {
 @media (prefers-reduced-motion: no-preference) {
@@ -1215,6 +1189,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 }
 </style>
 <link rel="stylesheet" href="/assets/hero-mobile.css?v=20261107">
+<link rel="stylesheet" href="/assets/work-carousel.css?v=20261107">
+<script src="/assets/work-carousel.js?v=20261107" defer></script>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1227,7 +1203,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       
     </ul>
   </nav>
-  <a class="m-btn nav__cta" href="#contact"><span class="m-btn__label">Start a project</span></a>
+  <a class="m-btn nav__cta" href="https://2602c89f.chopstick-integrations.pages.dev/#contact"><span class="m-btn__label">Start a project</span></a>
   <button class="m-btn-2 theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle__icon" aria-hidden="true">☼</span><span class="theme-toggle__label">Light</span></button>
   <button class="m-btn-2 nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="m-btn__label">Menu</span></button>
   <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
@@ -1237,8 +1213,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <li><a href="#capabilities">Services<span class="m-dot" aria-hidden="true"></span></a></li>
       <li><a href="#method">Approach<span class="m-dot" aria-hidden="true"></span></a></li>
       <li><a href="#studio">Studio<span class="m-dot" aria-hidden="true"></span></a></li>
-      <li><a href="#journal">Journal<span class="m-dot" aria-hidden="true"></span></a></li>
-      <li><a href="#contact">Contact<span class="m-dot" aria-hidden="true"></span></a></li>
+      <li><a href="/blog/">Journal<span class="m-dot" aria-hidden="true"></span></a></li>
+      <li><a href="https://2602c89f.chopstick-integrations.pages.dev/#contact">Contact<span class="m-dot" aria-hidden="true"></span></a></li>
     </ul>
     <p class="m-text menu__foot">malay@chopstickintegrations.com · Business context and Practical engineering</p>
   </div>
@@ -1258,12 +1234,12 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
         <li><a class="m-link" href="#capabilities"><span class="m-link__label">What we do</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
         <li><a class="m-link" href="#method"><span class="m-link__label">How we work</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
         <li><a class="m-link" href="#studio"><span class="m-link__label">Inside the studio</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
-        <li><a class="m-link" href="#journal"><span class="m-link__label">Ideas and news</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
-        <li><a class="m-link" href="#contact"><span class="m-link__label">Start a project</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
+        <li><a class="m-link" href="/blog/"><span class="m-link__label">Ideas and news</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
+        <li><a class="m-link" href="https://2602c89f.chopstick-integrations.pages.dev/#contact"><span class="m-link__label">Start a project</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></li>
       </ul>
     </nav>
   </div>
-</section><section id="work" data-8b-section="work" aria-labelledby="work-title"><div class="work__plate" aria-hidden="true"></div><div class="work__stage"><div class="work__head"><h2 class="m-text-3" id="work-title">Selected work<span class="m-dot" aria-hidden="true"></span></h2><p class="m-text-5 work__lead">Complex systems. Real operational constraints. Engineering that connects the moving parts.</p></div><div class="work__window"><ul class="work__track" data-8b-items=":scope > .case" data-8b-fixed="8"><li class="case"><a class="case__link" href="/work/grenada-immigration-platform/" aria-label="Read case study: Grenada national immigration platform"><div class="case__media" style="background:linear-gradient(135deg,#291019,#a51d3b 52%,#140c13)"><span class="case__number">01</span></div><span class="m-badge case__tag">PUBLIC-SECTOR SYSTEMS</span><div class="case__text"><h3 class="m-text-4 case__name">Grenada national immigration platform</h3><p class="m-text-5 case__line">A national immigration workflow built across Zoho CRM, WorkDrive and a public-facing Zoho Creator Portal. Structured application intake, document handling and case visibility in one connected system.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/crm-migration-architecture/" aria-label="Read case study: CRM migration and rebuild"><div class="case__media" style="background:linear-gradient(135deg,#15131b,#493044 50%,#151019)"><span class="case__number">02</span></div><span class="m-badge case__tag">CRM ARCHITECTURE</span><div class="case__text"><h3 class="m-text-4 case__name">CRM migration and rebuild</h3><p class="m-text-5 case__line">Move beyond a basic import: map custom fields, preserve record relationships, rebuild automation and permissions, validate reporting, then plan a controlled cutover.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/swash-crm-field-service/" aria-label="Read case study: SWASH cleaning operations platform"><div class="case__media" style="background:linear-gradient(135deg,#101e20,#176c69 52%,#101317)"><span class="case__number">03</span></div><span class="m-badge case__tag">CRM + FIELD SERVICE</span><div class="case__text"><h3 class="m-text-4 case__name">SWASH cleaning operations platform</h3><p class="m-text-5 case__line">Zoho CRM and FSM workflows shaped around cleaning operations, connecting customer records, service jobs, field scheduling and job-status visibility.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/multi-location-google-reviews/" aria-label="Read case study: Google Reviews across 80+ locations"><div class="case__media" style="background:linear-gradient(135deg,#20170e,#9c5725 52%,#15100c)"><span class="case__number">04</span></div><span class="m-badge case__tag">MULTI-LOCATION INTEGRATION</span><div class="case__text"><h3 class="m-text-4 case__name">Google Reviews across 80+ locations</h3><p class="m-text-5 case__line">A connected reviews workflow for more than 80 franchise locations, reducing the fragmentation of location-level review data and management.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/connected-zoho-operations/" aria-label="Read case study: Connected Zoho operations"><div class="case__media" style="background:linear-gradient(135deg,#141322,#443c83 52%,#100f18)"><span class="case__number">05</span></div><span class="m-badge case__tag">INTEGRATION + INTELLIGENCE</span><div class="case__text"><h3 class="m-text-4 case__name">Connected Zoho operations</h3><p class="m-text-5 case__line">CRM, Books and Desk connected with Deluge and Zoho Flow, with analytics that turns operational activity into a clearer view of performance.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/relevovinco/" aria-label="Read case study: Relevovinco website"><div class="case__media" style="background:linear-gradient(135deg,#171018,#76213b 52%,#0d0a10)"><span class="case__number">06</span></div><span class="m-badge case__tag">WEBSITE DESIGN + DEVELOPMENT</span><div class="case__text"><h3 class="m-text-4 case__name">Relevovinco website</h3><p class="m-text-5 case__line">A responsive business website with clear brand presentation, structured page flow and a focused enquiry journey.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/icapital/" aria-label="Read case study: iCapital website"><div class="case__media" style="background:linear-gradient(135deg,#11172a,#354e83 52%,#0b0d16)"><span class="case__number">07</span></div><span class="m-badge case__tag">CORPORATE WEBSITE</span><div class="case__text"><h3 class="m-text-4 case__name">iCapital website</h3><p class="m-text-5 case__line">A polished corporate web experience with clear information hierarchy and responsive page layouts.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/forge-automotive/" aria-label="Read case study: Forge Automotive website"><div class="case__media" style="background:linear-gradient(135deg,#171717,#555 52%,#111)"><span class="case__number">08</span></div><span class="m-badge case__tag">AUTOMOTIVE WEBSITE</span><div class="case__text"><h3 class="m-text-4 case__name">Forge Automotive website</h3><p class="m-text-5 case__line">A brand-led automotive website experience with responsive presentation and product-focused content structure.</p><span class="case__read">Read case study ↗</span></div></a></li></ul></div><a class="m-link work__all" href="/work/"><span class="m-link__label">Explore all project work</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></div></section><section id="again" data-8b-section="again" aria-labelledby="again-title">
+</section><section id="work" data-8b-section="work" aria-labelledby="work-title"><div class="work__plate" aria-hidden="true"></div><div class="work__stage"><div class="work__head"><h2 class="m-text-3" id="work-title">Selected work<span class="m-dot" aria-hidden="true"></span></h2><p class="m-text-5 work__lead">Complex systems. Real operational constraints. Engineering that connects the moving parts.</p></div><div class="work__window" data-work-window role="region" aria-label="Featured project carousel" tabindex="0"><ul class="work__track" data-work-track aria-label="Featured project case studies"> .case" data-8b-fixed="8"><li class="case"><a class="case__link" href="/work/grenada-immigration-platform/" aria-label="Read case study: Grenada national immigration platform"><div class="case__media" style="background:linear-gradient(135deg,#291019,#a51d3b 52%,#140c13)"><span class="case__number">01</span></div><span class="m-badge case__tag">PUBLIC-SECTOR SYSTEMS</span><div class="case__text"><h3 class="m-text-4 case__name">Grenada national immigration platform</h3><p class="m-text-5 case__line">A national immigration workflow built across Zoho CRM, WorkDrive and a public-facing Zoho Creator Portal. Structured application intake, document handling and case visibility in one connected system.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/crm-migration-architecture/" aria-label="Read case study: CRM migration and rebuild"><div class="case__media" style="background:linear-gradient(135deg,#15131b,#493044 50%,#151019)"><span class="case__number">02</span></div><span class="m-badge case__tag">CRM ARCHITECTURE</span><div class="case__text"><h3 class="m-text-4 case__name">CRM migration and rebuild</h3><p class="m-text-5 case__line">Move beyond a basic import: map custom fields, preserve record relationships, rebuild automation and permissions, validate reporting, then plan a controlled cutover.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/swash-crm-field-service/" aria-label="Read case study: SWASH cleaning operations platform"><div class="case__media" style="background:linear-gradient(135deg,#101e20,#176c69 52%,#101317)"><span class="case__number">03</span></div><span class="m-badge case__tag">CRM + FIELD SERVICE</span><div class="case__text"><h3 class="m-text-4 case__name">SWASH cleaning operations platform</h3><p class="m-text-5 case__line">Zoho CRM and FSM workflows shaped around cleaning operations, connecting customer records, service jobs, field scheduling and job-status visibility.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/multi-location-google-reviews/" aria-label="Read case study: Google Reviews across 80+ locations"><div class="case__media" style="background:linear-gradient(135deg,#20170e,#9c5725 52%,#15100c)"><span class="case__number">04</span></div><span class="m-badge case__tag">MULTI-LOCATION INTEGRATION</span><div class="case__text"><h3 class="m-text-4 case__name">Google Reviews across 80+ locations</h3><p class="m-text-5 case__line">A connected reviews workflow for more than 80 franchise locations, reducing the fragmentation of location-level review data and management.</p><span class="case__read">Read case study ↗</span></div></a></li><li class="case"><a class="case__link" href="/work/connected-zoho-operations/" aria-label="Read case study: Connected Zoho operations"><div class="case__media" style="background:linear-gradient(135deg,#141322,#443c83 52%,#100f18)"><span class="case__number">05</span></div><span class="m-badge case__tag">INTEGRATION + INTELLIGENCE</span><div class="case__text"><h3 class="m-text-4 case__name">Connected Zoho operations</h3><p class="m-text-5 case__line">CRM, Books and Desk connected with Deluge and Zoho Flow, with analytics that turns operational activity into a clearer view of performance.</p><span class="case__read">Read case study ↗</span></div></a></li></ul></div><div class="work__controls" aria-label="Project carousel controls"><div class="work__controls-left"><button class="work__arrow" type="button" data-work-prev aria-label="Previous project">←</button><span class="work__counter" data-work-counter aria-live="polite"><strong>01</strong><span>/ 05</span></span><button class="work__arrow" type="button" data-work-next aria-label="Next project">→</button></div><div class="work__controls-right"><div class="work__progress" data-work-progress aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span></div><button class="work__autoplay" type="button" data-work-pause aria-pressed="false">Pause rotation</button></div><p class="work__hint">Swipe to explore <span aria-hidden="true">→</span></p></div><a class="m-link work__all" href="/work/"><span class="m-link__label">Explore all project work</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a></div></section><section id="again" data-8b-section="again" aria-labelledby="again-title">
   <div class="again__stage">
     <div class="again__head">
       <h2 class="m-text-3" id="again-title">The systems we connect<span class="m-dot" aria-hidden="true"></span></h2>
@@ -2633,30 +2609,7 @@ motionKit.scene('hero', () => {
   });
 });
 </script>
-<script data-8b-part="scene-script:work">
-motionKit.scene('work', () => {
-  const work = document.getElementById('work');
-  const stage = work.querySelector('.work__stage');
-  const frame = work.querySelector('.work__window');
-  const track = work.querySelector('.work__track');
-  const left = element => { let x = 0; for (let node = element; node; node = node.offsetParent) x += node.offsetLeft; return x; };
-  motionKit.measure(() => {
-    const run = Math.max(0, track.offsetWidth - (work.clientWidth - 2 * parseFloat(getComputedStyle(stage).paddingLeft)));
-    motionKit.set(work, { '--run': `${Math.round(run)}px`, '--work-run': `${run.toFixed(2)}px` });
-    const radius = innerWidth < 700 ? innerWidth * 2.1 : innerWidth * 0.95;
-    const origin = left(frame);
-    track.querySelectorAll('.case').forEach(card => {
-      const offset = origin + card.offsetLeft + card.offsetWidth / 2 - run - innerWidth / 2;
-      const angle = offset / radius;
-      motionKit.set(card, {
-        '--work-x': `${(radius * Math.sin(angle) - offset).toFixed(2)}px`,
-        '--work-y': `${(radius * (1 - Math.cos(angle))).toFixed(2)}px`,
-        '--work-r': `${(angle * 180 / Math.PI).toFixed(3)}deg`
-      });
-    });
-  });
-});
-</script>
+
 <script data-8b-part="scene-script:again">
 motionKit.scene('again', () => {
   const again = document.getElementById('again');
