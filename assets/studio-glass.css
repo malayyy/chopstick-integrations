@@ -1,0 +1,115 @@
+/* Chopstick studio glass-orb feature — isolated to #studio. */
+#studio .studio__glass-stage{
+  position:relative;
+  grid-column:1 / -1;
+  width:100%;
+  min-height:320px;
+  aspect-ratio:1.35;
+  overflow:hidden;
+  isolation:isolate;
+  border-radius:var(--radius-3, 18px);
+  background:
+    radial-gradient(ellipse at 44% 48%, rgba(132,22,49,.10), transparent 58%),
+    radial-gradient(ellipse at 70% 70%, rgba(86,48,111,.08), transparent 44%);
+  touch-action:pan-y;
+}
+#studio .studio__glass-canvas{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  outline:0;
+}
+#studio .studio__glass-stage::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  width:62%;
+  aspect-ratio:1;
+  left:15%;
+  top:2%;
+  pointer-events:none;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(188,27,61,.11), rgba(101,39,95,.055) 42%, transparent 72%);
+  filter:blur(24px);
+}
+#studio .studio__glass-meta{
+  position:absolute;
+  z-index:2;
+  left:clamp(12px,2vw,24px);
+  right:clamp(12px,2vw,24px);
+  bottom:clamp(12px,2vw,22px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  pointer-events:none;
+  color:color-mix(in srgb,var(--color-1) 48%, transparent);
+  font:600 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+#studio .studio__glass-meta span:last-child{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+}
+#studio .studio__glass-meta span:last-child::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--color-3,#d11b3a);
+  box-shadow:0 0 12px color-mix(in srgb,var(--color-3,#d11b3a) 62%,transparent);
+}
+#studio .studio__glass-fallback{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+}
+#studio .studio__glass-fallback-orb{
+  position:absolute;
+  width:clamp(72px,12vw,170px);
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.5);
+  background:
+    radial-gradient(circle at 28% 22%,rgba(255,255,255,.88),transparent 12%),
+    radial-gradient(ellipse at 38% 30%,rgba(255,91,125,.9),transparent 34%),
+    radial-gradient(ellipse at 68% 72%,rgba(92,46,155,.82),transparent 46%),
+    radial-gradient(circle at 50% 50%,rgba(19,12,27,.92),rgba(35,13,25,.64) 60%,rgba(255,255,255,.28));
+  box-shadow:inset -12px -16px 28px rgba(0,0,0,.36),inset 7px 8px 17px rgba(255,255,255,.22),0 14px 40px rgba(94,16,42,.18);
+  animation:studio-glass-drift 7s ease-in-out infinite alternate;
+}
+#studio .studio__glass-fallback-orb:nth-child(1){transform:translate(-125%,-12%) scale(.8)}
+#studio .studio__glass-fallback-orb:nth-child(2){transform:translate(-28%,-48%) scale(1.08);animation-delay:-2s}
+#studio .studio__glass-fallback-orb:nth-child(3){transform:translate(78%,-8%) scale(.65);animation-delay:-4s}
+#studio .studio__glass-fallback-orb:nth-child(4){transform:translate(-62%,75%) scale(.58);animation-delay:-1s}
+#studio .studio__glass-fallback-orb:nth-child(5){transform:translate(52%,72%) scale(.9);animation-delay:-3s}
+@keyframes studio-glass-drift{from{margin-top:-8px}to{margin-top:12px}}
+@media(min-width:900px){
+  #studio .studio__glass-stage{
+    position:absolute;
+    left:0;top:0;
+    width:68%;height:100%;
+    min-height:0;
+    aspect-ratio:auto;
+    border-radius:0;
+  }
+  #studio .studio__glass-meta{left:2%;right:4%;bottom:3%}
+}
+@media(min-width:621px) and (max-width:899px){
+  #studio .studio__collage{display:grid;grid-template-columns:minmax(0,1fr)}
+  #studio .studio__glass-stage{aspect-ratio:1.65;min-height:380px;max-height:540px}
+  #studio .studio__collage .studio__roles{grid-column:1;position:relative;left:auto;top:auto;width:auto;padding-top:16px}
+}
+@media(max-width:620px){
+  #studio .studio__collage{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+  #studio .studio__glass-stage{grid-column:1;aspect-ratio:1.08;min-height:300px;max-height:420px;border-radius:var(--radius-2,14px)}
+  #studio .studio__collage .studio__roles{grid-column:1;position:relative;left:auto;top:auto;width:auto;padding-top:8px}
+  #studio .studio__glass-meta{left:12px;right:12px;bottom:12px;font-size:8px;letter-spacing:.11em}
+}
+@media(prefers-reduced-motion:reduce){
+  #studio .studio__glass-fallback-orb{animation:none}
+}
