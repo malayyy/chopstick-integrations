@@ -16,7 +16,7 @@ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function makeStage(){
  stage=document.createElement('div');stage.id='swarm-stage';stage.setAttribute('aria-hidden','true');
  stage.innerHTML='<div class="swarm-ruler top">CHOPSTICK / CREATIVE SYSTEMS / LIVE BUILD</div><div class="swarm-ruler left">LAYOUT GRID — 08PX</div><div class="swarm-status">BUILD SEQUENCE / 001</div><div class="swarm-intro-mark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 54 48 9M20 58 56 18" fill="none" stroke="#ed3151" stroke-width="3.5" stroke-linecap="round"/><path d="M9 56 47 8M18 59 56 17" fill="none" stroke="#fff" stroke-width=".8" opacity=".7"/></svg></div><canvas></canvas>';
- document.body.appendChild(stage);canvas=$('canvas',stage);ctx=canvas.getContext('2d',{alpha:true});const count=mobile?4:8;
+ document.body.appendChild(stage);canvas=$('canvas',stage);ctx=canvas.getContext('2d',{alpha:true});const count=mobile?6:18;
  for(let i=0;i<count;i++){const el=document.createElement('div');el.className='swarm-cursor';el.style.setProperty('--cursor-color',palette[i%palette.length]);el.innerHTML=svg+'<span class="swarm-name">'+roles[i%roles.length]+'</span>';stage.appendChild(el);cursors.push({el,x:innerWidth/2,y:innerHeight/2,tx:innerWidth/2,ty:innerHeight/2});}
  resizeCanvas();
 }
