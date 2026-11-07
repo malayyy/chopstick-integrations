@@ -1,0 +1,38 @@
+/* Shared case-study system — every /work/ route uses this stylesheet. */
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;600;700;800;900&family=Onest:wght@400;500;600;700;800&display=swap');
+:root{--bg:#0b090b;--ink:#f7f3f4;--muted:#aaa1a6;--red:#d11b3a;--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 78% 8%,rgba(156,15,43,.12),transparent 34%),var(--bg);color:var(--ink);font-family:Onest,Arial,sans-serif}
+a{color:inherit}
+.shell{width:min(1180px,calc(100% - 48px));margin-inline:auto}
+.top{min-height:84px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line)}
+.brand{font:900 19px Gabarito,sans-serif;text-decoration:none;letter-spacing:-.035em}
+.brand span{color:var(--red)}
+.top nav{display:flex;gap:24px;flex-wrap:wrap}
+.top nav a,.back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.top nav a:hover,.back:hover{color:#fff}
+main{padding:clamp(54px,9vw,112px) 0 100px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#f05a73;font-weight:800}
+h1,h2,h3{font-family:Gabarito,sans-serif;letter-spacing:-.045em}
+h1{font-size:clamp(46px,8vw,96px);line-height:.98;max-width:1000px;margin:18px 0 24px}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.05}
+.dek{max-width:760px;color:#c7bec3;font-size:clamp(18px,2vw,22px);line-height:1.55}
+.meta{color:var(--muted);font-size:12px;margin:22px 0 48px;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:48px}
+.card{display:block;padding:30px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,rgba(209,27,58,.10),rgba(255,255,255,.025));text-decoration:none;min-height:220px;transition:transform .2s,border-color .2s,background .2s}
+.card:hover{transform:translateY(-4px);border-color:rgba(240,90,115,.6);background:linear-gradient(145deg,rgba(209,27,58,.16),rgba(255,255,255,.04))}
+.card p,.body p,.body li{color:#c2b9bf;line-height:1.8;font-size:16px}
+.card small{color:#f05a73;letter-spacing:.12em;font-size:10px;font-weight:800}
+.card h2{margin:14px 0}
+.body{max-width:780px}
+.body h2{margin:48px 0 16px}
+.body ul{padding-left:22px}
+.callout{margin:34px 0;padding:24px 28px;border-left:3px solid var(--red);background:rgba(209,27,58,.08);color:#e8dfe3;line-height:1.7}
+.project-link{display:inline-flex;align-items:center;gap:8px;color:#ff8b9d;text-decoration:none;font-weight:700}
+.project-link:hover{text-decoration:underline;text-underline-offset:4px}
+.cta{display:inline-flex;margin-top:28px;padding:14px 20px;background:var(--red);border-radius:999px;text-decoration:none;font-weight:800;font-size:13px;transition:transform .2s,background .2s}
+.cta:hover{transform:translateY(-2px);background:#ed2448}
+.foot{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:700px){.shell{width:calc(100% - 32px)}.top{min-height:76px}.top nav{gap:12px}.top nav a{font-size:11px}.grid{grid-template-columns:1fr}.card{padding:24px}main{padding-top:48px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.cta{transition:none}}
