@@ -1148,9 +1148,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @media (max-width: 480px) {
   #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
 }
-</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preconnect" href="https://esm.sh" crossorigin>
-  <link rel="preload" as="image" href="/assets/chopstick-logo-pack-4k/chopstick-hand-black-bg-4k.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/studio-dither.css?v=20261107">
+</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preload" as="image" href="/assets/chopstick-logo-pack-4k/chopstick-hand-black-bg-4k.webp" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="/assets/studio-artwork.css?v=20261107">
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1313,11 +1312,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 studio__lead" data-8b-motion="ink" data-8b-split="words">A hands-on technology and integrations studio working across CRM, business operations and software. We build with the people who will use and own the systems after launch. We understand the problem before choosing the tools. We build around the systems businesses already use, and care about what happens after launch.</p>
   </div>
   <div class="studio__collage">
-    <div class="studio__dither-stage" data-studio-dither data-src="/assets/chopstick-logo-pack-4k/chopstick-hand-black-bg-4k.webp" role="img" aria-label="Interactive dithered illustration of the Chopstick hand emblem">
-      <img class="studio__dither-poster" src="/assets/chopstick-logo-pack-4k/chopstick-hand-black-bg-4k.webp" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
-      <div class="studio__dither-mount dither-veil" data-dither-mount></div>
-      <div class="studio__dither-loader" role="status">Preparing the studio visual</div>
-      <div class="studio__dither-hint" aria-hidden="true">Move to reveal · Click to burst</div>
+    <div class="studio__artwork">
+      <img src="/assets/chopstick-logo-pack-4k/chopstick-hand-black-bg-4k.webp" alt="Chopstick Integrations illustrated hand holding ornate crimson chopsticks, with INTEGRATIONS tattooed on the forearm" width="3840" height="2160" decoding="async" fetchpriority="high">
     </div>
     <div class="studio__roles">
       <h3 class="m-text-7" data-8b-motion="rise">How we think<span class="m-dot" aria-hidden="true"></span></h3>
@@ -2883,5 +2879,5 @@ if(!('IntersectionObserver'in window)){nodes.forEach(reveal);return;}
 const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);io.unobserve(entry.target);}}),{rootMargin:'12% 0px 12% 0px',threshold:0.01});
 nodes.forEach(el=>io.observe(el));
 })();
-</script>  <script type="module" src="/assets/studio-dither.js?v=20261107"></script>
+</script>
 </body></html>
