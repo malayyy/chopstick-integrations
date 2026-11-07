@@ -1149,7 +1149,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @media (max-width: 480px) {
   #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
 }
-</style></head>
+</style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script></head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.svg" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
   <nav class="nav__links" aria-label="Main">
@@ -1587,6 +1587,7 @@ function finishCurtain() {
   cinematicLayer.hidden = true;
   track.hidden = true;
   homepage.classList.add('active');
+  if (window.ChopstickSwarm) window.ChopstickSwarm.start();
   homepage.removeAttribute('aria-hidden');
   document.documentElement.classList.remove('cinematic-active');
   document.body.classList.remove('cinematic-active');
