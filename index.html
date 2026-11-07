@@ -1149,8 +1149,73 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   #cinematic-layer.curtain-open { transform:translate3d(0,-105%,0) scale(1.01); }
 }
 </style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script>  <link rel="preconnect" href="https://esm.sh" crossorigin>
-  <link rel="preload" as="image" href="/assets/chopstick-logo-pack-4k/chopstick-hand-master-transparent-4k.webp" type="image/webp" fetchpriority="high">
+
   <link rel="stylesheet" href="/assets/studio-dither.css?v=20261107">
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1758710661068-6f16d505aa38?auto=format&fit=crop&fm=webp&q=82&w=1200&h=1200" fetchpriority="high">
+<style id="chopstick-hero-spacing-polish">
+/* Hero spacing polish only; no changes to scroll-linked animation or navbar. */
+#hero { padding-inline: clamp(20px, 4.5vw, 64px); }
+#hero .hero__intro {
+  max-width: min(36rem, 52vw);
+  padding-top: clamp(112px, 15.5svh, 164px);
+  gap: clamp(13px, 1.5vw, 18px);
+}
+#hero .hero__title { padding-bottom: clamp(58px, 8svh, 82px); }
+#hero .hero__img { display: block; object-fit: cover; object-position: center; }
+@media (max-width: 899px) {
+  #hero { padding-inline: clamp(18px, 5vw, 28px); }
+  #hero .hero__intro {
+    width: 100%;
+    max-width: 35rem;
+    padding-top: clamp(104px, 14.5svh, 134px);
+    gap: 14px;
+  }
+  #hero .hero__lead {
+    max-width: 34ch;
+    font-size: clamp(15px, 2.2vw, 18px);
+    line-height: 1.42;
+  }
+  #hero .hero__link { min-height: 42px; }
+  #hero .hero__title {
+    font-size: clamp(50px, 12vw, 88px);
+    line-height: .9;
+    letter-spacing: -.072em;
+    padding-bottom: clamp(58px, 8svh, 76px);
+  }
+  #hero { --ap: min(70vw, 40svh); }
+}
+@media (max-width: 420px) {
+  #hero { padding-inline: 18px; }
+  #hero .hero__intro { padding-top: clamp(94px, 13.5svh, 112px); }
+  #hero .hero__lead { max-width: 32ch; font-size: 15px; line-height: 1.42; }
+  #hero .hero__title {
+    font-size: clamp(46px, 11.8vw, 55px);
+    letter-spacing: -.075em;
+    padding-bottom: clamp(60px, 8svh, 74px);
+  }
+  #hero { --ap: min(70vw, 38svh); }
+}
+@media (max-width: 360px) {
+  #hero .hero__title { font-size: clamp(43px, 11.5vw, 48px); }
+}
+</style>
+<style id="chopstick-enquiry-polish">
+#project-enquiry .form-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+#project-enquiry button[type="submit"]:disabled { opacity: .62; cursor: wait; }
+@media (max-width: 640px) {
+  #project-enquiry { gap: 15px; }
+  #project-enquiry .m-field { min-height: 46px; font-size: 16px; }
+  #project-enquiry textarea.m-field { min-height: 116px; }
+  #project-enquiry button[type="submit"] { width: 100%; min-height: 48px; }
+}
+</style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
   <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
@@ -1183,7 +1248,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <p class="m-text-5 hero__lead">CRM at the centre. Connected systems, practical automation and AI built around the way your business works.</p>
     <a class="m-link hero__link" href="#work"><span class="m-link__label">Explore what we build</span><svg class="m-link__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
   </div>
-  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><img class="hero__img" src="https://images.unsplash.com/photo-1754738381783-f9a2847bfef2?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8cHVycGxlJTIwYWJzdHJhY3QlMjAzZCUyMHNoYXBlfGVufDF8Mnx8fDE3OTEyMDk2Mjd8MA&amp;ixlib=rb-4.1.0&amp;auto=format&amp;fit=crop&amp;w=470&amp;h=470&amp;q=60" width="1200" height="1200" alt="" fetchpriority="high"><span class="hero__tint"></span></span></span></span></h1>
+  <h1 class="m-text-2 hero__title" id="hero-title" style="--len:9"><span class="hero__word"><span class="hero__mask"><span class="hero__glyphs">Connected</span></span></span><span class="hero__period" aria-hidden="true"><span class="hero__stage"><span class="hero__orbit"><span class="hero__moon"></span></span><span class="hero__aperture"><img class="hero__img" src="https://images.unsplash.com/photo-1758710661068-6f16d505aa38?auto=format&amp;fit=crop&amp;fm=webp&amp;q=82&amp;w=1200&amp;h=1200" width="1200" height="1200" alt="" fetchpriority="high"><span class="hero__tint"></span></span></span></span></h1>
 </section><section id="statement" data-8b-section="statement" aria-labelledby="statement-title">
   <h2 class="m-text-3 statement__title" id="statement-title"><span class="statement__line">Your systems.</span><span class="statement__line">Working as one<span class="m-dot statement__dot" aria-hidden="true"></span></span></h2>
   <div class="statement__body">
@@ -1345,7 +1410,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
       <a data-8b-placeholder="email" class="contact__mail" href="mailto:malay@chopstickintegrations.com"><span>malay@chopstickintegrations.com</span></a>
       <p class="m-text-6 contact__availability">Remote-first · Working with teams across time zones</p>
     </div>
-    <form class="contact__form m-surface" id="project-enquiry"><h3 class="m-text-4">Tell us about the project</h3><p class="m-text-5">Share a little context. Your email app will open with the enquiry ready to send.</p><label class="m-text-6">Name<input class="m-field" name="name" required autocomplete="name" placeholder="Your name"></label><label class="m-text-6">Work email<input class="m-field" name="email" type="email" required placeholder="you@company.com"></label><label class="m-text-6">Company<input class="m-field" name="company" placeholder="Company name"></label><label class="m-text-6">Company website<input class="m-field" name="website" type="url" placeholder="https://"></label><label class="m-text-6">Contact number (optional)<input class="m-field" name="phone" type="tel" placeholder="+1 ..."></label><label class="m-text-6">What do you need help with?<select class="m-field" name="service" required><option value="">Select a service</option><option>CRM implementation / customization</option><option>CRM migration</option><option>Systems integration / APIs</option><option>Workflow automation</option><option>Analytics and reporting</option><option>AI agents / AI automation</option><option>Something else</option></select></label><label class="m-text-6">Current platforms<input class="m-field" name="platforms" placeholder="Zoho, HubSpot, Salesforce, etc."></label><label class="m-text-6">Estimated budget (USD)<select class="m-field" name="budget"><option value="">Select a range</option><option>Under $1,000</option><option>$1,000–$3,000</option><option>$3,000–$5,000</option><option>$5,000–$10,000</option><option>$10,000+</option><option>Not sure yet</option></select></label><label class="m-text-6">Project details<textarea class="m-field" name="details" rows="4" required placeholder="What are you trying to solve?"></textarea></label><label class="m-text-6">Preferred call date (optional)<input class="m-field" name="call_date" type="date"></label><label class="m-text-6">Preferred time window (optional)<select class="m-field" name="call_time"><option value="">No preference</option><option>Morning (9 AM–12 PM IST)</option><option>Afternoon (12 PM–4 PM IST)</option><option>Evening (4 PM–8 PM IST)</option><option>Other — mention in project details</option></select></label><button class="m-btn" type="submit"><span class="m-btn__label">Prepare enquiry</span></button><p class="m-text-6 contact__status" role="status" aria-live="polite">This opens a pre-filled email to malay@chopstickintegrations.com. A call time is a request, not a confirmed booking.</p></form>
+    <form class="contact__form m-surface" id="project-enquiry" action="https://formsubmit.co/malay@chopstickintegrations.com" method="POST"><input type="hidden" name="_subject" value="New project enquiry — Chopstick Integrations"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="form-honeypot"><h3 class="m-text-4">Tell us about the project</h3><p class="m-text-5">Share a little context. Your enquiry will be sent directly to our inbox.</p><label class="m-text-6">Name<input class="m-field" name="name" required autocomplete="name" placeholder="Your name"></label><label class="m-text-6">Work email<input class="m-field" name="email" type="email" required placeholder="you@company.com"></label><label class="m-text-6">Company<input class="m-field" name="company" placeholder="Company name"></label><label class="m-text-6">Company website<input class="m-field" name="website" type="url" placeholder="https://"></label><label class="m-text-6">Contact number (optional)<input class="m-field" name="phone" type="tel" placeholder="+1 ..."></label><label class="m-text-6">What do you need help with?<select class="m-field" name="service" required><option value="">Select a service</option><option>CRM implementation / customization</option><option>CRM migration</option><option>Systems integration / APIs</option><option>Workflow automation</option><option>Analytics and reporting</option><option>AI agents / AI automation</option><option>Something else</option></select></label><label class="m-text-6">Current platforms<input class="m-field" name="platforms" placeholder="Zoho, HubSpot, Salesforce, etc."></label><label class="m-text-6">Estimated budget (USD)<select class="m-field" name="budget"><option value="">Select a range</option><option>Under $1,000</option><option>$1,000–$3,000</option><option>$3,000–$5,000</option><option>$5,000–$10,000</option><option>$10,000+</option><option>Not sure yet</option></select></label><label class="m-text-6">Project details<textarea class="m-field" name="details" rows="4" required placeholder="What are you trying to solve?"></textarea></label><label class="m-text-6">Preferred call date (optional)<input class="m-field" name="call_date" type="date"></label><label class="m-text-6">Preferred time window (optional)<select class="m-field" name="call_time"><option value="">No preference</option><option>Morning (9 AM–12 PM IST)</option><option>Afternoon (12 PM–4 PM IST)</option><option>Evening (4 PM–8 PM IST)</option><option>Other — mention in project details</option></select></label><button class="m-btn" type="submit"><span class="m-btn__label">Send project enquiry</span></button><p class="m-text-6 contact__status" role="status" aria-live="polite">Your enquiry is sent to malay@chopstickintegrations.com. A call time is a request, not a confirmed booking.</p></form>
   </div>
 </section></main><footer id="footer" data-8b-section="footer">
   <div class="chopstick-poster"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="footer-site-logo" loading="lazy"><p class="poster-caption">Strategy · Systems · Integrations</p></div>
@@ -2550,19 +2615,6 @@ function buildProgram(glCtx, vsSrc, fsSrc) {
   new IntersectionObserver(([entry]) => hero.classList.toggle('is-offscreen', !entry.isIntersecting)).observe(hero);
 })();
 </script>
-<script data-8b-part="section-script:contact">
-(() => {
-  const form = document.querySelector('#contact .contact__form');
-  const status = form.querySelector('.contact__status');
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const ok = form.checkValidity();
-    status.textContent = ok ? status.dataset.success : status.dataset.error;
-    if (ok) form.reset();
-    else form.querySelector(':invalid')?.focus();
-  });
-})();
-</script>
 <script data-8b-part="scene-script:hero">
 motionKit.scene('hero', () => {
   const hero = document.getElementById('hero');
@@ -2874,7 +2926,54 @@ document.addEventListener('animationstart', scan, true);
   });
 })();
 </script>
-<script id="chopstick-contact-handler">(()=>{const form=document.getElementById("project-enquiry");if(!form)return;form.addEventListener("submit",event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const fields=[["Name","name"],["Email","email"],["Company","company"],["Website","website"],["Contact number","phone"],["Service","service"],["Current platforms","platforms"],["Budget (USD)","budget"],["Project details","details"],["Preferred call date","call_date"],["Preferred time window","call_time"]];const body=fields.map(([label,key])=>{const value=String(data.get(key)||"").trim();return value?label+": "+value:null}).filter(Boolean).join("\n\n");const subject="New project enquiry — Chopstick Integrations";const status=form.querySelector(".contact__status");status.textContent="Your email app should open with the enquiry details. Review and send it to complete your enquiry.";window.location.href="mailto:malay@chopstickintegrations.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);});})();</script><script id="chopstick-motion-fallback">
+<script id="chopstick-contact-handler">
+(() => {
+  const form = document.getElementById("project-enquiry");
+  if (!form || form.dataset.bound === "yes") return;
+  form.dataset.bound = "yes";
+  const status = form.querySelector(".contact__status");
+  const button = form.querySelector('button[type="submit"]');
+  const endpoint = "https://formsubmit.co/ajax/malay@chopstickintegrations.com";
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!form.reportValidity() || form.dataset.submitting === "yes") return;
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    if (String(payload._honey || "").trim()) return;
+    payload._replyto = String(payload.email || "").trim();
+
+    form.dataset.submitting = "yes";
+    form.setAttribute("aria-busy", "true");
+    if (button) button.disabled = true;
+    if (status) status.textContent = "Sending your enquiry…";
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!response.ok || result.success === false || result.success === "false") {
+        throw new Error(result.message || "The enquiry service did not accept the submission.");
+      }
+      form.reset();
+      if (status) status.textContent = "Thank you — your enquiry has been sent. We’ll get back to you by email.";
+    } catch (error) {
+      console.error("[Chopstick enquiry] Submission failed:", error);
+      if (status) status.textContent = "We couldn't send this just now. Please email malay@chopstickintegrations.com and we'll take it from there.";
+    } finally {
+      form.dataset.submitting = "no";
+      form.removeAttribute("aria-busy");
+      if (button) button.disabled = false;
+    }
+  });
+})();
+</script><script id="chopstick-motion-fallback">
 /* Fail open: scroll-linked motion must never leave content invisible if a timeline is unsupported or interrupted. */
 (()=>{const nodes=[...document.querySelectorAll('[data-8b-motion]')];if(!nodes.length)return;
 const reveal=el=>{el.classList.add('is-in');el.querySelectorAll('[data-8b-items] > *').forEach((child,i)=>child.style.setProperty('--i',i));};
