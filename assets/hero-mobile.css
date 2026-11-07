@@ -1,0 +1,77 @@
+/* Chopstick Hero mobile fit.
+   Narrow-screen only: the desktop Hero, navbar and cinematic scroll timeline stay unchanged. */
+@media (max-width: 640px) {
+  #hero {
+    --ap: min(62vw, 34svh);
+    min-height: 100svh;
+    grid-template-rows: minmax(0, 1fr) auto;
+    padding-left: max(18px, env(safe-area-inset-left));
+    padding-right: max(18px, env(safe-area-inset-right));
+    overflow: clip;
+  }
+
+  #hero .hero__intro {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 100%;
+    padding-top: calc(env(safe-area-inset-top, 0px) + clamp(88px, 13svh, 116px));
+    gap: 13px;
+  }
+
+  #hero .hero__lead {
+    max-width: 30ch;
+    font-size: clamp(14px, 4.25vw, 17px);
+    line-height: 1.42;
+    text-wrap: pretty;
+  }
+
+  #hero .hero__link {
+    min-height: 42px;
+    font-size: 14px;
+  }
+
+  #hero .hero__stage {
+    left: calc(50% - var(--ap) / 2);
+    top: calc(57% - var(--ap) / 2);
+    width: var(--ap);
+    height: var(--ap);
+    z-index: 1;
+  }
+
+  #hero .hero__title {
+    z-index: 2;
+    justify-self: start;
+    align-self: end;
+    width: 100%;
+    padding: 0 0 max(24px, calc(env(safe-area-inset-bottom, 0px) + 14px));
+    font-size: clamp(47px, 14.2vw, 62px);
+    line-height: .86;
+    letter-spacing: -.075em;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  #hero {
+    --ap: min(62vw, 32svh);
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  #hero .hero__intro {
+    padding-top: calc(env(safe-area-inset-top, 0px) + clamp(82px, 12svh, 102px));
+    gap: 11px;
+  }
+
+  #hero .hero__lead {
+    max-width: 28ch;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  #hero .hero__title {
+    font-size: clamp(44px, 14.8vw, 53px);
+    padding-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+  }
+}
