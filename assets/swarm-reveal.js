@@ -34,7 +34,7 @@ function splitText(el){
 async function typeElement(el,c){
  const chars=splitText(el);if(!chars.length)return;el.classList.add('swarm-build-target');c.el.classList.add('is-typing');
  const caret=document.createElement('span');caret.className='swarm-caret';caret.setAttribute('aria-hidden','true');const total=chars.length,step=mobile?Math.max(2,Math.ceil(total/48)):Math.max(1,Math.ceil(total/100));
- for(let i=0;i<total;i+=step){const span=chars[Math.min(i,total-1)],r=span.getBoundingClientRect();if(r.width||r.height)move(c,Math.min(innerWidth-16,r.right),Math.min(innerHeight-16,r.bottom-2));for(let j=i;j<Math.min(total,i+step);j++)chars[j].classList.add('is-written');if(i===0){span.after(caret);c.el.classList.add('is-pressing');setTimeout(()=>c.el.classList.remove('is-pressing'),100);}await sleep(mobile?14:17);}
+ for(let i=0;i<total;i+=step){const span=chars[Math.min(i,total-1)],r=span.getBoundingClientRect();if(r.width||r.height)move(c,Math.min(innerWidth-16,r.right),Math.min(innerHeight-16,r.bottom-2));for(let j=i;j<Math.min(total,i+step);j++)chars[j].classList.add('is-written');span.after(caret);if(i===0){c.el.classList.add('is-pressing');setTimeout(()=>c.el.classList.remove('is-pressing'),100);}await sleep(mobile?14:17);}
  caret.remove();c.el.classList.remove('is-typing');el.classList.add('swarm-frame-in');await sleep(180);
 }
 async function buildElement(el,index){
@@ -55,7 +55,7 @@ async function buildSection(section){
  if(section.dataset.swarmBuilt==='yes')return;section.dataset.swarmBuilt='yes';const targets=targetsFor(section);if(!targets.length)return;
  const status=$('.swarm-status',stage);let done=0;sectionBuildCount++;if(status)status.textContent='BUILD SEQUENCE / '+String(sectionBuildCount).padStart(3,'0');
  const workers=cursors.map((c,i)=>(async()=>{for(let n=i;n<targets.length;n+=cursors.length){await buildElement(targets[n],n);done++;if(status)status.textContent='BUILD SEQUENCE / '+String(sectionBuildCount).padStart(3,'0')+' · '+Math.round(done/targets.length*100)+'%';}})());
- await Promise.all(workers);
+ await Promise.all(workers);if(section.matches('footer')){setTimeout(()=>{if(stage){stage.classList.add('is-finishing');setTimeout(stop,550);}},1800);}
 }
 function start(){
  if(reduced||active||finished)return;const home=$('#home');if(!home)return;makeStage();active=true;stage.classList.add('is-active');draw();
@@ -63,7 +63,6 @@ function start(){
  first.reduce((p,el)=>p.then(()=>buildSection(el)),Promise.resolve()).then(()=>stage&&stage.classList.add('has-started'));
  if('IntersectionObserver'in window){const io=new IntersectionObserver(entries=>entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top).forEach(entry=>{if(entry.target.dataset.swarmQueued)return;entry.target.dataset.swarmQueued='yes';buildSection(entry.target);}),{rootMargin:'0px 0px -8% 0px',threshold:.08});sections.filter(el=>!first.includes(el)).forEach(el=>io.observe(el));}
  else sections.filter(el=>!first.includes(el)).forEach(buildSection);
- setTimeout(()=>{if(stage){stage.classList.add('is-finishing');setTimeout(stop,500);}},Math.max(12000,sections.length*2600));
 }
 function stop(){active=false;finished=true;if(raf)cancelAnimationFrame(raf);if(stage){stage.remove();stage=null;}document.querySelectorAll('.swarm-char').forEach(el=>el.classList.add('is-written'));document.querySelectorAll('.swarm-caret').forEach(el=>el.remove());}
 window.addEventListener('resize',resizeCanvas,{passive:true});window.ChopstickSwarm={start,stop};
