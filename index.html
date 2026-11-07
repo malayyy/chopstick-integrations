@@ -1469,7 +1469,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 
 /* ------------------------------- CONFIG --------------------------------- */
 const CONFIG = Object.freeze({
-  FRAME_COUNT: 300,
+  FRAME_COUNT: 200,
   SOURCE_W: 3840,
   SOURCE_H: 2160,
 
@@ -1483,7 +1483,8 @@ const CONFIG = Object.freeze({
   SETTLE_EPSILON: 0.0008,       // frames; below this the engine stops drawing
 
   /* Loading */
-  BOOT_RING: 5,                 // decode the opening six frames; all 300 are cached before reveal
+  BOOT_FRAME_COUNT: 150,        // launch after the first 150 frames are cached
+  BOOT_RING: 5,                 // decode the opening six frames before reveal
   PREFETCH_LANES: 3,            // concurrent out-of-boot decodes
   PREFETCH_AHEAD: 18,           // frames prefetched beyond the playhead (scroll direction)
   PREFETCH_BEHIND: 10,          // frames kept behind it (for immediate reversal)
@@ -1503,7 +1504,7 @@ const CONFIG = Object.freeze({
      are filled by shader edge-extension plus a restrained procedural crimson
      atmosphere. BAND_ANCHOR positions the band on viewports with vertical
      margins (portrait), keeping the hand near the upper third. */
-  BAND_ANCHOR_Y: [[0, 0.45], [160, 0.485], [299, 0.5]],
+  BAND_ANCHOR_Y: [[0, 0.45], [100, 0.485], [199, 0.5]],
   SUBJECT_BAND_Y: 0.45,         // subject's vertical position within the plate
   EDGE_FADE_MIN: 120,           // px of the darkest edge falloff, minimum
   EDGE_FADE_MAX: 660,
@@ -1526,10 +1527,9 @@ const frameUrl = (i) =>
 
 const FRAME_CACHE_NAME = 'chopstick-film-frames-v2';
 
-/* Download and cache the complete 300-frame film before offering the audio choice.
-   Frames are stored as response blobs; only the opening ring is decoded to GPU
-   textures at boot, so this does not allocate 300 full-resolution GPU textures. */
-async function preloadAllFrames(onProgress = () => {}) {
+/* Cache the first 150 frames before reveal; finish the remaining sequence in background.
+   Frames are stored as response blobs; only the opening ring is decoded to GPU textures at boot. */
+async function preloadAllFrames(onProgress = () => {}, limit = CONFIG.BOOT_FRAME_COUNT) {
   if (!('caches' in window)) throw new Error('Browser cache storage is unavailable.');
   const cache = await caches.open(FRAME_CACHE_NAME);
   let completed = 0, next = 0, firstError = null;
@@ -1540,7 +1540,7 @@ async function preloadAllFrames(onProgress = () => {}) {
   const workers = Array.from({ length: workerCount }, async () => {
     while (true) {
       const index = next++;
-      if (index >= CONFIG.FRAME_COUNT) return;
+      if (index >= limit) return;
       const url = new URL(frameUrl(index), location.href).href;
       try {
         let saved = await cache.match(url);
@@ -1565,7 +1565,7 @@ async function preloadAllFrames(onProgress = () => {}) {
         firstError ||= new Error(`Frame ${index + 1}: ${error.message}`);
       } finally {
         completed++;
-        onProgress(completed, CONFIG.FRAME_COUNT);
+        onProgress(completed, limit);
       }
     }
   });
@@ -2554,14 +2554,14 @@ void main(){
     sizeTrack();
     refreshMaxScroll();
 
-    /* Download and cache all 300 frames before the audio choice is revealed. */
+    /* Cache 150 frames before revealing the experience; remaining 50 cache in background. */
     const bootPercent = document.getElementById('boot-percent');
     const bootState = document.getElementById('boot-state');
-    if (bootState) bootState.textContent = 'Loading all 300 cinematic frames';
+    if (bootState) bootState.textContent = 'Loading first 150 cinematic frames';
     await preloadAllFrames((ready, total) => {
       if (bootPercent) bootPercent.textContent = `${Math.max(1, Math.min(100, Math.round(ready / total * 100)))}%`;
       if (bootState) bootState.textContent = `Loading frame ${String(ready).padStart(3, '0')} of ${total}`;
-    });
+    }, CONFIG.BOOT_FRAME_COUNT);
 
     /* Decode the opening scene before the user can start scrolling. */
     if (bootState) bootState.textContent = 'Getting the first scene ready';
@@ -2599,6 +2599,13 @@ void main(){
     lastT = performance.now();
     requestAnimationFrame(tick);
     prefetchPump();
+
+    /* Finish caching frames 151–200 after launch without blocking scroll. */
+    preloadAllFrames((ready, total) => {
+      if (DEBUG) console.debug(`[chopstick] background frame cache: ${ready}/${total}`);
+    }, CONFIG.FRAME_COUNT).catch(error => {
+      console.warn('[chopstick] background frame caching incomplete:', error);
+    });
   }
 
   boot().catch((error) => {
