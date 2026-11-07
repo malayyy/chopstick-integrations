@@ -30,8 +30,8 @@ jobs:
           mkdir -p _site
           cp index.html _site/
           for dir in assets work frames; do
-  if [ -d "$dir" ]; then cp -R "$dir" _site/; fi
-done
+            if [ -d "$dir" ]; then cp -R "$dir" _site/; fi
+          done
           if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
 
       - uses: actions/upload-pages-artifact@v3
