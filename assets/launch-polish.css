@@ -1,0 +1,186 @@
+/* Final launch polish: the supplied hand mark, agency typography, clean canvas edges,
+   complete-frame-ready reveal, and a compact systems grid. */
+
+#navigation .nav__brand{
+  width:clamp(96px,9vw,138px)!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:2047 / 1152;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  line-height:0!important;
+}
+#navigation .site-logo{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  background:transparent!important;
+}
+#footer .footer-site-logo{
+  display:block!important;
+  width:min(620px,88%)!important;
+  height:auto!important;
+  max-height:300px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  background:transparent!important;
+}
+@media(max-width:640px){
+  #navigation .nav__brand{
+    width:clamp(88px,25vw,118px)!important;
+    height:auto!important;
+    aspect-ratio:2047 / 1152;
+  }
+  #footer .footer-site-logo{width:min(100%,420px)!important;max-height:220px!important}
+}
+@media(max-width:380px){
+  #navigation .nav__brand{width:88px!important}
+}
+
+/* Remove the top and left ruler strips from the collaborative build overlay.
+   The subtle red canvas grid and cursor animation remain unchanged. */
+#swarm-stage .swarm-ruler{display:none!important}
+
+/* Use the same Gabarito + Onest type system as the agency site in the loader. */
+#boot #boot-quote{
+  font-family:var(--font-2,"Onest",Arial,sans-serif)!important;
+  font-weight:500;
+  letter-spacing:-.02em;
+}
+#boot #boot-progress{
+  font-family:var(--font-1,"Gabarito",Arial,sans-serif)!important;
+  font-weight:800;
+  letter-spacing:-.025em;
+}
+#boot #boot-state{
+  font-family:var(--font-2,"Onest",Arial,sans-serif)!important;
+  font-weight:650;
+  letter-spacing:.12em;
+}
+#boot #boot-instruction,
+#boot .boot-choice-label{
+  font-family:var(--font-1,"Gabarito",Arial,sans-serif)!important;
+  font-weight:800;
+  letter-spacing:.11em;
+}
+#boot .boot-choice-actions button{
+  font-family:var(--font-1,"Gabarito",Arial,sans-serif)!important;
+  font-weight:800!important;
+  letter-spacing:.1em!important;
+  font-size:12px!important;
+}
+@media(max-width:640px){
+  #boot .boot-choice-actions button{font-size:11px!important}
+}
+
+/* Keep the connected-platform cards immediately beneath their heading.
+   This replaces the oversized desktop orbit with the same responsive card system
+   used on mobile, without changing card content, images, or scroll elsewhere. */
+#again{
+  height:auto!important;
+}
+#again .again__stage{
+  position:relative!important;
+  top:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+  padding:clamp(62px,7vw,92px) var(--space-1) clamp(72px,8vw,104px)!important;
+}
+#again .again__head{
+  position:relative!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:18px 36px!important;
+  margin:0!important;
+  transform:none!important;
+  translate:none!important;
+  rotate:none!important;
+  animation:none!important;
+}
+#again .again__head h2{max-width:100%;margin:0}
+#again .again__lead{max-width:27rem}
+#again .again__swing{
+  position:relative!important;
+  left:auto!important;
+  top:auto!important;
+  width:auto!important;
+  height:auto!important;
+  margin:clamp(24px,3vw,34px) 0 0!important;
+  transform:none!important;
+  translate:none!important;
+  rotate:none!important;
+  animation:none!important;
+}
+#again .again__wheel{
+  position:relative!important;
+  left:auto!important;
+  top:auto!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:clamp(12px,1.5vw,20px)!important;
+  width:100%!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  translate:none!important;
+  rotate:none!important;
+  animation:none!important;
+}
+#again .partner{
+  position:relative!important;
+  display:block!important;
+  left:auto!important;
+  top:auto!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  rotate:none!important;
+  transform:none!important;
+}
+#again .partner__card{
+  position:relative!important;
+  display:block!important;
+  left:auto!important;
+  top:auto!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:4 / 5!important;
+}
+#again .partner__img{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+#again .partner__text{
+  left:clamp(14px,1.6vw,22px)!important;
+  right:clamp(14px,1.6vw,22px)!important;
+  bottom:clamp(14px,1.6vw,22px)!important;
+}
+@media(max-width:900px){
+  #again .again__wheel{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+  #again .again__stage{padding:56px 16px 66px!important}
+  #again .again__head{display:grid!important;gap:12px!important;align-items:start!important}
+  #again .again__head h2{font-size:clamp(38px,11vw,56px)!important;line-height:.92!important}
+  #again .again__lead{font-size:15px!important;line-height:1.45!important}
+  #again .again__swing{margin-top:22px!important}
+  #again .again__wheel{gap:10px!important}
+  #again .partner__text{left:12px!important;right:12px!important;bottom:13px!important;gap:6px!important}
+  #again .partner__name{font-size:clamp(20px,5.7vw,27px)!important}
+  #again .partner__line{font-size:12px!important;line-height:1.38!important}
+}
