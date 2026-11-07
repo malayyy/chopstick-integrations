@@ -142,10 +142,9 @@
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       scene = new THREE.Scene();
 
-      const viewHeight = 10.5;
+      viewHeight = 10.5;
       const initialAspect = Math.max(0.6, stage.clientWidth / Math.max(1, stage.clientHeight));
       viewWidth = viewHeight * initialAspect;
-      viewHeight = 10.5;
       camera = new THREE.OrthographicCamera(
         -viewWidth / 2, viewWidth / 2, viewHeight / 2, -viewHeight / 2, 0.1, 80
       );
