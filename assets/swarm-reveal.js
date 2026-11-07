@@ -58,7 +58,7 @@ async function buildSection(section){
  await Promise.all(workers);if(section.matches('footer')){setTimeout(()=>{if(stage){stage.classList.add('is-finishing');setTimeout(stop,550);}},1800);}
 }
 function start(){
- if(reduced||active||finished)return;const home=$('#home');if(!home)return;makeStage();active=true;stage.classList.add('is-active');draw();
+ if(active||finished)return;const home=$('#home');if(!home)return;makeStage();active=true;stage.classList.add('is-active');draw();
  const sections=[...home.querySelectorAll('header,main section,footer')];const first=sections.filter(el=>{const r=el.getBoundingClientRect();return r.top<innerHeight*1.15&&r.bottom>0;});
  first.reduce((p,el)=>p.then(()=>buildSection(el)),Promise.resolve()).then(()=>stage&&stage.classList.add('has-started'));
  if('IntersectionObserver'in window){const io=new IntersectionObserver(entries=>entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top).forEach(entry=>{if(entry.target.dataset.swarmQueued)return;entry.target.dataset.swarmQueued='yes';buildSection(entry.target);}),{rootMargin:'0px 0px -8% 0px',threshold:.08});sections.filter(el=>!first.includes(el)).forEach(el=>io.observe(el));}
@@ -66,4 +66,5 @@ function start(){
 }
 function stop(){active=false;finished=true;if(raf)cancelAnimationFrame(raf);if(stage){stage.remove();stage=null;}document.querySelectorAll('.swarm-char').forEach(el=>el.classList.add('is-written'));document.querySelectorAll('.swarm-caret').forEach(el=>el.remove());}
 window.addEventListener('resize',resizeCanvas,{passive:true});window.ChopstickSwarm={start,stop};
+document.dispatchEvent(new Event('chopstick:swarm-ready'));
 })();
