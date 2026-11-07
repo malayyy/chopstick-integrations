@@ -1172,6 +1172,12 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   #hero .hero__title { font-size: clamp(43px, 11.5vw, 48px); }
 }
 </style>
+<style id="chopstick-hero-center-adjustment">
+/* Keep the hero artwork centered in the mobile viewport instead of pushed to the bottom. */
+@media (max-width:899px) {
+  #hero .hero__stage { top:calc(50% - var(--ap) / 2); }
+}
+</style>
 <style id="chopstick-enquiry-polish">
 #project-enquiry .form-honeypot {
   position: absolute !important;
@@ -1192,10 +1198,14 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 <link rel="stylesheet" href="/assets/work-carousel.css?v=20261107">
 <script src="/assets/work-carousel.js?v=20261107" defer></script>
 <style id="chopstick-audio-control">
-#cinematic-layer #sound-toggle{position:absolute;z-index:6;right:clamp(16px,3vw,28px);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;justify-content:center;min-width:96px;min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(14,11,15,.76);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.11em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
-#cinematic-layer #sound-toggle[aria-pressed="true"]{border-color:rgba(237,49,81,.9);background:rgba(126,9,34,.76)}
-#cinematic-layer #sound-toggle:focus-visible{outline:2px solid #ed3151;outline-offset:3px}
-@media(max-width:640px){#cinematic-layer #sound-toggle{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));min-width:90px;min-height:42px;font-size:9px}}
+#boot.ready{pointer-events:auto}
+#boot #boot-instruction{flex-direction:column;gap:18px;margin-top:30px}
+#boot .boot-choice-label{font:700 10px/1.2 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.2em;color:rgba(255,255,255,.62)}
+#boot .boot-choice-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+#boot .boot-choice-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font:700 10px/1 var(--font-2,ui-sans-serif,system-ui,sans-serif);letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;pointer-events:auto}
+#boot .boot-choice-actions #sound-toggle{border-color:rgba(237,49,81,.85);background:rgba(126,9,34,.78)}
+#boot .boot-choice-actions button:focus-visible{outline:2px solid #ed3151;outline-offset:3px}
+@media(max-width:640px){#boot .boot-choice-actions{width:100%;flex-direction:column;gap:10px}#boot .boot-choice-actions button{width:min(100%,280px);min-height:46px;font-size:9px}}
 </style>
 </head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
@@ -1416,7 +1426,6 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   </div>
   <div class="footer__legal m-text-6"><p>© 2026 Chopstick Integrations · Built with intent</p><p></p></div>
 </footer></div><div id="cinematic-layer">
-    <button id="sound-toggle" type="button" aria-pressed="false" aria-label="Turn cinematic sound on">Sound off</button>
     <canvas id="stage" role="presentation" aria-hidden="true"></canvas>
     <img id="stage-fallback" alt="" draggable="false" hidden>
   </div>
@@ -1424,10 +1433,15 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
     <div id="boot-content">
       <div id="boot-quote">Your leads are already talking. We help you hear them first.</div>
-      
-      <div id="boot-progress"><span id="boot-percent">0%</span></div>
+      <div id="boot-progress"><span id="boot-percent">1%</span></div>
       <div id="boot-state">Preparing the experience</div>
-      <div id="boot-instruction"><span id="boot-scroll-cue" aria-hidden="true"></span><span class="desktop">SCROLL FOR THE EXPERIENCE</span><span class="mobile">SWIPE UP FOR THE EXPERIENCE</span></div>
+      <div id="boot-instruction">
+        <span class="boot-choice-label">CHOOSE YOUR EXPERIENCE</span>
+        <div class="boot-choice-actions">
+          <button id="sound-toggle" type="button" aria-pressed="false" aria-label="Continue with cinematic sound">Sound on</button>
+          <button id="continue-silent" type="button">Continue without sound</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1664,7 +1678,10 @@ if (soundToggle) soundToggle.addEventListener('click', () => {
   } else if (soundContext) {
     soundContext.suspend().catch((error) => console.warn('[Chopstick Audio] Suspend failed:', error));
   }
+  dismissIntro();
 });
+const silentContinue = document.getElementById('continue-silent');
+if (silentContinue) silentContinue.addEventListener('click', dismissIntro);
 
 addEventListener('wheel', (event) => {
   if (cinematicComplete && scrollY <= 2 && event.deltaY < -4 && replayCinematic) {
@@ -2515,7 +2532,7 @@ void main(){
     const bootState = document.getElementById('boot-state');
     if (bootState) bootState.textContent = 'Preparing the experience';
     await preloadAllFrames((ready, total) => {
-      if (bootPercent) bootPercent.textContent = `${Math.round(ready / total * 100)}%`;
+      if (bootPercent) bootPercent.textContent = `${Math.max(1, Math.min(100, Math.round(ready / total * 100)))}%`;
     });
 
     /* Decode the opening scene before the user can start scrolling. */
