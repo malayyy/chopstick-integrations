@@ -90,10 +90,14 @@
   z-index: 2;
   right: 18px;
   bottom: 17px;
-  color: rgba(255,255,255,.72);
-  font: 600 8px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
-  letter-spacing: .14em;
+  color: rgba(255,255,255,.9);
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .075em;
   text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0,0,0,.55);
   opacity: 0;
   transition: opacity .4s ease .2s;
   pointer-events: none;
@@ -259,4 +263,37 @@
   #studio .studio__dither-mount,
   #studio .studio__dither-loader,
   #studio .studio__dither-hint { transition-duration: .01ms; }
+}
+
+/* Match the live Chopstick brand type system in the Studio panel. */
+#studio .studio__collage > .studio__roles h3,
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-family: "Gabarito", var(--font-1, "Arial Black"), Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.035em;
+}
+#studio .studio__collage > .studio__roles h3 {
+  font-size: clamp(21px, 2.2vw, 30px);
+  line-height: 1;
+}
+#studio .studio__collage > .studio__roles .role .m-text-7 {
+  font-size: clamp(18px, 1.7vw, 23px);
+  line-height: 1.1;
+}
+#studio .studio__collage > .studio__roles .role__place,
+#studio .studio__collage > .studio__roles .m-link {
+  font-family: "Onest", var(--font-2, Arial), sans-serif;
+  font-weight: 700;
+}
+#studio .studio__collage > .studio__roles .m-link { font-size: 14px; }
+@media (max-width: 620px) {
+  #studio .studio__dither-hint {
+    right: 12px;
+    bottom: 12px;
+    font-size: 9px;
+    letter-spacing: .055em;
+  }
+  #studio .studio__collage > .studio__roles h3 { font-size: 22px; }
+  #studio .studio__collage > .studio__roles .role .m-text-7 { font-size: 19px; }
+  #studio .studio__collage > .studio__roles .m-link { font-size: 14px; }
 }
