@@ -609,26 +609,6 @@ textarea.m-field { min-height: 112px; resize: vertical; }
 }
 }
 </style>
-<style data-8b-part="section:journal">
-@layer sections {
-#journal { position: relative; padding: calc(var(--space-2) * 0.6) var(--space-1) var(--space-2); background: var(--color-2); }
-#journal .journal__head { margin-bottom: clamp(40px, 7vh, 88px); }
-#journal .journal__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
-#journal .journal__frame { position: relative; overflow: hidden; border-radius: var(--radius-1); background: var(--color-4); aspect-ratio: 16 / 10; }
-#journal .journal__shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-#journal .journal__shot:first-child { z-index: 1; }
-#journal .journal__list { display: grid; gap: clamp(36px, 8vh, 72px); }
-#journal .story { display: grid; gap: 12px; max-width: 36rem; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--color-1) 16%, transparent); }
-#journal .story__meta { color: var(--color-6); }
-#journal .story__meta span { color: var(--color-3); }
-#journal .story__text { color: var(--color-6); }
-@media (min-width: 900px) {
-  #journal .journal__body { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 7vw; }
-  #journal .journal__frame { aspect-ratio: 4 / 5; }
-  #journal .journal__list { gap: clamp(64px, 18vh, 170px); padding-block: 6svh 10svh; }
-}
-}
-</style>
 <style data-8b-part="section:faq">
 @layer sections {
 #faq { position: relative; display: grid; gap: 40px; padding: var(--space-2) var(--space-1); background: var(--color-2); border-top: 1px solid color-mix(in srgb, var(--color-1) 12%, transparent); }
@@ -848,30 +828,6 @@ textarea.m-field { min-height: 112px; resize: vertical; }
 @keyframes studio-shot-deal { 0% { translate: var(--studio-x, 0px) var(--studio-y, 0px); rotate: var(--studio-tilt, 0deg); scale: 0.66; } 100% { translate: 0px 0px; rotate: 0deg; scale: 1; } }
 }
 </style>
-<style data-8b-part="scene:journal">
-@layer scenes {
-@media (prefers-reduced-motion: no-preference) {
-  [data-8b-live] #journal .journal__frame { position: sticky; z-index: 1; top: 80px; }
-  [data-8b-live] #journal .journal__shot:first-child { z-index: auto; }
-  @media (min-width: 900px) { [data-8b-live] #journal .journal__frame { top: calc(50svh - min(30svh, 22vw)); max-height: 60svh; } }
-}
-}
-@layer scenes {
-[data-8b-live] #journal { timeline-scope: --journal-t2, --journal-t3, --journal-t4; }
-[data-8b-live] #journal .journal__list > .story { view-timeline-inset: 0; animation-name: journal-li-story-opacity; animation-timeline: --journal-item; animation-range: cover 16vh cover 43.2vh; animation-timing-function: linear; animation-fill-mode: both; }
-[data-8b-live] #journal .journal__list > li:first-of-type { animation-range: cover 16vh cover 50vh; }
-[data-8b-live] #journal .journal__list > li:nth-of-type(1) { view-timeline: --journal-item block; }
-[data-8b-live] #journal .journal__list > li:nth-of-type(2) { view-timeline: --journal-item block, --journal-t2 block; }
-[data-8b-live] #journal .journal__list > li:nth-of-type(3) { view-timeline: --journal-item block, --journal-t3 block; }
-[data-8b-live] #journal .journal__list > li:nth-of-type(4) { view-timeline: --journal-item block, --journal-t4 block; }
-[data-8b-live] #journal .journal__frame > img:is(:nth-of-type(2), :nth-of-type(3), :nth-of-type(4)) { animation-name: journal-img-journal-shot-clippath; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); }
-[data-8b-live] #journal .journal__frame > img:nth-of-type(2) { animation-timeline: --journal-t2; animation-range: cover 16vh cover 50vh; animation-fill-mode: both; }
-[data-8b-live] #journal .journal__frame > img:nth-of-type(3) { animation-timeline: --journal-t3; animation-range: cover 16vh cover 50vh; animation-fill-mode: both; }
-[data-8b-live] #journal .journal__frame > img:nth-of-type(4) { animation-timeline: --journal-t4; animation-range: cover 16vh cover 50vh; animation-fill-mode: both; }
-@keyframes journal-li-story-opacity { 0% { opacity: 0.25; } 100% { opacity: 1; } }
-@keyframes journal-img-journal-shot-clippath { 0% { clip-path: circle(0% at 50% 50%); } 100% { clip-path: circle(75% at 50% 50%); } }
-}
-</style>
 <style data-8b-part="scene:contact">
 @layer scenes {
 [data-8b-live] { --ease-power2-in: linear(0, 0, 0.0001, 0.0004, 0.001, 0.0019, 0.0034, 0.0054, 0.008, 0.0114, 0.0156, 0.0208, 0.027, 0.0343, 0.0429, 0.0527, 0.064, 0.0768, 0.0911, 0.1072, 0.125, 0.1447, 0.1664, 0.1901, 0.216, 0.2441, 0.2746, 0.3075, 0.343, 0.3811, 0.4219, 0.4655, 0.512, 0.5615, 0.6141, 0.6699, 0.729, 0.7914, 0.8574, 0.9269, 1); }
@@ -920,7 +876,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 @layer sections {
   /* These light template sections sit inside #home, whose default text is light.
      Set their foreground explicitly so inherited white text never lands on white. */
-  #statement, #method, #studio, #journal, #faq { color: var(--color-1); }
+  #statement, #method, #studio, #faq { color: var(--color-1); }
 }
 </style>
 
@@ -1062,30 +1018,14 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 #contact .contact__form .m-field{color:#171216;background:#f7f3f4}
 #contact .contact__form .m-field::placeholder{color:#777}
 </style>
-<style id="chopstick-work-blog-refresh">
+<style id="chopstick-work-refresh">
 #work .case__link{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
 #work .case__media{inset:0}
 #work .case__number{position:absolute;right:26px;top:20px;font:800 clamp(46px,8vw,100px)/1 Gabarito,sans-serif;color:rgba(255,255,255,.16);letter-spacing:-.08em}
-#work .case__tag{z-index:2}
-#work .case__text{z-index:2}
-#work .case__read,.story__read{font:700 12px/1.4 Onest,sans-serif;color:#f05a73;text-decoration:none;letter-spacing:.03em}
-#work .case__link:hover .case__read,.story__read:hover{text-decoration:underline;text-underline-offset:4px}
-#work .work__all,#journal .journal__all{display:inline-flex;margin-top:32px}
-#journal .journal__head{display:flex;align-items:end;justify-content:space-between;gap:24px;flex-wrap:wrap}
-#journal .journal__intro{max-width:30rem;color:var(--color-6)}
-#journal .journal__frame--editorial{background:#110d11;isolation:isolate;min-height:420px}
-#journal .journal__cover{position:absolute;inset:0;opacity:0;transform:scale(.98);transition:opacity .5s ease,transform .8s ease}
-#journal .journal__cover--one{opacity:1;background:radial-gradient(ellipse at 70% 35%,rgba(210,25,62,.65),transparent 30%),linear-gradient(145deg,#080709,#30101b 58%,#080709)}
-#journal .journal__cover--two{background:radial-gradient(ellipse at 30% 70%,rgba(192,80,40,.45),transparent 35%),linear-gradient(35deg,#0b1011,#173d3a 60%,#080709)}
-#journal .journal__cover--three{background:radial-gradient(ellipse at 65% 28%,rgba(100,75,170,.55),transparent 32%),linear-gradient(145deg,#0b0914,#252044 60%,#080709)}
-#journal .journal__cover--four{background:radial-gradient(ellipse at 35% 55%,rgba(210,25,62,.35),transparent 35%),linear-gradient(145deg,#080709,#292126 60%,#080709)}
-#journal .journal__cover-label{position:absolute;z-index:2;left:clamp(22px,4vw,52px);bottom:clamp(22px,4vw,52px);font:800 clamp(30px,5vw,66px)/.9 Gabarito,sans-serif;letter-spacing:-.04em;color:#fff}
-#journal .journal__list{gap:clamp(28px,6vh,60px);padding-block:0}
-#journal .story{opacity:1!important}
-#journal .story h3 a{color:var(--color-1);text-decoration:none}
-#journal .story h3 a:hover{color:#c8102e}
-#journal .story__read{display:inline-block;margin-top:3px}
-@media(max-width:899px){#journal .journal__frame--editorial{min-height:280px}#journal .journal__body{gap:30px}}
+#work .case__tag,#work .case__text{z-index:2}
+#work .case__read{font:700 12px/1.4 Onest,sans-serif;color:#f05a73;text-decoration:none;letter-spacing:.03em}
+#work .case__link:hover .case__read{text-decoration:underline;text-underline-offset:4px}
+#work .work__all{display:inline-flex;margin-top:32px}
 </style><style id="chopstick-reveal-failsafe">
 /* Keep scroll-timeline art progressive, but never hide core content if its observer does not fire. */
 #statement .statement__index{opacity:1}
