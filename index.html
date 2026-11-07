@@ -1573,6 +1573,7 @@ function finishCurtain() {
   track.hidden = true;
   homepage.classList.add('active');
   if (window.ChopstickSwarm) window.ChopstickSwarm.start();
+  else document.addEventListener('chopstick:swarm-ready', () => window.ChopstickSwarm?.start(), { once: true });
   homepage.removeAttribute('aria-hidden');
   document.documentElement.classList.remove('cinematic-active');
   document.body.classList.remove('cinematic-active');
