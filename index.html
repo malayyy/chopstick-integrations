@@ -1616,7 +1616,7 @@ function personalizedQuote() {
   const campaign = (params.get('utm_campaign') || '').toLowerCase();
   const industry = params.get('industry');
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-  const cityByZone = {'Asia/Kolkata':'India','America/New_York':'New York','America/Los_Angeles':'Los Angeles','America/Chicago':'Chicago','Europe/London':'London','Asia/Dubai':'Dubai','Asia/Singapore':'Singapore'};
+  const cityByZone = {'America/New_York':'New York','America/Los_Angeles':'Los Angeles','America/Chicago':'Chicago','Europe/London':'London','Asia/Dubai':'Dubai','Asia/Singapore':'Singapore'};
   const city = cityByZone[tz];
   const hour = new Date().getHours();
   let message = '';
@@ -1632,14 +1632,14 @@ function personalizedQuote() {
   return message || serviceQuotes[0];
 }
 let quoteIndex = 0;
-if (quoteNode) quoteNode.textContent = personalizedQuote();
 const quoteNode = document.getElementById('boot-quote');
 const quoteIndexNode = document.getElementById('boot-quote-index');
+if (quoteNode) quoteNode.textContent = personalizedQuote();
 if (quoteNode && !reducedMotion) {
   setInterval(() => {
     quoteNode.classList.add('changing');
     setTimeout(() => {
-      quoteIndex = (quoteIndex + 1) % quoteLines.length;
+      quoteIndex = (quoteIndex + 1) % serviceQuotes.length;
       quoteNode.textContent = serviceQuotes[quoteIndex];
       if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 10`;
       quoteNode.classList.remove('changing');
