@@ -196,11 +196,10 @@
   /* Custom Chopstick loader. The original template's site styling is untouched. */
   #boot{position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:hidden;color:#f7f3f4;background:#000;opacity:1;transition:opacity .7s cubic-bezier(.22,1,.36,1),visibility .7s ease;pointer-events:none}
   #boot-content{width:min(560px,calc(100vw - 36px));display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-1vh)}
+  .site-logo{display:block;width:clamp(190px,24vw,310px);height:auto;object-fit:contain}
+  .footer-site-logo{display:block;width:min(760px,90vw);height:auto;object-fit:contain;margin-inline:auto}
   #boot-quote{min-height:48px;max-width:520px;color:rgba(247,243,244,.84);font-family:var(--font-2);font-size:clamp(17px,2.1vw,22px);font-style:normal;font-weight:400;line-height:1.45;letter-spacing:-.015em}
-  #chopstick-loader{display:block;width:min(220px,54vw);height:auto;margin:22px 0 20px;overflow:visible}
-  #chopstick-loader .bowl{transform-origin:190px 337px;animation:bowl-breathe 2.8s ease-in-out infinite}
-  #chopstick-loader .sticks{transform-origin:256px 256px;animation:sticks-float 2.8s ease-in-out infinite}
-  #chopstick-loader .shine{fill:none;stroke:rgba(255,255,255,.78);stroke-width:2.5;stroke-linecap:round}
+  #chopstick-loader{display:none}
   #boot-progress{color:#fff;font-family:var(--font-1);font-size:23px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
   #boot-state{margin-top:12px;color:rgba(247,243,244,.48);font-family:var(--font-2);font-size:9px;font-weight:600;line-height:1.5;letter-spacing:.16em;text-transform:uppercase}
   #boot-instruction{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px;color:#fff;font:700 clamp(15px,2.2vw,21px)/1.2 ui-sans-serif,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;opacity:0;transform:translateY(15px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1)}
@@ -1151,7 +1150,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
 }
 </style><link rel="stylesheet" href="/assets/swarm-reveal.css"><script src="/assets/swarm-reveal.js" defer></script></head>
 <body class="m-text cinematic-active"><div id="home" aria-hidden="true"><a class="skip" href="#main">Skip to content</a><header id="navigation" class="nav" data-8b-section="navigation">
-  <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.svg" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
+  <a class="nav__brand" href="#hero" aria-label="Chopstick Integrations"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="site-logo" fetchpriority="high"></a>
   <nav class="nav__links" aria-label="Main">
     <ul data-8b-items=":scope > li">
       <li><a class="m-link-2" href="#work">Work</a></li>
@@ -1346,7 +1345,7 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
     <form class="contact__form m-surface" id="project-enquiry"><h3 class="m-text-4">Tell us about the project</h3><p class="m-text-5">Share a little context. Your email app will open with the enquiry ready to send.</p><label class="m-text-6">Name<input class="m-field" name="name" required autocomplete="name" placeholder="Your name"></label><label class="m-text-6">Work email<input class="m-field" name="email" type="email" required placeholder="you@company.com"></label><label class="m-text-6">Company<input class="m-field" name="company" placeholder="Company name"></label><label class="m-text-6">Company website<input class="m-field" name="website" type="url" placeholder="https://"></label><label class="m-text-6">Contact number (optional)<input class="m-field" name="phone" type="tel" placeholder="+1 ..."></label><label class="m-text-6">What do you need help with?<select class="m-field" name="service" required><option value="">Select a service</option><option>CRM implementation / customization</option><option>CRM migration</option><option>Systems integration / APIs</option><option>Workflow automation</option><option>Analytics and reporting</option><option>AI agents / AI automation</option><option>Something else</option></select></label><label class="m-text-6">Current platforms<input class="m-field" name="platforms" placeholder="Zoho, HubSpot, Salesforce, etc."></label><label class="m-text-6">Estimated budget (USD)<select class="m-field" name="budget"><option value="">Select a range</option><option>Under $1,000</option><option>$1,000–$3,000</option><option>$3,000–$5,000</option><option>$5,000–$10,000</option><option>$10,000+</option><option>Not sure yet</option></select></label><label class="m-text-6">Project details<textarea class="m-field" name="details" rows="4" required placeholder="What are you trying to solve?"></textarea></label><label class="m-text-6">Preferred call date (optional)<input class="m-field" name="call_date" type="date"></label><label class="m-text-6">Preferred time window (optional)<select class="m-field" name="call_time"><option value="">No preference</option><option>Morning (9 AM–12 PM IST)</option><option>Afternoon (12 PM–4 PM IST)</option><option>Evening (4 PM–8 PM IST)</option><option>Other — mention in project details</option></select></label><button class="m-btn" type="submit"><span class="m-btn__label">Prepare enquiry</span></button><p class="m-text-6 contact__status" role="status" aria-live="polite">This opens a pre-filled email to malay@chopstickintegrations.com. A call time is a request, not a confirmed booking.</p></form>
   </div>
 </section></main><footer id="footer" data-8b-section="footer">
-  <div class="chopstick-poster"><img src="/assets/chopstick-logo.svg" alt="Chopstick Integrations" class="footer-site-logo" loading="lazy"><p class="poster-caption">Strategy · Systems · Integrations</p></div>
+  <div class="chopstick-poster"><img src="/assets/chopstick-logo.webp" alt="Chopstick Integrations" class="footer-site-logo" loading="lazy"><p class="poster-caption">Strategy · Systems · Integrations</p></div>
   <div class="footer__grid">
     <nav class="footer__col" aria-label="Footer">
       <p class="m-text-6 footer__label">Explore</p>
@@ -1375,22 +1374,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference)').matches && CSS.support
   <div id="track" aria-hidden="true"></div>
   <div id="boot" role="status" aria-live="polite" aria-label="Loading the Chopstick experience">
     <div id="boot-content">
-      <div id="boot-quote">“Great things take time. So does this website.”</div>
-      <svg id="chopstick-loader" viewBox="0 0 512 512" role="img" aria-label="Two crossed chopsticks above a red dipping bowl">
-        <g class="bowl">
-          <circle cx="190" cy="337" r="100" fill="#303030"/>
-          <circle cx="190" cy="337" r="72" fill="#bd292d"/>
-          <path class="shine" d="M137 325c3-18 13-33 27-42"/>
-        </g>
-        <g class="sticks">
-          <path d="M45 470 378 39Q385 30 393 38L405 49Q411 55 404 63L51 474Q42 480 45 470Z" fill="#ffb28f"/>
-          <path d="M73 480 450 60Q457 52 465 60L476 71Q482 78 474 86L79 484Q70 489 73 480Z" fill="#ffb28f"/>
-          <path d="M336 94 378 39Q385 30 393 38L405 49Q411 55 404 63L361 119Z" fill="#b9272c"/>
-          <path d="M397 121 450 60Q457 52 465 60L476 71Q482 78 474 86L420 147Z" fill="#b9272c"/>
-          <path d="m319 116 17 13-7 9-17-13Z M338 131l17 13-7 9-17-13Z" fill="#b9272c"/>
-          <path d="m380 146 17 14-7 9-17-14Z M399 162l17 14-7 9-17-14Z" fill="#b9272c"/>
-        </g>
-      </svg>
+      <div id="boot-quote">Your leads are already talking. We help you hear them first.</div>
+      
       <div id="boot-progress"><span id="boot-percent">0%</span></div>
       <div id="boot-state">Preparing the experience</div>
       <div id="boot-instruction"><span id="boot-scroll-cue" aria-hidden="true"></span><span class="desktop">SCROLL FOR THE EXPERIENCE</span><span class="mobile">SWIPE UP FOR THE EXPERIENCE</span></div>
@@ -1614,12 +1599,40 @@ function beginCurtain() {
 
 
 /* Rotating brand lines; keep the loader quiet and lightweight. */
-const quoteLines = [
-  '“Great things take time. So does this website.”',
-  '“A little patience. A lot to explore.”',
-  '“We made this by hand. Take it for a spin.”'
+const serviceQuotes = [
+  'Your leads are already talking. We help you hear them first.',
+  'Clean data isn’t a luxury. It’s where every good campaign starts.',
+  'Great CRMs don’t add work. They quietly remove it.',
+  'Automation is just your best employee who never sleeps.',
+  'Move your data once. Move it right.',
+  'An AI agent should feel like a teammate, not a chatbot.',
+  'Fast infrastructure is invisible. Slow infrastructure is expensive.',
+  'Every manual task you delete is an hour you get back.',
+  'Behind every closed deal is a workflow that didn’t break.',
+  'Growth isn’t magic. It’s systems that scale while you sleep.'
 ];
+function personalizedQuote() {
+  const params = new URLSearchParams(location.search);
+  const campaign = (params.get('utm_campaign') || '').toLowerCase();
+  const industry = params.get('industry');
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  const cityByZone = {'Asia/Kolkata':'India','America/New_York':'New York','America/Los_Angeles':'Los Angeles','America/Chicago':'Chicago','Europe/London':'London','Asia/Dubai':'Dubai','Asia/Singapore':'Singapore'};
+  const city = cityByZone[tz];
+  const hour = new Date().getHours();
+  let message = '';
+  if (campaign.includes('zoho')) message = 'Looking for Zoho experts? You’re in the right place.';
+  else if (industry) message = 'Built for ' + industry.replace(/[<>]/g, '').slice(0,48) + ' teams who are tired of chasing leads.';
+  else {
+    let returning = false;
+    try { returning = localStorage.getItem('chopstick-visited') === 'yes'; localStorage.setItem('chopstick-visited','yes'); } catch {}
+    if (returning) message = 'Welcome back. Your next idea is a few seconds away.';
+    else if (hour >= 5 && hour < 12) message = 'Good morning. Let’s make today’s pipeline look better.';
+    else if (city) message = 'Helping teams from ' + city + ' to close faster.';
+  }
+  return message || serviceQuotes[0];
+}
 let quoteIndex = 0;
+if (quoteNode) quoteNode.textContent = personalizedQuote();
 const quoteNode = document.getElementById('boot-quote');
 const quoteIndexNode = document.getElementById('boot-quote-index');
 if (quoteNode && !reducedMotion) {
@@ -1627,8 +1640,8 @@ if (quoteNode && !reducedMotion) {
     quoteNode.classList.add('changing');
     setTimeout(() => {
       quoteIndex = (quoteIndex + 1) % quoteLines.length;
-      quoteNode.textContent = quoteLines[quoteIndex];
-      if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 03`;
+      quoteNode.textContent = serviceQuotes[quoteIndex];
+      if (quoteIndexNode) quoteIndexNode.textContent = `${String(quoteIndex + 1).padStart(2, '0')} / 10`;
       quoteNode.classList.remove('changing');
     }, 360);
   }, 3200);
