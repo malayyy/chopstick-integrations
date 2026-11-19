@@ -3030,4 +3030,58 @@ const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIn
 nodes.forEach(el=>io.observe(el));
 })();
 </script>  <script type="module" src="/assets/studio-dither.js?v=20261107"></script>
+
+<style id="chopstick-contact-layout-fix">
+/* Keep the contact email inside its own grid column instead of running under the form. */
+#contact .contact__grid,
+#contact .contact__info,
+#contact .contact__form { min-width: 0; }
+#contact .contact__mail {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  font-size: clamp(20px, 2.35vw, 36px);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+#contact .contact__mail span {
+  overflow-wrap: anywhere;
+  background-size: 100% 1.5px;
+}
+
+/* The enquiry panel stays black regardless of the active scene/theme. */
+#contact #project-enquiry,
+#contact #project-enquiry.m-surface {
+  background: #090909 !important;
+  color: #f7f3f4 !important;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 18px 60px rgba(0,0,0,.18);
+}
+#contact #project-enquiry h3,
+#contact #project-enquiry > p,
+#contact #project-enquiry label,
+#contact #project-enquiry .contact__status {
+  color: #f0ecee !important;
+}
+#contact #project-enquiry label { color: #aaa2a7 !important; }
+#contact #project-enquiry .m-field {
+  background: #171517 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 8px;
+  caret-color: #e32646;
+}
+#contact #project-enquiry .m-field::placeholder { color: #8f878c !important; }
+#contact #project-enquiry select option {
+  background: #171517;
+  color: #fff;
+}
+#contact #project-enquiry .contact__status { color: #aaa2a7 !important; }
+#contact #project-enquiry :focus-visible { outline-color: #e32646 !important; }
+@media (max-width: 999px) {
+  #contact .contact__mail { font-size: clamp(20px, 5.2vw, 34px); }
+}
+</style>
 </body></html>
