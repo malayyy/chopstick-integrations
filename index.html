@@ -2958,7 +2958,11 @@ document.addEventListener('animationstart', scan, true);
   form.dataset.bound = "yes";
   const status = form.querySelector(".contact__status");
   const button = form.querySelector('button[type="submit"]');
-  const endpoint = "https://formsubmit.co/ajax/malay@chopstickintegrations.com";
+  const emailEndpoint = "https://formsubmit.co/ajax/malay@chopstickintegrations.com";
+
+  // Paste the Google Apps Script Web App URL here after completing
+  // CONTACT-LEADS-SETUP.md. Leave blank to keep the existing email-only flow.
+  const sheetsEndpoint = "";
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -2974,20 +2978,39 @@ document.addEventListener('animationstart', scan, true);
     if (status) status.textContent = "Sending your enquiry…";
 
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-      const result = await response.json();
-      if (!response.ok || result.success === false || result.success === "false") {
-        throw new Error(result.message || "The enquiry service did not accept the submission.");
+      const tasks = [
+        fetch(emailEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(async response => {
+          const result = await response.json();
+          if (!response.ok || result.success === false || result.success === "false") {
+            throw new Error(result.message || "The email service did not accept the submission.");
+          }
+          return true;
+        })
+      ];
+
+      if (sheetsEndpoint) {
+        const sheetPayload = new URLSearchParams();
+        Object.entries(payload).forEach(([key, value]) => sheetPayload.append(key, String(value ?? "")));
+        sheetPayload.set("source", "Chopstick website contact form");
+        tasks.push(fetch(sheetsEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          body: sheetPayload
+        }).then(() => true));
       }
+
+      const results = await Promise.allSettled(tasks);
+      if (results[0].status !== "fulfilled") throw results[0].reason;
+      const sheetSaved = !sheetsEndpoint || results[1]?.status === "fulfilled";
       form.reset();
-      if (status) status.textContent = "Thank you — your enquiry has been sent. We’ll get back to you by email.";
+      if (status) status.textContent = sheetSaved
+        ? "Thank you — your enquiry has been sent."
+        : "Your enquiry email was sent, but the lead database could not be reached. Please try again or email us directly.";
+      if (!sheetSaved) console.error("[Chopstick enquiry] Google Sheets request failed:", results[1].reason);
     } catch (error) {
       console.error("[Chopstick enquiry] Submission failed:", error);
       if (status) status.textContent = "We couldn't send this just now. Please email malay@chopstickintegrations.com and we'll take it from there.";
