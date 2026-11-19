@@ -46,10 +46,11 @@
     align-self: end;
     width: 100%;
     padding: 0 0 max(24px, calc(env(safe-area-inset-bottom, 0px) + 14px));
-    font-size: clamp(47px, 14.2vw, 62px);
-    line-height: .86;
+    font-size: clamp(40px, 12.5vw, 52px);
+    line-height: .9;
     letter-spacing: -.075em;
     white-space: nowrap;
+    transform: translateY(calc(var(--ap) * -0.42));
   }
 }
 
