@@ -50,8 +50,14 @@
     line-height: .9;
     letter-spacing: -.075em;
     white-space: nowrap;
-    /* Keep the full word above the orb instead of letting the sphere cover its letters. */
-    transform: translateY(calc(var(--ap) * -1));
+    /* The orb is nested inside the heading: move only the word, never the heading. */
+    transform: none;
+  }
+
+  #hero .hero__word {
+    position: relative;
+    z-index: 2;
+    transform: translateY(calc(var(--ap) * -1.8));
   }
 }
 
