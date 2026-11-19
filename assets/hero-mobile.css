@@ -73,7 +73,7 @@
   }
 
   #hero .hero__title {
-    font-size: clamp(44px, 14.8vw, 53px);
+    font-size: clamp(38px, 12.5vw, 46px);
     padding-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px));
   }
 }
