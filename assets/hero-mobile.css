@@ -50,7 +50,8 @@
     line-height: .9;
     letter-spacing: -.075em;
     white-space: nowrap;
-    transform: translateY(calc(var(--ap) * -0.42));
+    /* Keep the full word above the orb instead of letting the sphere cover its letters. */
+    transform: translateY(calc(var(--ap) * -1));
   }
 }
 
